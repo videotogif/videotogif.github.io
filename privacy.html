@@ -1,0 +1,137 @@
+---
+layout: page
+title: "개인정보처리방침"
+description: "Video to GIF converter의 개인정보 처리 및 보호 정책"
+permalink: /privacy/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">개인정보처리방침</h1>
+    <p class="page-subtitle">Video to GIF converter는 사용자의 프라이버시를 최우선으로 합니다</p>
+  </header>
+
+  <section class="content-section">
+    <h2>요약</h2>
+    <p>
+      <strong>Video to GIF converter</strong>는 <strong>100% 클라이언트 사이드</strong>로 동작합니다.
+      비디오 파일은 서버로 전송되지 않으며, 사용자 식별 정보(회원가입/로그인 등)를 수집하지 않습니다.
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">🚫</span>
+        <div class="point-content">
+          <h4>개인정보 수집 없음</h4>
+          <p>서비스 이용을 위해 이름, 이메일 등 어떠한 개인정보도 요구하거나 저장하지 않습니다.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">💾</span>
+        <div class="point-content">
+          <h4>로컬 처리</h4>
+          <p>업로드된 비디오는 브라우저 메모리에서만 처리되며, 생성된 GIF 또한 사용자 기기에만 저장됩니다.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">🔒</span>
+        <div class="point-content">
+          <h4>안전한 연결</h4>
+          <p>HTTPS를 통해 페이지가 제공되며, 네트워크로 전송되는 개인정보는 없습니다.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">📝</span>
+        <div class="point-content">
+          <h4>로그/이력 저장 없음</h4>
+          <p>변환 이력, 파일 메타데이터 등의 로그를 수집·보관하지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>1) 수집하는 정보</h2>
+    <p><strong>본 서비스는 개인정보를 수집하지 않습니다.</strong></p>
+    <ul class="tech-list">
+      <li>비디오 파일은 브라우저에서만 읽고 처리하며 서버로 전송되지 않습니다.</li>
+      <li>생성된 GIF 파일은 사용자의 기기에만 저장됩니다.</li>
+      <li>회원가입/로그인이 없으며 사용자 식별을 위한 어떤 정보도 요구하지 않습니다.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>2) 쿠키 및 로컬 스토리지</h2>
+    <p>
+      더 나은 사용 경험을 위해 브라우저 <strong>로컬 스토리지</strong>에 일부 환경설정(예: 프레임 간격, 품질, FPS)을 저장할 수 있습니다.
+      이 정보는 개인을 식별하지 않으며, 사용자는 브라우저 설정에서 언제든지 삭제할 수 있습니다.
+    </p>
+    <p class="privacy-note">
+      일부 익명화된 분석 도구(예: 방문 수집계수) 사용 시에도 개인 식별은 불가능합니다.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>3) 데이터 처리 방식</h2>
+    <ul class="check-list">
+      <li>✅ <strong>비디오 업로드</strong>: 브라우저에서만 파일을 읽습니다.</li>
+      <li>✅ <strong>프레임 추출</strong>: Canvas API로 로컬 처리합니다.</li>
+      <li>✅ <strong>GIF 변환</strong>: WebAssembly로 브라우저 내에서 인코딩합니다.</li>
+      <li>✅ <strong>다운로드</strong>: 결과물은 사용자 기기에만 저장됩니다.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>4) 제3자 서비스</h2>
+    <p>
+      정적 파일 제공을 위한 CDN, 익명 통계 수집을 위한 웹 분석 도구를 사용할 수 있습니다.
+      각 서비스는 별도의 개인정보처리방침을 운영하며, 해당 정책을 확인하시기 바랍니다.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>5) 사용자의 권리</h2>
+    <ul class="check-list">
+      <li>✅ 브라우저 설정에서 로컬 스토리지/쿠키 데이터를 삭제할 수 있습니다.</li>
+      <li>✅ 페이지를 닫으면 변환 작업이 즉시 종료됩니다.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>6) 어린이 개인정보 보호</h2>
+    <p>
+      본 서비스는 만 14세 미만 아동의 개인정보를 수집하지 않습니다. (실제 개인정보 수집 자체가 없습니다)
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>7) 정책 변경</h2>
+    <p>
+      법률·서비스 변경에 따라 본 방침이 업데이트될 수 있습니다. 중요한 변경사항은 본 페이지를 통해 공지합니다.
+    </p>
+    <p class="privacy-note"><strong>최종 수정일:</strong> 2025-01-15</p>
+  </section>
+
+  <section class="content-section">
+    <h2>8) 문의처</h2>
+    <p>
+      개인정보 관련 문의: <strong>privacy@yourdomain.com</strong><br />
+      웹사이트: <a href="{{ site.url }}">{{ site.url }}</a>
+    </p>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>안심하고 사용하세요</h2>
+    <p>개인정보 업로드 없이 브라우저에서 즉시 GIF를 만들 수 있습니다.</p>
+    <a href="{{ '/' | relative_url }}" class="start-button">GIF 변환 시작하기 →</a>
+  </section>
+</div>

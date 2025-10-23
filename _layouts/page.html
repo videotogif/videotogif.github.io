@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<div class="page-layout">
+    <div class="page-content-wrapper">
+        {{ content }}
+    </div>
+</div>
+
+<style>
+    .page-layout {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-content-wrapper {
+        background: var(--bg-container);
+        border-radius: 20px;
+        padding: 60px;
+        box-shadow: 0 10px 40px var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .page-content-wrapper {
+            padding: 30px 20px;
+        }
+    }
+</style>

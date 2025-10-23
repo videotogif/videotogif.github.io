@@ -1,0 +1,72 @@
+# Site Settings
+title: "Video to GIF Converters"
+description: "브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF Converters"
+url: "https://yourdomain.com"
+baseurl: ""
+
+# SEO
+author: "Your Name"
+keywords: "video to gif, 비디오 gif 변환, 동영상 gif, gif 만들기, 로컬 gif converter"
+lang: ko-KR
+
+# Social
+twitter_username: your_twitter
+github_username: your_github
+
+# Build Settings
+markdown: kramdown
+permalink: /blog/:year/:month/:day/:title/
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Your Name"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - package.json
+  - package-lock.json
+  - vite.config.js
+  - src
+
+# SEO Tag Settings
+twitter:
+  card: summary_large_image
+  username: your_twitter
+
+logo: /assets/images/logo.png
+social:
+  name: Video to GIF
+  links:
+    - https://twitter.com/your_twitter
+    - https://github.com/your_github
+
+# Google Analytics (optional)
+# google_analytics: UA-XXXXXXXX-X
+
+# Sitemap
+sitemap:
+  exclude:
+    - /404.html

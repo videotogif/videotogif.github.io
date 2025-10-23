@@ -1,0 +1,133 @@
+---
+layout: default
+title: Video to GIF
+subtitle: "동영상 GIF 변환 서비스"
+tagline: "서버에 저장 no! 100% 사생활 보장 GIF 생성 프로그램"
+description: "Video to GIF는 브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF converter입니다. 설치 없이 안전하게 GIF 변환을 수행하고, 고화질 GIF 애니메이션을
+쉽고
+빠르게 제작하세요."
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="zif-container">
+  <!-- Hero Section -->
+  <section class="zif-hero">
+    <h1 class="zif-hero-title" data-i18n="hero.title">Video to GIF 컨버터</h1>
+    <p class="zif-hero-subtitle" data-i18n="hero.subtitle">
+      브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF 컨버터입니다.<br>
+      개인정보 유출 걱정 없이 고화질 GIF를 손쉽게 만들어보세요.
+    </p>
+  </section>
+
+  <div class="zif-app">
+    <main class="content">
+      <h1 class="sr-only">Video to GIF 변환 서비스</h1>
+      <section class="upload-section" id="uploadSection">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text" id="uploadText">비디오 파일을 선택하세요</div>
+        <div class="upload-subtext" id="uploadSubtext">클릭하거나 드래그 & 드롭으로 업로드하면 GIF가 생성됩니다.</div>
+        <input type="file" id="videoInput" accept="video/*">
+      </section>
+
+      <!-- 프리뷰 -->
+      <section class="preview-section" id="previewSection" style="display:none;">
+        <h2 class="sr-only">GIF 변환 프레임 미리보기</h2>
+        <div class="section-title">
+          <span>📸</span>
+          <span id="previewTitle">프레임 미리보기</span>
+        </div>
+        <div id="preview"></div>
+      </section>
+
+      <!-- 결과 -->
+      <section class="output-section" id="outputSection" style="display:none;">
+        <h2 class="sr-only">생성된 GIF 다운로드</h2>
+        <div class="section-title">
+          <span>✨</span>
+          <span id="outputTitle">생성된 GIF</span>
+        </div>
+        <div id="output"></div>
+        <a id="downloadLink" style="display:none;" download="output.gif">
+          <span id="downloadText">GIF 다운로드</span>
+        </a>
+
+        <!-- 고급 설정 -->
+        <div class="advanced-settings" id="advancedSettings">
+          <h2 class="sr-only">GIF 변환 고급 설정</h2>
+          <div class="advanced-settings-header" id="advancedToggle">
+            <div class="advanced-settings-title">
+              <span>⚙️</span>
+              <span id="advancedSettingsTitle">고급 설정</span>
+            </div>
+            <div class="toggle-icon" id="toggleIcon">▼</div>
+          </div>
+          <div class="advanced-content" id="advancedContent">
+            <div class="settings-grid">
+              <div class="setting-group">
+                <label for="interval" id="intervalLabel">프레임 간격 (초)</label>
+                <input type="number" id="interval" value="0.3" step="0.1">
+              </div>
+              <div class="setting-group">
+                <label for="outputWidth" id="outputWidthLabel">출력 가로 크기 (px)</label>
+                <input type="number" id="outputWidth" value="420" min="1">
+              </div>
+              <div class="setting-group">
+                <label for="quality" id="qualityLabel">품질 (1~100)</label>
+                <input type="number" id="quality" value="90" min="1" max="100">
+              </div>
+              <div class="setting-group">
+                <label for="fps" id="fpsLabel">FPS (프레임/초)</label>
+                <input type="number" id="fps" value="10" min="1" max="60">
+              </div>
+            </div>
+
+            <button id="reconvertBtn" class="convert-btn">
+              <span id="reconvertText">🔄 새 설정으로 GIF 재생성</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="zif-how-to">
+        <h2>사용 방법</h2>
+        <ol class="how-to-steps">
+          <li>
+            <strong>비디오 업로드</strong>
+            <p>변환하고 싶은 동영상 파일을 드래그 & 드롭하거나 클릭하여 선택합니다.</p>
+          </li>
+          <li>
+            <strong>프레임 확인</strong>
+            <p>자동으로 추출된 프레임을 미리보기로 확인합니다.</p>
+          </li>
+          <li>
+            <strong>설정 조정 (선택사항)</strong>
+            <p>고급 설정에서 프레임 간격, 크기, 품질, FPS를 원하는 대로 조정합니다.</p>
+          </li>
+          <li>
+            <strong>GIF 다운로드</strong>
+            <p>생성된 GIF를 확인하고 다운로드 버튼을 클릭합니다.</p>
+          </li>
+        </ol>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- 처리용 요소 -->
+<video id="video" crossorigin="anonymous"></video>
+<canvas id="canvas"></canvas>
+
+
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+<script src="{{ '/coi-serviceworker.js' | relative_url }}"></script>
+<script type="module" src="{{ '/assets/js/main.js' | relative_url }}"></script>

@@ -1,0 +1,64 @@
+---
+layout: page
+title: "블로그"
+description: "Video to GIF 변환 팁, 튜토리얼 및 업데이트 소식"
+permalink: /blog/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="blog-container">
+  <header class="blog-header">
+    <h1>블로그</h1>
+    <p class="blog-description">GIF 제작 팁, 튜토리얼, 그리고 서비스 업데이트 소식을 공유합니다.</p>
+  </header>
+
+  <div class="posts-grid">
+    {% for post in site.posts %}
+    <article class="post-card">
+      {% if post.image %}
+      <div class="post-thumbnail">
+        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}">
+      </div>
+      {% endif %}
+
+      <div class="post-content">
+        <div class="post-meta">
+          <time datetime="{{ post.date | date_to_xmlschema }}">
+            {{ post.date | date: "%Y년 %m월 %d일" }}
+          </time>
+          {% if post.category %}
+          <span class="post-category">{{ post.category }}</span>
+          {% endif %}
+        </div>
+
+        <h2 class="post-title">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h2>
+
+        {% if post.excerpt %}
+        <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 150 }}</p>
+        {% endif %}
+
+        <a href="{{ post.url | relative_url }}" class="read-more">
+          더 읽기 →
+        </a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  {% if site.posts.size == 0 %}
+  <div class="no-posts">
+    <p>아직 작성된 포스트가 없습니다. 곧 유익한 콘텐츠로 찾아뵙겠습니다!</p>
+  </div>
+  {% endif %}
+</div>

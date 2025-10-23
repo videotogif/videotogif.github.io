@@ -1,0 +1,19 @@
+current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/eventmachine-1.2.7/ext/fastfilereader
+/Users/minz/.rbenv/versions/3.3.5/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20251022-64652-q3xazx sitelibdir\=./.gem.20251022-64652-q3xazx clean
+
+current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20251022-64652-q3xazx sitelibdir\=./.gem.20251022-64652-q3xazx
+compiling mapper.cpp
+compiling rubymain.cpp
+linking shared-object fastfilereaderext.bundle
+
+current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20251022-64652-q3xazx sitelibdir\=./.gem.20251022-64652-q3xazx install
+/usr/local/bin/ginstall -c -m 0755 fastfilereaderext.bundle ./.gem.20251022-64652-q3xazx
+
+current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20251022-64652-q3xazx sitelibdir\=./.gem.20251022-64652-q3xazx clean
