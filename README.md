@@ -7,7 +7,7 @@
 > 브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF 변환기
 
 ![메인 인터페이스](https://github.com/user-attachments/assets/532f635a-1226-4d03-a5b3-6066d260cff7)
-[https://yourdomain.com](videotogif.github.io) <br> <br>
+[videotogif](videotogif.github.io) <br> <br>
 ZIF는 서버 업로드 없이 완전히 클라이언트 측에서 동작하는 동영상 GIF 변환 서비스입니다. <br>
 개인정보 보호를 최우선으로 하며, WebAssembly 기술을 활용하여 고품질 GIF를 빠르게 생성합니다.
 
