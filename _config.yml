@@ -1,19 +1,59 @@
-title: Video to GIF
-email: videotogif2025@example.com
-description: >-
-  Convert videos to high-quality GIFs directly in your browser.
-baseurl: ""
+title: "Video to GIF"
+email: "videotogif2025@example.com"
+description: "Convert videos to high-quality GIFs directly in your browser."
 url: "https://videotogif.github.io"
-github_username: videotogif
+baseurl: ""
+
+timezone: Asia/Seoul
+lang: ko-KR
+
+# 포스트 URL
+permalink: /blog/:title/
+
+# 블로그 목록 페이지네이션 (blog.html에서 paginator 사용)
+paginate: 10
+paginate_path: "/blog/page:num/"
 
 theme: minima
 
 plugins:
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-seo-tag
 
+# 기본값 (front matter 없을 때)
+defaults:
+  - scope: { path: "" }
+    values:
+      layout: page
+      lang: ko-KR
+      robots: index,follow
+  - scope: { path: "_posts" }
+    values:
+      layout: page
+      is_blog: true
+
+# SEO 보조 정보 (jekyll-seo-tag가 일부 활용)
+logo: /favicon.png
+keywords: "video to gif, 비디오 gif 변환, 동영상 gif, gif 만들기, 로컬 gif converter"
+
+social:
+  name: "Video to GIF"
+  links:
+    - https://github.com/videotogif
+    - https://videotogif.github.io
+
+# 피드 (선택)
+feed:
+  path: feed.xml
+
+# 빌드 제외
 exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
   - vendor
+  - src
+  - package.json
+  - package-lock.json
+  - vite.config.js

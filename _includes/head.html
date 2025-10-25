@@ -1,0 +1,27 @@
+<!-- _includes/head.html -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>
+    {% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}
+</title>
+
+<!-- 기본 메타 -->
+<meta name="description" content="{{ page.description | default: site.description | strip_html | truncate: 160 }}">
+<meta name="robots" content="{{ page.robots | default: 'index,follow' }}">
+<link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}">
+
+<!-- 파비콘 -->
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="icon" href="{{ '/favicon.png' | relative_url }}">
+
+<!-- 다크모드 깜빡임 방지(옵션) -->
+<script>
+    try { const t = localStorage.getItem('theme'); if (t) { document.documentElement.dataset.theme = t; } } catch (e) { }
+</script>
+
+<!-- SEO 자동 태그 (jekyll-seo-tag 플러그인 필요) -->
+{% seo %}
+
+<!-- 사이트 공용 CSS -->
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
