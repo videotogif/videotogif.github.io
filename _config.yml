@@ -16,7 +16,6 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
-  - jekyll-feed
 
 # 기본값 (front matter 없을 때)
 defaults:
@@ -29,6 +28,10 @@ defaults:
     values:
       layout: page
       is_blog: true
+
+google_site_verification: lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk
+naver_site_verification: 5bc446ed2588d2bddf6cac7b09788dc0e87bc67f
+adsense_client: ca-pub-1404060643961114
 
 # SEO 보조 정보 (jekyll-seo-tag가 일부 활용)
 logo: /favicon.png
