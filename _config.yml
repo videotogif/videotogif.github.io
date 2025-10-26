@@ -1,14 +1,10 @@
 title: "Video to GIF"
-email: "videotogif2025@example.com"
-description: "Convert videos to high-quality GIFs directly in your browser."
+description: "해킹 걱정 없이 안전하게 온라인에서 GIF 만들기. Convert videos to high-quality GIF directly in your browser."
 url: "https://videotogif.github.io"
 baseurl: ""
 
 timezone: Asia/Seoul
 lang: ko-KR
-
-# 포스트 URL
-permalink: /blog/:title/
 
 # 블로그 목록 페이지네이션 (blog.html에서 paginator 사용)
 paginate: 10
@@ -20,6 +16,7 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-feed
 
 # 기본값 (front matter 없을 때)
 defaults:
@@ -53,7 +50,6 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
-  - src
   - package.json
   - package-lock.json
   - vite.config.js
