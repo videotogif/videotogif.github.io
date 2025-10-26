@@ -4,10 +4,14 @@ url: "https://videotogif.github.io"
 baseurl: ""
 
 timezone: Asia/Seoul
-lang: ko-KR
+lang: ko-KR # HTML lang
+locale: ko_KR # Open Graph/og:locale 용
 
-# 블로그 목록 페이지네이션 (blog.html에서 paginator 사용)
-paginate: 10
+# 링크 형태 정규화
+permalink: pretty
+
+# 블로그 페이지네이션
+paginate: 9
 paginate_path: "/blog/page:num/"
 
 theme: minima
@@ -24,18 +28,26 @@ defaults:
       layout: page
       lang: ko-KR
       robots: index,follow
+      image: /assets/img/og-default.jpg
   - scope: { path: "_posts" }
     values:
-      layout: page
+      layout: post
       is_blog: true
+      robots: index,follow
+      image: /assets/img/og-default.jpg
 
+# 소유권/광고
 google_site_verification: lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk
 naver_site_verification: 5bc446ed2588d2bddf6cac7b09788dc0e87bc67f
 adsense_client: ca-pub-1404060643961114
 
-logo: /favicon.png
+# 로고/소셜 (가능하면 절대경로로)
+logo: https://videotogif.github.io/favicon.png
+
+# 키워드(참고용). jekyll-seo-tag는 description/제목/본문 발췌를 더 신뢰.
 keywords: "video to gif, 비디오 gif 변환, 동영상 gif, gif 만들기, 로컬 gif converter"
 
+# 소셜 계정
 social:
   name: "Video to GIF"
   links:
