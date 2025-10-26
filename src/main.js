@@ -1,5 +1,4 @@
 // Video to GIF Converter - Main JavaScript
-import "./style.css";
 import encode from "gifski-wasm";
 
 // -----------------------------
@@ -26,6 +25,7 @@ const translations = {
     completed: "GIF 생성 완료!",
     completedSubtext: "아래 고급 설정에서 다른 옵션으로 재생성할 수 있습니다",
     regeneratingGif: "GIF 재생성 중...",
+    processingVideo: "비디오 처리 중...",
   },
   en: {
     uploadText: "Select Video File",
@@ -47,6 +47,7 @@ const translations = {
     completedSubtext:
       "You can regenerate with different options in advanced settings below",
     regeneratingGif: "Regenerating GIF...",
+    processingVideo: "Processing video...",
   },
 };
 
@@ -124,54 +125,32 @@ ready(() => {
     advancedToggle.addEventListener("click", () => {
       const isExpanded = advancedContent.classList.toggle("expanded");
       advancedToggle.setAttribute("aria-expanded", isExpanded);
-      // toggleIcon의 회전은 CSS에서 처리 (aria-expanded 기반)
     });
   }
 
   // 드래그 앤 드롭
-  const uploadCard = uploadSection.querySelector(".upload-card");
-  if (uploadCard) {
-    uploadCard.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadCard.classList.add("dragover");
-    });
-    uploadCard.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      uploadCard.classList.remove("dragover");
-    });
-    uploadCard.addEventListener("drop", (e) => {
-      e.preventDefault();
-      uploadCard.classList.remove("dragover");
-      const files = e.dataTransfer?.files || [];
-      if (files.length > 0 && files[0].type.startsWith("video/")) {
-        handleVideoFile(files[0]);
-      }
-    });
-    uploadCard.addEventListener("click", () => {
-      videoInput?.click();
-    });
-  } else {
-    // Fallback to uploadSection if upload-card not found
-    uploadSection.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadSection.classList.add("dragover");
-    });
-    uploadSection.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      uploadSection.classList.remove("dragover");
-    });
-    uploadSection.addEventListener("drop", (e) => {
-      e.preventDefault();
-      uploadSection.classList.remove("dragover");
-      const files = e.dataTransfer?.files || [];
-      if (files.length > 0 && files[0].type.startsWith("video/")) {
-        handleVideoFile(files[0]);
-      }
-    });
-    uploadSection.addEventListener("click", () => {
-      videoInput?.click();
-    });
-  }
+  uploadSection.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadSection.classList.add("dragover");
+  });
+
+  uploadSection.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    uploadSection.classList.remove("dragover");
+  });
+
+  uploadSection.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadSection.classList.remove("dragover");
+    const files = e.dataTransfer?.files || [];
+    if (files.length > 0 && files[0].type.startsWith("video/")) {
+      handleVideoFile(files[0]);
+    }
+  });
+
+  uploadSection.addEventListener("click", () => {
+    videoInput?.click();
+  });
 
   // 파일 선택
   videoInput?.addEventListener("change", (e) => {
@@ -222,6 +201,46 @@ ready(() => {
   });
 
   // ------------ 내부 함수들 ------------
+
+  // ✅ 개선: 업로드 섹션에 로딩 상태 표시
+  function showUploadLoading(message) {
+    const uploadIcon = uploadSection.querySelector(".upload-icon");
+    const uploadText = uploadSection.querySelector(".upload-text");
+    const uploadSubtext = uploadSection.querySelector(".upload-subtext");
+
+    if (uploadIcon) uploadIcon.style.display = "none";
+    if (uploadSubtext) uploadSubtext.style.display = "none";
+
+    if (uploadText) {
+      uploadText.innerHTML = `
+        <div class="loading-indicator">
+          <div class="spinner"></div>
+          <div class="loading-text">${message}</div>
+        </div>
+      `;
+    }
+
+    uploadSection.style.pointerEvents = "none";
+    uploadSection.style.opacity = "0.7";
+  }
+
+  // ✅ 개선: 업로드 섹션 로딩 해제
+  function hideUploadLoading() {
+    const uploadIcon = uploadSection.querySelector(".upload-icon");
+    const uploadText = uploadSection.querySelector(".upload-text");
+    const uploadSubtext = uploadSection.querySelector(".upload-subtext");
+
+    if (uploadIcon) uploadIcon.style.display = "block";
+    if (uploadSubtext) uploadSubtext.style.display = "block";
+
+    if (uploadText) {
+      uploadText.textContent = translations[currentLanguage].uploadText;
+    }
+
+    uploadSection.style.pointerEvents = "auto";
+    uploadSection.style.opacity = "1";
+  }
+
   function setProgressMessage(text) {
     if (output) {
       output.innerHTML = `
@@ -239,8 +258,10 @@ ready(() => {
 
   async function handleVideoFile(file) {
     currentVideoFile = file;
-    setProgressMessage(
-      translations[currentLanguage].loadingVideo || "비디오를 로딩 중..."
+
+    // ✅ 개선: 즉시 로딩 표시
+    showUploadLoading(
+      translations[currentLanguage].processingVideo || "비디오 처리 중..."
     );
 
     // 비디오 지정
@@ -260,23 +281,41 @@ ready(() => {
     const aspect = (video.videoHeight || 1) / (video.videoWidth || 1);
     outputHeight = Math.round(outputWidth * aspect);
 
-    // 프레임 추출
-    setProgressMessage(
+    // ✅ 개선: 프레임 추출 시작 알림
+    showUploadLoading(
       translations[currentLanguage].extractingFrames || "프레임을 추출 중..."
     );
+
+    // ✅ 개선: 미리보기 섹션 먼저 표시
+    if (previewSection) {
+      previewSection.style.display = "block";
+      // 스크롤 애니메이션
+      setTimeout(() => {
+        previewSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 100);
+    }
+
+    // 프레임 추출
     frames = await extractFrames(video, defaultInterval);
 
-    // 미리보기 보이기
-    if (previewSection) previewSection.style.display = "block";
+    // ✅ 개선: 업로드 섹션 정상화
+    hideUploadLoading();
 
-    // GIF 생성
+    // ✅ 개선: GIF 생성 진행 표시
     setProgressMessage(
       translations[currentLanguage].generatingGif || "GIF 생성 중..."
     );
+
+    // 결과 섹션 표시
+    if (outputSection) outputSection.style.display = "block";
+
+    // GIF 생성
     await generateGIF(frames, defaultWidth, defaultQuality, defaultFps);
 
-    // 완료
-    if (outputSection) outputSection.style.display = "block";
+    // 완료 후 스크롤
+    setTimeout(() => {
+      outputSection?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
   }
 
   async function generateGIF(frameList, width, quality, fps) {
@@ -297,7 +336,7 @@ ready(() => {
       frames: imageDatas,
       width,
       height: canvas.height,
-      quality, // 1~100
+      quality,
       fps,
     });
 
@@ -333,6 +372,10 @@ ready(() => {
 
     if (preview) preview.innerHTML = "";
 
+    // ✅ 개선: 프레임 추출 진행 표시
+    let frameCount = 0;
+    const totalFrames = Math.ceil(duration / interval);
+
     for (let t = 0; t < duration; t += interval) {
       video.currentTime = t;
       await waitForSeek(video);
@@ -345,7 +388,18 @@ ready(() => {
         img.src = URL.createObjectURL(blob);
         img.alt = `Frame at ${t.toFixed(1)}s`;
         img.role = "listitem";
+
+        // ✅ 개선: 프레임이 추가될 때 페이드인 애니메이션
+        img.style.opacity = "0";
+        img.style.animation = "fadeIn 0.3s ease-in forwards";
+
         preview.appendChild(img);
+
+        // 진행률 업데이트
+        frameCount++;
+        showUploadLoading(
+          `${translations[currentLanguage].extractingFrames} (${frameCount}/${totalFrames})`
+        );
       }
 
       frameList.push(blob);
