@@ -388,9 +388,6 @@ ready(() => {
         img.src = URL.createObjectURL(blob);
         img.alt = `Frame at ${t.toFixed(1)}s`;
         img.role = "listitem";
-
-        // ✅ 개선: 프레임이 추가될 때 페이드인 애니메이션
-        img.style.opacity = "0";
         img.style.animation = "fadeIn 0.3s ease-in forwards";
 
         preview.appendChild(img);

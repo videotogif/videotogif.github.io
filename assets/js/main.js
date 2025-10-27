@@ -38,8 +38,8 @@ function wA(A, I, Q, w, D, C, y, U, L, k) {
     const q = R.__wbindgen_add_to_stack_pointer(-16), T = EA(A, R.__wbindgen_malloc), n = x;
     var G = S(C) ? 0 : iA(C, R.__wbindgen_malloc), i = x;
     R.encode(q, T, n, I, Q, w, S(D) ? 16777215 : D, G, i, S(y) ? 16777215 : y, !S(U), S(U) ? 0 : U, !S(L), S(L) ? 0 : L, !S(k), S(k) ? 0 : k);
-    var h = v()[q / 4 + 0], N = v()[q / 4 + 1], F = oA(h, N).slice();
-    return R.__wbindgen_free(h, N * 1, 1), F;
+    var J = v()[q / 4 + 0], N = v()[q / 4 + 1], F = oA(J, N).slice();
+    return R.__wbindgen_free(J, N * 1, 1), F;
   } finally {
     R.__wbindgen_add_to_stack_pointer(16);
   }
@@ -113,7 +113,7 @@ async function kA(A, { frames: I, width: Q, height: w, fps: D, frameDurations: C
     throw new Error("fps and frameDurations cannot be provided at the same time");
   if (C && C.length !== I.length)
     throw new Error("The number of frame durations must match the number of frames");
-  const G = I.length, i = yA(I), h = C ? new Uint32Array(C) : void 0, N = await A(i, G, Q, w, D, h, y, U, L, k);
+  const G = I.length, i = yA(I), J = C ? new Uint32Array(C) : void 0, N = await A(i, G, Q, w, D, J, y, U, L, k);
   if (!N)
     throw new Error("Encoding error.");
   return N;
@@ -122,7 +122,7 @@ async function MA(A) {
   return await RA(), kA(wA, A);
 }
 let s = localStorage.getItem("zifLanguage") || "ko";
-const J = {
+const M = {
   ko: {
     uploadText: "비디오 파일을 선택하세요",
     uploadSubtext: "클릭하거나 드래그 & 드롭으로 업로드하면 GIF가 생성됩니다.",
@@ -168,7 +168,7 @@ function JA(A) {
   document.readyState !== "loading" ? A() : document.addEventListener("DOMContentLoaded", A, { once: !0 });
 }
 function hA() {
-  const A = J[s] || J.ko, I = (Q, w) => {
+  const A = M[s] || M.ko, I = (Q, w) => {
     const D = document.getElementById(Q);
     D && (D.textContent = w);
   };
@@ -177,7 +177,7 @@ function hA() {
 JA(() => {
   hA();
   let A = 0.3, I = 420, Q = 90, w = 10, D = [], C = 420, y = 0, U = null;
-  const L = document.getElementById("videoInput"), k = document.getElementById("reconvertBtn"), G = document.getElementById("video"), i = document.getElementById("canvas"), h = document.getElementById("preview"), N = document.getElementById("output"), F = document.getElementById("downloadLink"), q = document.getElementById("interval"), T = document.getElementById("quality"), n = document.getElementById("fps"), p = document.getElementById("outputWidth"), o = document.getElementById("uploadSection"), l = document.getElementById("outputSection"), O = document.getElementById("previewSection"), m = document.getElementById("advancedToggle"), j = document.getElementById("advancedContent"), $ = document.getElementById("toggleIcon");
+  const L = document.getElementById("videoInput"), k = document.getElementById("reconvertBtn"), G = document.getElementById("video"), i = document.getElementById("canvas"), J = document.getElementById("preview"), N = document.getElementById("output"), F = document.getElementById("downloadLink"), q = document.getElementById("interval"), T = document.getElementById("quality"), n = document.getElementById("fps"), p = document.getElementById("outputWidth"), o = document.getElementById("uploadSection"), l = document.getElementById("outputSection"), O = document.getElementById("previewSection"), m = document.getElementById("advancedToggle"), j = document.getElementById("advancedContent"), $ = document.getElementById("toggleIcon");
   if (!i || !G || !o) return;
   m && j && $ && m.addEventListener("click", () => {
     const g = j.classList.toggle("expanded");
@@ -198,16 +198,16 @@ JA(() => {
   }), k?.addEventListener("click", async () => {
     if (!U) return;
     N && (N.innerHTML = ""), F && (F.style.display = "none"), r(
-      J[s].generatingGif || "GIF 생성 중..."
+      M[s].generatingGif || "GIF 생성 중..."
     );
     const g = k.innerHTML;
-    k.innerHTML = `<span class="loading-spinner"></span> ${J[s].regeneratingGif || "GIF 재생성 중..."}`, k.disabled = !0;
+    k.innerHTML = `<span class="loading-spinner"></span> ${M[s].regeneratingGif || "GIF 재생성 중..."}`, k.disabled = !0;
     const B = parseFloat(q?.value) || 0.3, E = parseInt(p?.value, 10) || 420, a = parseInt(T?.value, 10) || 90, Y = parseInt(n?.value, 10) || 10;
     if (E !== I || B !== A) {
       I = E, A = B, C = E;
       const c = (G.videoHeight || 1) / (G.videoWidth || 1);
       y = Math.round(C * c), r(
-        J[s].extractingFrames || "프레임을 추출 중..."
+        M[s].extractingFrames || "프레임을 추출 중..."
       ), D = await P(G, B);
     }
     await X(D, E, a, Y), k.innerHTML = g, k.disabled = !1;
@@ -223,7 +223,7 @@ JA(() => {
   }
   function AA() {
     const g = o.querySelector(".upload-icon"), B = o.querySelector(".upload-text"), E = o.querySelector(".upload-subtext");
-    g && (g.style.display = "block"), E && (E.style.display = "block"), B && (B.textContent = J[s].uploadText), o.style.pointerEvents = "auto", o.style.opacity = "1";
+    g && (g.style.display = "block"), E && (E.style.display = "block"), B && (B.textContent = M[s].uploadText), o.style.pointerEvents = "auto", o.style.opacity = "1";
   }
   function r(g) {
     N && (N.innerHTML = `
@@ -235,18 +235,18 @@ JA(() => {
   }
   async function e(g) {
     U = g, f(
-      J[s].processingVideo || "비디오 처리 중..."
+      M[s].processingVideo || "비디오 처리 중..."
     ), G.src = URL.createObjectURL(g), await new Promise((E) => {
       if (G.readyState >= 1) return E();
       G.addEventListener("loadedmetadata", E, { once: !0 });
     }), I = Math.min(G.videoWidth || 420, 900), C = I, p && (p.value = I);
     const B = (G.videoHeight || 1) / (G.videoWidth || 1);
     y = Math.round(C * B), f(
-      J[s].extractingFrames || "프레임을 추출 중..."
+      M[s].extractingFrames || "프레임을 추출 중..."
     ), O && (O.style.display = "block", setTimeout(() => {
       O.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 100)), D = await P(G, A), AA(), r(
-      J[s].generatingGif || "GIF 생성 중..."
+      M[s].generatingGif || "GIF 생성 중..."
     ), l && (l.style.display = "block"), await X(D, I, Q, w), setTimeout(() => {
       l?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 100);
@@ -254,8 +254,8 @@ JA(() => {
   async function X(g, B, E, a) {
     const Y = i.getContext("2d"), c = [];
     i.width = B, i.height = y;
-    for (const M of g) {
-      const BA = await gA(M);
+    for (const h of g) {
+      const BA = await gA(h);
       Y.drawImage(BA, 0, 0, B, i.height);
       const QA = Y.getImageData(0, 0, B, i.height);
       c.push(QA);
@@ -273,16 +273,16 @@ JA(() => {
     const E = i.width;
     i.width = 0, i.width = E;
     const a = i.getContext("2d"), Y = g.duration || 0, c = [];
-    i.width = C, i.height = y, h && (h.innerHTML = "");
+    i.width = C, i.height = y, J && (J.innerHTML = "");
     let Z = 0;
     const b = Math.ceil(Y / B);
     for (let K = 0; K < Y; K += B) {
       g.currentTime = K, await IA(g), a.drawImage(g, 0, 0, C, y);
-      const H = await new Promise((M) => i.toBlob(M, "image/png"));
-      if (h) {
-        const M = document.createElement("img");
-        M.src = URL.createObjectURL(H), M.alt = `Frame at ${K.toFixed(1)}s`, M.role = "listitem", M.style.opacity = "0", M.style.animation = "fadeIn 0.3s ease-in forwards", h.appendChild(M), Z++, f(
-          `${J[s].extractingFrames} (${Z}/${b})`
+      const H = await new Promise((h) => i.toBlob(h, "image/png"));
+      if (J) {
+        const h = document.createElement("img");
+        h.src = URL.createObjectURL(H), h.alt = `Frame at ${K.toFixed(1)}s`, h.role = "listitem", h.style.animation = "fadeIn 0.3s ease-in forwards", J.appendChild(h), Z++, f(
+          `${M[s].extractingFrames} (${Z}/${b})`
         );
       }
       c.push(H);
