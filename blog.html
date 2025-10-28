@@ -28,7 +28,8 @@ permalink: /blog/
     <article class="post-card">
       {% if post.image %}
       <div class="post-thumbnail">
-        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}">
+        <img src="{{ post.image | default: '/assets/img/og-default.jpg' | relative_url }}"
+          alt="{{ post.title | escape }}">
       </div>
       {% endif %}
 
