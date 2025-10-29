@@ -1,0 +1,104 @@
+<!-- _includes/comments.html -->
+<section id="comments" class="comments-section">
+    <div class="comments-header">
+        <h2>💬 댓글</h2>
+        <p class="comments-description">자유롭게 의견을 나눠주세요</p>
+    </div>
+
+    <div class="comments-container">
+        <!-- Giscus 댓글 시스템 -->
+        <script src="https://giscus.app/client.js" data-repo="videotogif/videotogif.github.io"
+            data-repo-id="YOUR_REPO_ID" data-category="Comments" data-category-id="DIC_kwDOQHyums4CxKIE"
+            data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0"
+            data-input-position="top" data-theme="preferred_color_scheme" data-lang="ko" data-loading="lazy"
+            crossorigin="anonymous" async>
+            </script>
+    </div>
+
+    <style>
+        .comments-section {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .dark-mode .comments-section {
+            border-top-color: #374151;
+        }
+
+        .comments-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .comments-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .dark-mode .comments-header h2 {
+            color: #f9fafb;
+        }
+
+        .comments-description {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .dark-mode .comments-description {
+            color: #9ca3af;
+        }
+
+        .comments-container {
+            max-width: 100%;
+        }
+
+        /* Giscus 테마 전환 스크립트 */
+        .giscus-frame {
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .comments-section {
+                margin-top: 3rem;
+                padding-top: 2rem;
+            }
+
+            .comments-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    <script>
+        // 다크모드 토글 시 Giscus 테마 변경
+        function updateGiscusTheme() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            const theme = isDark ? 'dark' : 'light';
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage(
+                    { giscus: { setConfig: { theme: theme } } },
+                    'https://giscus.app'
+                );
+            }
+        }
+
+        // MutationObserver로 다크모드 변경 감지
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    updateGiscusTheme();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    </script>
+</section>
