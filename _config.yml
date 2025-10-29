@@ -20,6 +20,7 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-paginate
 
 # 기본값 (front matter 없을 때)
 defaults:
@@ -35,6 +36,7 @@ defaults:
       is_blog: true
       robots: index,follow
       image: /assets/img/og-default.jpg
+      comments: true
 
 # 소유권/광고
 google_site_verification: lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk
