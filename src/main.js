@@ -1,5 +1,8 @@
 // Video to GIF Converter - Main JavaScript
 import encode from "gifski-wasm";
+import "./style.css";
+import "./blog.css";
+import "./post.css";
 
 // -----------------------------
 // i18n (번역 리소스)
@@ -121,10 +124,37 @@ ready(() => {
   if (!canvas || !video || !uploadSection) return;
 
   // 고급 설정 토글
+  // if (advancedToggle && advancedContent && toggleIcon) {
+  //   advancedToggle.addEventListener("click", () => {
+  //     const isExpanded = advancedContent.classList.toggle("expanded");
+  //     advancedToggle.setAttribute("aria-expanded", isExpanded);
+  //   });
+  // }
+
+  // 고급 설정 토글  ← 이 블록으로 교체
   if (advancedToggle && advancedContent && toggleIcon) {
+    // 초기 상태 동기화 (페이지 진입 시)
+    const initExpanded = advancedContent.classList.contains("expanded");
+    advancedToggle.setAttribute("aria-expanded", String(initExpanded));
+    toggleIcon.classList.toggle("rotated", initExpanded);
+    toggleIcon.textContent = initExpanded ? "▲" : "▼";
+
     advancedToggle.addEventListener("click", () => {
       const isExpanded = advancedContent.classList.toggle("expanded");
-      advancedToggle.setAttribute("aria-expanded", isExpanded);
+      // aria-expanded 는 문자열로 넣는게 표준적임
+      advancedToggle.setAttribute("aria-expanded", String(isExpanded));
+
+      // 아이콘 회전 + 모양 변경
+      toggleIcon.classList.toggle("rotated", isExpanded);
+      toggleIcon.textContent = isExpanded ? "▲" : "▼";
+    });
+
+    // (선택) 키보드 접근성: Enter/Space로도 토글
+    advancedToggle.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        advancedToggle.click();
+      }
     });
   }
 

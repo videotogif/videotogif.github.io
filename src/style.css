@@ -49,6 +49,7 @@ body {
   min-height: 100vh;
   margin: 0;
   transition: background 0.3s ease;
+  color: var(--text-primary);
 }
 
 main {
@@ -218,12 +219,14 @@ main {
   border: 2px solid var(--border-color);
   position: relative;
   transition: all 0.3s ease;
+  z-index: 1;
 }
 
 .setting-group:hover {
   border-color: var(--primary-green);
   box-shadow: 0 8px 25px rgba(160, 200, 120, 0.15);
   transform: translateY(-2px);
+  z-index: 10;
 }
 
 .setting-group label {
@@ -417,6 +420,7 @@ main {
 .advanced-content.expanded {
   max-height: 800px;
   padding: 25px;
+  overflow: visible;
 }
 
 canvas,
@@ -1475,4 +1479,75 @@ html {
 .dark-mode .spinner {
   border-color: var(--border-color);
   border-top-color: var(--primary-green);
+}
+
+/* Tooltip (setting-group 내부 아래쪽에 뜨도록) */
+.setting-group.tooltip {
+  position: relative; /* 기준 컨테이너 */
+}
+
+.setting-group.tooltip .tooltip-text {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);       /* 입력창 아래로 */
+  transform: translateX(-50%);
+  min-width: 180px;
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #2d3748;         /* 다크/라이트 모두 가독성 좋은 톤 */
+  color: #fff;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  z-index: 1000;
+
+  /* 기본은 숨김 */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, visibility .2s ease, transform .2s ease;
+}
+
+/* 화살표 */
+.setting-group.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #2d3748 transparent;
+}
+
+/* 마우스 올리면 보이기 */
+.setting-group.tooltip:hover .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 키보드 포커스(접근성)로도 보이기 */
+.setting-group.tooltip:focus-within .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 다크 모드일 때 색감 보정 (선택) */
+.dark-mode .setting-group.tooltip .tooltip-text {
+  background: #1f2937;
+}
+.dark-mode .setting-group.tooltip .tooltip-text::after {
+  border-color: transparent transparent #1f2937 transparent;
+}
+
+/* 좁은 화면에서 툴팁이 좌우로 넘치지 않게 */
+@media (max-width: 480px) {
+  .setting-group.tooltip .tooltip-text {
+    left: 0;
+    transform: none;
+    right: 0;
+    margin: 0 auto;
+  }
 }
