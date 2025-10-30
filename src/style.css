@@ -57,72 +57,9 @@ main {
   min-height: calc(100vh - 160px);
 }
 
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  background: var(--bg-container);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px var(--shadow-sm);
-  overflow: hidden;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.header {
-  padding: 30px;
-  text-align: center;
-  position: relative;
-}
-
-.language-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.language-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(160, 200, 120, 0.4);
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 700;
-  font-family: 'Bitcount', 'Inter', sans-serif;
-  color: var(--text-primary);
-  text-shadow: 0 2px 4px var(--shadow-sm);
-  transition: color 0.3s ease;
-}
-
-.header h3 {
-  margin: 10px 0;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-secondary);
-  transition: color 0.3s ease;
-}
-
-.tagline {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-style: italic;
-  margin: 10px 0;
-  transition: color 0.3s ease;
-}
-
 .zif-hero {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -133,20 +70,13 @@ main {
 .zif-hero-title {
   font-size: 2.5rem;
   margin-bottom: 0.75rem;
-}
-
-.zif-hero-subtitle {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: var(--text-secondary, #666);
-}
-
-.zif-hero-title {
   color: var(--text-primary);
   transition: color 0.3s ease;
 }
 
 .zif-hero-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
   color: var(--text-muted);
   transition: color 0.3s ease;
 }
@@ -538,17 +468,8 @@ video {
     grid-template-columns: 1fr;
   }
 
-  .header h1 {
-    font-size: 2rem;
-  }
-
   .content {
     padding: 25px 20px;
-  }
-
-  .language-toggle {
-    position: static;
-    margin-bottom: 20px;
   }
 
   .dark-mode-toggle {
