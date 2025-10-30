@@ -81,6 +81,52 @@
     flex-shrink: 0;
 }
 
+/* ========== Post Tags (note.com style) ========== */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.dark-mode .post-tags {
+    border-top-color: #2d3748;
+}
+
+.post-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #f7fafc;
+    color: #4a5568 !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.post-tag:hover {
+    background-color: #B0DB9C;
+    color: white !important;
+    border-color: #B0DB9C;
+    transform: translateY(-1px);
+}
+
+.dark-mode .post-tag {
+    background-color: #2d3748;
+    color: #cbd5e0 !important;
+    border-color: #4a5568;
+}
+
+.dark-mode .post-tag:hover {
+    background-color: #B0DB9C;
+    color: white !important;
+    border-color: #B0DB9C;
+}
+
 .post-hero-image {
     border-radius: 16px;
     overflow: hidden;
