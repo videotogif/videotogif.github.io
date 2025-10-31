@@ -680,40 +680,78 @@ video {
 }
 
 
-/* Mobile Menu Toggle (Optional - for hamburger menu) */
-.mobile-menu-toggle {
+/* Hamburger Menu (Mobile) */
+.hamburger-menu {
   display: none;
+  flex-direction: column;
+  gap: 5px;
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: var(--text-primary);
   cursor: pointer;
-  padding: 8px;
-  transition: color 0.3s ease;
+  padding: 10px;
+  z-index: 101;
+  transition: transform 0.3s ease;
 }
 
-.mobile-menu-toggle:hover {
-  color: var(--primary-green);
+.hamburger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-primary);
+  border-radius: 3px;
+  transition: all 0.3s ease;
 }
 
+.hamburger-menu:hover span {
+  background-color: var(--primary-green);
+}
+
+/* Hamburger Active State (X) */
+.hamburger-menu.active span:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block;
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .header-container {
+    position: relative;
   }
 
   .main-nav {
-    display: none;
-    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-container);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 4px 10px var(--shadow-sm);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
   }
 
   .main-nav.active {
-    display: block;
+    max-height: 300px;
+    opacity: 1;
   }
 
   .main-nav ul {
     flex-direction: column;
     width: 100%;
     gap: 0;
+    padding: 10px 0;
   }
 
   .main-nav li {
@@ -724,9 +762,12 @@ video {
     display: block;
     width: 100%;
     text-align: center;
-    padding: 15px;
+    padding: 15px 20px;
     border-radius: 0;
-    border-bottom: 1px solid var(--border-color);
+  }
+
+  .main-nav a:hover {
+    background: var(--bg-section-hover);
   }
 }
 

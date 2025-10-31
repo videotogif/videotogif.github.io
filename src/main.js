@@ -90,6 +90,37 @@ function updateAllTexts() {
 ready(() => {
   updateAllTexts(); // 초기 렌더
 
+  // 햄버거 메뉴 토글
+  const hamburgerMenu = document.querySelector('.hamburger-menu');
+  const mainNav = document.querySelector('.main-nav');
+
+  if (hamburgerMenu && mainNav) {
+    hamburgerMenu.addEventListener('click', () => {
+      const isActive = mainNav.classList.toggle('active');
+      hamburgerMenu.classList.toggle('active');
+      hamburgerMenu.setAttribute('aria-expanded', isActive);
+    });
+
+    // 메뉴 링크 클릭 시 메뉴 닫기
+    const navLinks = mainNav.querySelectorAll('a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        hamburgerMenu.classList.remove('active');
+        hamburgerMenu.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // 메뉴 외부 클릭 시 닫기
+    document.addEventListener('click', (e) => {
+      if (!hamburgerMenu.contains(e.target) && !mainNav.contains(e.target)) {
+        mainNav.classList.remove('active');
+        hamburgerMenu.classList.remove('active');
+        hamburgerMenu.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   // 기본값
   let defaultInterval = 0.3;
   let defaultWidth = 420;
