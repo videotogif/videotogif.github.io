@@ -144,6 +144,12 @@ ready(() => {
   const qualityInput = document.getElementById("quality");
   const fpsInput = document.getElementById("fps");
   const outputWidthInput = document.getElementById("outputWidth");
+  const overlayTextInput = document.getElementById("overlayText");
+  const textPositionInput = document.getElementById("textPosition");
+  const textSizeInput = document.getElementById("textSize");
+  const textColorInput = document.getElementById("textColor");
+  const textBgColorInput = document.getElementById("textBgColor");
+  const textBgOpacityInput = document.getElementById("textBgOpacity");
   const uploadSection = document.getElementById("uploadSection");
   const outputSection = document.getElementById("outputSection");
   const previewSection = document.getElementById("previewSection");
@@ -153,6 +159,32 @@ ready(() => {
 
   // 필수 요소 없으면 중단
   if (!canvas || !video || !uploadSection) return;
+
+  // 텍스트 설정 토글
+  const textToggle = document.getElementById("textToggle");
+  const textContent = document.getElementById("textContent");
+  const textToggleIcon = document.getElementById("textToggleIcon");
+
+  if (textToggle && textContent && textToggleIcon) {
+    const initExpanded = textContent.classList.contains("expanded");
+    textToggle.setAttribute("aria-expanded", String(initExpanded));
+    textToggleIcon.classList.toggle("rotated", initExpanded);
+    textToggleIcon.textContent = initExpanded ? "▲" : "▼";
+
+    textToggle.addEventListener("click", () => {
+      const isExpanded = textContent.classList.toggle("expanded");
+      textToggle.setAttribute("aria-expanded", String(isExpanded));
+      textToggleIcon.classList.toggle("rotated", isExpanded);
+      textToggleIcon.textContent = isExpanded ? "▲" : "▼";
+    });
+
+    textToggle.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        textToggle.click();
+      }
+    });
+  }
 
   // 고급 설정 토글
   // if (advancedToggle && advancedContent && toggleIcon) {
@@ -219,7 +251,7 @@ ready(() => {
     if (file) handleVideoFile(file);
   });
 
-  // 재생성 버튼
+  // 재생성 버튼 (고급 설정)
   reconvertBtn?.addEventListener("click", async () => {
     if (!currentVideoFile) return;
     if (output) output.innerHTML = "";
@@ -239,6 +271,13 @@ ready(() => {
     const newWidth = parseInt(outputWidthInput?.value, 10) || 420;
     const newQuality = parseInt(qualityInput?.value, 10) || 90;
     const newFps = parseInt(fpsInput?.value, 10) || 10;
+    const overlayText = overlayTextInput?.value || "";
+    const textPosition = textPositionInput?.value || "bottom";
+    const textSize = parseInt(textSizeInput?.value, 10) || 30;
+    const textColor = textColorInput?.value || "#ffffff";
+    const textBgColor = textBgColorInput?.value || "#000000";
+    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
+    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
 
     if (newWidth !== defaultWidth || newInterval !== defaultInterval) {
       defaultWidth = newWidth;
@@ -253,10 +292,49 @@ ready(() => {
       frames = await extractFrames(video, newInterval);
     }
 
-    await generateGIF(frames, newWidth, newQuality, newFps);
+    await generateGIF(frames, newWidth, newQuality, newFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
 
     reconvertBtn.innerHTML = original;
     reconvertBtn.disabled = false;
+
+    clearProgressMessage();
+  });
+
+  // 텍스트 재생성 버튼 (텍스트 설정)
+  const textReconvertBtn = document.getElementById("textReconvertBtn");
+  textReconvertBtn?.addEventListener("click", async () => {
+    if (!currentVideoFile || !frames || frames.length === 0) return;
+    if (output) output.innerHTML = "";
+    if (downloadLink) downloadLink.style.display = "none";
+
+    setProgressMessage(
+      translations[currentLanguage].generatingGif || "GIF 생성 중..."
+    );
+
+    const original = textReconvertBtn.innerHTML;
+    textReconvertBtn.innerHTML = `<span class="loading-spinner"></span> ${
+      translations[currentLanguage].regeneratingGif || "GIF 재생성 중..."
+    }`;
+    textReconvertBtn.disabled = true;
+
+    // 텍스트 설정만 가져오고, 기존 프레임과 고급 설정 유지
+    const overlayText = overlayTextInput?.value || "";
+    const textPosition = textPositionInput?.value || "bottom";
+    const textSize = parseInt(textSizeInput?.value, 10) || 30;
+    const textColor = textColorInput?.value || "#ffffff";
+    const textBgColor = textBgColorInput?.value || "#000000";
+    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
+    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
+
+    // 현재 고급 설정 값 사용
+    const currentWidth = parseInt(outputWidthInput?.value, 10) || 420;
+    const currentQuality = parseInt(qualityInput?.value, 10) || 90;
+    const currentFps = parseInt(fpsInput?.value, 10) || 10;
+
+    await generateGIF(frames, currentWidth, currentQuality, currentFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
+
+    textReconvertBtn.innerHTML = original;
+    textReconvertBtn.disabled = false;
 
     clearProgressMessage();
   });
@@ -371,7 +449,14 @@ ready(() => {
     if (outputSection) outputSection.style.display = "block";
 
     // GIF 생성
-    await generateGIF(frames, defaultWidth, defaultQuality, defaultFps);
+    const overlayText = overlayTextInput?.value || "";
+    const textPosition = textPositionInput?.value || "bottom";
+    const textSize = parseInt(textSizeInput?.value, 10) || 30;
+    const textColor = textColorInput?.value || "#ffffff";
+    const textBgColor = textBgColorInput?.value || "#000000";
+    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
+    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
+    await generateGIF(frames, defaultWidth, defaultQuality, defaultFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
 
     // 완료 후 스크롤
     setTimeout(() => {
@@ -379,16 +464,75 @@ ready(() => {
     }, 100);
   }
 
-  async function generateGIF(frameList, width, quality, fps) {
+  async function generateGIF(frameList, width, quality, fps, overlayText = "", textPosition = "bottom", textSize = 30, textColor = "#ffffff", textBgColor = "#000000", textBgOpacity = 0.6) {
     const ctx = canvas.getContext("2d");
     const imageDatas = [];
 
     canvas.width = width;
     canvas.height = outputHeight;
 
+    // 텍스트 스타일 설정
+    const fontSize = textSize; // 사용자가 지정한 크기 사용
+    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // Hex to RGB 변환 함수
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 0, g: 0, b: 0 };
+    }
+
     for (const blob of frameList) {
       const img = await blobToImage(blob);
       ctx.drawImage(img, 0, 0, width, canvas.height);
+
+      // 텍스트 오버레이 추가
+      if (overlayText && overlayText.trim() !== "") {
+        let textY;
+        const padding = fontSize * 0.8;
+
+        switch (textPosition) {
+          case "top":
+            textY = padding + fontSize / 2;
+            break;
+          case "center":
+            textY = canvas.height / 2;
+            break;
+          case "bottom":
+          default:
+            textY = canvas.height - padding;
+            break;
+        }
+
+        // 배경 박스와 외곽선 (투명도가 0보다 클 때만)
+        if (textBgOpacity > 0) {
+          const textWidth = ctx.measureText(overlayText).width;
+          const boxPadding = fontSize * 0.5;
+          const boxX = width / 2 - textWidth / 2 - boxPadding;
+          const boxY = textY - fontSize / 2 - boxPadding / 2;
+          const boxWidth = textWidth + boxPadding * 2;
+          const boxHeight = fontSize + boxPadding;
+
+          const bgRgb = hexToRgb(textBgColor);
+          ctx.fillStyle = `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${textBgOpacity})`;
+          ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+          // 텍스트 외곽선 (배경색)
+          ctx.strokeStyle = textBgColor;
+          ctx.lineWidth = fontSize / 8;
+          ctx.strokeText(overlayText, width / 2, textY);
+        }
+
+        // 텍스트 (사용자 지정 색상)
+        ctx.fillStyle = textColor;
+        ctx.fillText(overlayText, width / 2, textY);
+      }
+
       const imageData = ctx.getImageData(0, 0, width, canvas.height);
       imageDatas.push(imageData);
     }

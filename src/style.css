@@ -168,7 +168,8 @@ main {
   transition: color 0.3s ease;
 }
 
-.setting-group input {
+.setting-group input,
+.setting-group select {
   width: 100%;
   padding: 15px;
   border: 2px solid var(--border-color);
@@ -180,10 +181,39 @@ main {
   font-weight: 500;
 }
 
-.setting-group input:focus {
+.setting-group input:focus,
+.setting-group select:focus {
   outline: none;
   border-color: var(--primary-green);
   box-shadow: 0 0 0 4px rgba(160, 200, 120, 0.1);
+}
+
+.setting-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%234a5568' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  padding-right: 45px;
+}
+
+.dark-mode .setting-group select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23f7fafc' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.setting-group input[type="color"] {
+  height: 50px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.setting-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.setting-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 8px;
 }
 
 .convert-btn {
