@@ -1,11 +1,57 @@
 ---
 layout: default
-title: Video to GIF
-subtitle: 무료 동영상 GIF 변환 서비스
-tagline: 서버에 저장 no! 100% 사생활 보장 GIF 생성 프로그램
-description: Video to GIF는 브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF converter입니다. 설치 없이 안전하게 GIF 변환을 수행하고, 고화질 GIF
-애니메이션을쉽고 빠르게 제작하세요."
+title: 무료 동영상 GIF 변환 | Video to GIF
+description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브라우저에서 바로 사용. 100% 로컬 처리로 개인정보 안전. 모바일 지원.
 ---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Video to GIF",
+  "applicationCategory": "MultimediaApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "operatingSystem": "Web Browser",
+  "description": "동영상을 GIF로 무료 변환. 회원가입·설치 없이 브라우저에서 바로 사용. 100% 로컬 처리로 개인정보 안전.",
+  "url": "https://videotogif.github.io/",
+  "featureList": "동영상 업로드, 프레임 추출, 해상도 조정, GIF 다운로드, 텍스트 추가, 로컬 처리",
+  "screenshot": "https://videotogif.github.io/assets/img/og-default.jpg"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "동영상을 GIF로 변환하는 방법",
+  "description": "Video to GIF를 사용하여 동영상을 GIF로 변환하는 단계별 가이드",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "비디오 업로드",
+      "text": "변환하고 싶은 동영상 파일을 드래그 & 드롭하거나 클릭하여 선택합니다."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "프레임 확인",
+      "text": "자동으로 추출된 프레임을 미리보기로 확인합니다."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "설정 조정",
+      "text": "고급 설정에서 프레임 간격, 크기, 품질, FPS를 원하는 대로 조정합니다."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "GIF 다운로드",
+      "text": "생성된 GIF를 확인하고 다운로드 버튼을 클릭합니다."
+    }
+  ]
+}
+</script>
 
 <script>
   (function () {
@@ -113,12 +159,10 @@ description: Video to GIF는 브라우저에서 100% 로컬로 동작하는 프�
                 <input type="text" id="overlayText" placeholder="GIF에 표시할 텍스트 입력">
               </div>
               <div class="setting-group">
-                <label for="textPosition" id="textPositionLabel">텍스트 위치</label>
-                <select id="textPosition">
-                  <option value="top">상단</option>
-                  <option value="center">중앙</option>
-                  <option value="bottom" selected>하단</option>
-                </select>
+                <label id="textPositionLabel">텍스트 위치</label>
+                <div class="text-position-hint">
+                  <span>💡 생성된 GIF에서 텍스트를 드래그하여 위치를 조정하세요</span>
+                </div>
               </div>
               <div class="setting-group">
                 <label for="textSize" id="textSizeLabel">텍스트 크기 (px)</label>
