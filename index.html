@@ -194,22 +194,120 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
         <ol class="how-to-steps">
           <li>
             <strong>비디오 업로드</strong>
-            <p>변환하고 싶은 동영상 파일을 드래그 & 드롭하거나 클릭하여 선택합니다.</p>
+            <p>변환하고 싶은 동영상 파일을 드래그 & 드롭하거나 클릭하여 선택합니다. MP4, MOV, AVI, WebM 등 대부분의 동영상 포맷을 지원합니다.</p>
           </li>
           <li>
             <strong>프레임 확인</strong>
-            <p>자동으로 추출된 프레임을 미리보기로 확인합니다.</p>
+            <p>자동으로 추출된 프레임을 미리보기로 확인합니다. 프레임 스트립 UI를 통해 어떤 장면들이 포함될지 한눈에 파악할 수 있습니다.</p>
           </li>
           <li>
             <strong>설정 조정 (선택사항)</strong>
-            <p>고급 설정에서 프레임 간격, 크기, 품질, FPS를 원하는 대로 조정합니다. <br />가로 크기는 최대 900px까지만 지원합니다.</p>
-            <p>텍스트 추가를 통해 GIF에 워터마크를 남기거나 개성을 더할 수 있습니다.</p>
+            <p>고급 설정에서 프레임 간격, 크기, 품질, FPS를 원하는 대로 조정합니다. 가로 크기는 최대 900px까지 지원하며, 파일 크기와 품질의 균형을 맞춰 최적화할 수 있습니다.</p>
+            <p>텍스트 추가를 통해 GIF에 워터마크를 남기거나 개성을 더할 수 있습니다. 드래그로 텍스트 위치를 자유롭게 조정 가능합니다.</p>
           </li>
           <li>
             <strong>GIF 다운로드</strong>
-            <p>생성된 GIF를 확인하고 다운로드 버튼을 클릭합니다.</p>
+            <p>생성된 GIF를 확인하고 다운로드 버튼을 클릭합니다. 모든 처리가 브라우저에서 이루어지므로 개인정보가 안전하게 보호됩니다.</p>
           </li>
         </ol>
+      </section>
+
+      <!-- 주요 기능 섹션 -->
+      <section class="zif-features">
+        <h2>주요 기능</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>100% 로컬 처리</h3>
+            <p>서버 업로드 없이 브라우저에서 직접 변환. 개인정보와 파일이 외부로 전송되지 않아 완벽한 프라이버시 보장</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>빠른 변환 속도</h3>
+            <p>WebAssembly 기반 고성능 처리. 서버 업로드/다운로드 시간 없이 즉시 변환하여 시간 절약</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>세밀한 품질 제어</h3>
+            <p>프레임 간격, 해상도, 품질, FPS를 자유롭게 조정. SNS, 블로그, 문서 등 용도에 맞게 최적화 가능</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>모바일 완벽 지원</h3>
+            <p>PC, 태블릿, 스마트폰에서 동일한 경험. 언제 어디서나 동영상을 GIF로 변환</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💎</div>
+            <h3>고화질 GIF 생성</h3>
+            <p>gifski 라이브러리 기반 최고 품질의 GIF. 선명하고 자연스러운 애니메이션 제공</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">✏️</div>
+            <h3>텍스트 오버레이</h3>
+            <p>GIF에 텍스트 추가 및 위치 조정. 워터마크, 자막, 설명 등 다양한 용도로 활용</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ 간단 버전 -->
+      <section class="zif-faq-preview">
+        <h2>자주 묻는 질문</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>어떤 동영상 포맷을 지원하나요?</summary>
+            <p>MP4, MOV, AVI, WebM, MKV 등 브라우저에서 재생 가능한 대부분의 동영상 포맷을 지원합니다. HTML5 Video API를 사용하므로 브라우저가 지원하는 모든 코덱을 사용할 수 있습니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>파일 크기 제한이 있나요?</summary>
+            <p>서버 업로드가 아닌 브라우저 메모리에서 처리되므로, 사용 중인 기기의 메모리 용량에 따라 다릅니다. 일반적으로 100MB 이하의 동영상은 문제없이 처리됩니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>내 파일이 서버에 저장되나요?</summary>
+            <p>아니요, 절대 저장되지 않습니다. 모든 변환 작업은 사용자의 브라우저에서만 이루어지며, 파일이 외부로 전송되거나 서버에 업로드되지 않습니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>GIF 파일 크기가 너무 큰데 어떻게 줄이나요?</summary>
+            <p>프레임 간격을 늘리거나(예: 0.1초 → 0.3초), 출력 크기를 줄이거나(예: 720px → 480px), FPS를 낮추면(예: 30fps → 15fps) 파일 크기를 효과적으로 줄일 수 있습니다.</p>
+          </details>
+          <details class="faq-item">
+            <summary>모바일에서도 사용할 수 있나요?</summary>
+            <p>네, 모바일 브라우저에서도 완벽하게 작동합니다. 다만 대용량 파일의 경우 모바일 기기의 메모리 제한으로 처리가 어려울 수 있습니다.</p>
+          </details>
+        </div>
+        <div class="faq-cta">
+          <a href="/faq/" class="faq-link">더 많은 질문 보기 →</a>
+        </div>
+      </section>
+
+      <!-- 활용 사례 섹션 -->
+      <section class="zif-use-cases">
+        <h2>이런 용도로 활용하세요</h2>
+        <div class="use-cases-grid">
+          <div class="use-case-card">
+            <h3>📝 블로그 & 포스팅</h3>
+            <p>글로 설명하기 어려운 내용을 GIF로 쉽게 전달. 튜토리얼, 리뷰, 가이드 작성 시 필수</p>
+          </div>
+          <div class="use-case-card">
+            <h3>💬 SNS & 메신저</h3>
+            <p>재미있는 순간을 GIF로 캡처하여 공유. 인스타그램, 트위터, 카톡에서 눈길을 사로잡는 콘텐츠 제작</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🎓 교육 & 발표</h3>
+            <p>강의 자료, 프레젠테이션에 동적인 요소 추가. 복잡한 프로세스를 단계별로 시각화</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🐛 버그 리포트</h3>
+            <p>소프트웨어 버그를 GIF로 재현하여 개발자에게 전달. 이슈 트래킹 시스템에 첨부하기 최적</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🎨 포트폴리오</h3>
+            <p>디자이너, 개발자의 작업물을 동적으로 표현. 웹사이트, 앱 UI/UX를 생동감 있게 전달</p>
+          </div>
+          <div class="use-case-card">
+            <h3>📊 데이터 시각화</h3>
+            <p>변화하는 데이터, 프로세스를 애니메이션으로 표현. 보고서, 대시보드에 활용</p>
+          </div>
+        </div>
       </section>
 
     </main>

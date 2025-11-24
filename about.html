@@ -89,18 +89,87 @@ permalink: /about/
   </section>
 
   <section class="content-section">
-    <h2>기술 스택</h2>
+    <h2>기술 스택 및 작동 원리</h2>
     <p>
-      Video to GIF converter는 최신 웹 기술을 활용하여 구축되었습니다:
+      Video to GIF converter는 최신 웹 기술을 활용하여 브라우저에서 네이티브 앱 수준의 성능을 제공합니다. 다음은 주요 기술 스택과 각각의 역할입니다:
     </p>
     <ul class="tech-list">
-      <li><strong>WebAssembly (WASM)</strong> - 고성능 GIF 인코딩</li>
-      <li><strong>gifski-wasm</strong> - 고품질 GIF 생성 라이브러리</li>
-      <li><strong>Canvas API</strong> - 비디오 프레임 추출 및 처리</li>
-      <li><strong>HTML5 Video API</strong> - 비디오 재생 및 시간 제어</li>
-      <li><strong>Service Worker</strong> - Cross-Origin Isolation 지원</li>
-      <li><strong>Jekyll</strong> - 정적 사이트 생성</li>
+      <li><strong>WebAssembly (WASM)</strong> - C/Rust로 작성된 고성능 코드를 브라우저에서 실행. 네이티브에 가까운 속도로 GIF 인코딩을 수행하며, JavaScript보다 10-20배 빠른 처리 속도를 제공합니다.</li>
+      <li><strong>gifski-wasm</strong> - Rust로 작성된 최고 품질의 GIF 생성 라이브러리를 WebAssembly로 컴파일. 팔레트 최적화 알고리즘을 통해 선명하고 자연스러운 색상 표현이 가능합니다.</li>
+      <li><strong>Canvas API</strong> - 동영상에서 프레임을 추출하고 크기를 조정. 각 프레임을 이미지 데이터로 변환하여 GIF 인코더에 전달합니다.</li>
+      <li><strong>HTML5 Video API</strong> - 동영상 재생을 제어하고 특정 시간대의 프레임을 정확히 추출. seekTime()과 currentTime 속성을 활용합니다.</li>
+      <li><strong>Service Worker</strong> - Cross-Origin Isolation 환경을 제공하여 SharedArrayBuffer 사용 가능. 멀티스레드 처리로 변환 성능을 향상시킵니다.</li>
+      <li><strong>Jekyll</strong> - 정적 사이트 생성 프레임워크. GitHub Pages에서 무료 호스팅이 가능하며 빠른 로딩 속도를 제공합니다.</li>
     </ul>
+
+    <h3 style="margin-top: 40px; color: var(--text-primary); font-size: 1.5rem;">변환 프로세스</h3>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li><strong>동영상 로드</strong> - 사용자가 선택한 파일을 FileReader API로 읽어 Video 엘리먼트에 로드합니다.</li>
+      <li><strong>프레임 추출</strong> - 설정된 간격(예: 0.3초)마다 Canvas에 프레임을 그리고 이미지 데이터로 변환합니다.</li>
+      <li><strong>크기 조정</strong> - 각 프레임을 사용자가 지정한 출력 크기로 리샘플링합니다. Lanczos 알고리즘을 사용하여 고품질 스케일링을 수행합니다.</li>
+      <li><strong>GIF 인코딩</strong> - gifski 라이브러리가 프레임들을 최적의 팔레트로 양자화하고 GIF 포맷으로 인코딩합니다.</li>
+      <li><strong>다운로드</strong> - 생성된 GIF를 Blob으로 변환하고 다운로드 링크를 생성합니다.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>다른 서비스와의 비교</h2>
+    <div class="comparison-table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>기능</th>
+            <th>Video to GIF</th>
+            <th>일반적인 온라인 변환기</th>
+            <th>데스크톱 소프트웨어</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>프라이버시</td>
+            <td>✅ 완벽 (로컬 처리)</td>
+            <td>⚠️ 서버 업로드 필요</td>
+            <td>✅ 로컬 처리</td>
+          </tr>
+          <tr>
+            <td>변환 속도</td>
+            <td>✅ 매우 빠름 (업로드 불필요)</td>
+            <td>⚠️ 느림 (네트워크 의존)</td>
+            <td>✅ 빠름</td>
+          </tr>
+          <tr>
+            <td>설치 필요</td>
+            <td>✅ 불필요 (브라우저만)</td>
+            <td>✅ 불필요</td>
+            <td>❌ 필요</td>
+          </tr>
+          <tr>
+            <td>비용</td>
+            <td>✅ 완전 무료</td>
+            <td>⚠️ 제한적 무료/유료</td>
+            <td>⚠️ 대부분 유료</td>
+          </tr>
+          <tr>
+            <td>품질 제어</td>
+            <td>✅ 세밀한 조정</td>
+            <td>⚠️ 제한적</td>
+            <td>✅ 전문적 제어</td>
+          </tr>
+          <tr>
+            <td>모바일 지원</td>
+            <td>✅ 완벽 지원</td>
+            <td>✅ 지원</td>
+            <td>❌ 미지원</td>
+          </tr>
+          <tr>
+            <td>파일 크기 제한</td>
+            <td>⚠️ 기기 메모리 의존</td>
+            <td>❌ 엄격한 제한</td>
+            <td>✅ 제한 없음</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="content-section">

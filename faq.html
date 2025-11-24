@@ -1,0 +1,252 @@
+---
+layout: default
+title: "자주 묻는 질문 (FAQ) | Video to GIF"
+description: "Video to GIF 변환기에 대한 자주 묻는 질문과 답변. 파일 포맷, 크기 제한, 프라이버시, 사용법, 문제 해결 방법 등을 상세히 안내합니다."
+permalink: /faq/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">자주 묻는 질문 (FAQ)</h1>
+    <p class="page-subtitle">Video to GIF 사용에 대한 모든 궁금증을 해결해드립니다</p>
+  </header>
+
+  <!-- 기본 사용 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">기본 사용</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>어떤 동영상 포맷을 지원하나요?</summary>
+        <p>MP4, MOV, AVI, WebM, MKV 등 브라우저에서 재생 가능한 대부분의 동영상 포맷을 지원합니다. HTML5 Video API를 사용하므로 브라우저가 지원하는 모든 코덱을 사용할 수
+          있습니다. 일반적으로 H.264/H.265 코덱의 MP4, VP8/VP9 코덱의 WebM 파일이 가장 잘 작동합니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>파일 크기 제한이 있나요?</summary>
+        <p>서버 업로드가 아닌 브라우저 메모리에서 처리되므로, 사용 중인 기기의 메모리 용량에 따라 다릅니다. 일반적으로 PC에서는 500MB 이하, 모바일에서는 100MB 이하의 동영상을 권장합니다.
+          메모리가 부족한 경우 브라우저가 느려지거나 멈출 수 있습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>내 파일이 서버에 저장되나요?</summary>
+        <p>아니요, 절대 저장되지 않습니다. 모든 변환 작업은 사용자의 브라우저에서만 이루어지며, 파일이 외부로 전송되거나 서버에 업로드되지 않습니다. 페이지를 닫으면 모든 데이터가 즉시 삭제됩니다. 이것이
+          Video to GIF의 가장 큰 장점입니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>GIF 변환에 시간이 얼마나 걸리나요?</summary>
+        <p>동영상 길이, 설정한 품질, 기기 성능에 따라 다릅니다. 일반적으로 10초 분량의 동영상을 기본 설정으로 변환할 경우 10-30초 정도 소요됩니다. WebAssembly를 사용하여 빠른 처리
+          속도를 제공하지만, 고해상도 · 고품질 설정 시에는 더 오래 걸릴 수 있습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>모바일에서도 사용할 수 있나요?</summary>
+        <p>네, 모바일 브라우저(Chrome, Safari)에서도 완벽하게 작동합니다. 다만 대용량 파일의 경우 모바일 기기의 메모리 제한으로 처리가 어려울 수 있으며, 변환 시간이 PC보다 더 오래 걸릴
+          수 있습니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- GIF 품질 및 최적화 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">GIF 품질 및 최적화</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>GIF 파일 크기가 너무 큰데 어떻게 줄이나요?</summary>
+        <p>다음 방법들을 시도해보세요:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li><strong>프레임 간격 늘리기</strong> - 0.1초 → 0.3초로 변경하면 프레임 수가 1/3로 줄어듭니다</li>
+          <li><strong>출력 크기 줄이기</strong> - 720px → 480px로 변경하면 파일 크기가 약 40% 감소합니다</li>
+          <li><strong>FPS 낮추기</strong> - 30fps → 15fps로 변경하면 파일 크기가 절반으로 줄어듭니다</li>
+          <li><strong>품질 낮추기</strong> - 90 → 70으로 변경하면 약 20-30% 크기가 감소합니다</li>
+        </ul>
+        <p style="margin-top: 10px;">일반적으로 SNS 업로드용은 480px, 10fps, 품질 70-80 정도가 적당합니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>GIF 화질이 왜 원본 동영상보다 나쁜가요?</summary>
+        <p>GIF 포맷은 256색으로 제한되어 있어 원본 동영상(1600만 색)보다 색상 표현 범위가 좁습니다. 하지만 Video to GIF는 gifski 라이브러리를 사용하여 최적의 팔레트를 선택하므로,
+          다른 변환 도구보다 훨씬 선명한 결과물을 제공합니다. 품질 설정을 90-100으로 높이면 더 나은 화질을 얻을 수 있습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>최적의 GIF 설정은 무엇인가요?</summary>
+        <p>용도에 따라 권장 설정이 다릅니다:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li><strong>SNS/메신저</strong> - 480px, 0.2-0.3초 간격, 15fps, 품질 70-80</li>
+          <li><strong>블로그/문서</strong> - 600px, 0.2초 간격, 20fps, 품질 80-90</li>
+          <li><strong>고품질 포트폴리오</strong> - 900px, 0.1초 간격, 30fps, 품질 90-100</li>
+          <li><strong>튜토리얼/버그 리포트</strong> - 720px, 0.3초 간격, 10-15fps, 품질 75-85</li>
+        </ul>
+      </details>
+
+      <details class="faq-item">
+        <summary>GIF에 텍스트를 추가할 수 있나요?</summary>
+        <p>네, 텍스트 설정 메뉴에서 GIF에 텍스트를 추가할 수 있습니다. 텍스트 내용, 크기, 색상, 배경색, 투명도를 조정할 수 있으며, 생성된 GIF에서 드래그하여 위치를 자유롭게 변경할 수
+          있습니다. 워터마크, 자막, 설명 등 다양한 용도로 활용 가능합니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>GIF 길이는 얼마나 되어야 하나요?</summary>
+        <p>일반적으로 2-10초 길이가 가장 이상적입니다. 짧은 GIF는 반복 재생 시 더 자연스럽고, 파일 크기도 작아 웹에서 빠르게 로드됩니다. 10초 이상의 긴 GIF는 파일 크기가 커져 로딩이 느려질
+          수 있으므로, 꼭 필요한 부분만 잘라서 변환하는 것을 권장합니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 프라이버시 및 보안 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">프라이버시 및 보안</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>정말 파일이 업로드되지 않는 게 확실한가요?</summary>
+        <p>100% 확실합니다. 브라우저 개발자 도구의 네트워크 탭을 열어 확인하실 수 있습니다. Video to GIF는 순수하게 JavaScript와 WebAssembly만 사용하며, 파일 데이터를
+          외부로 전송하는 코드가 전혀 없습니다. 모든 코드는 GitHub에 공개되어 있어 투명하게 검증할 수 있습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>회사 내부 자료를 변환해도 안전한가요?</summary>
+        <p>네, 완전히 안전합니다. 파일이 서버로 전송되지 않으므로 기밀 자료, 회사 내부 문서, 민감한 개인 영상 등을 안심하고 변환할 수 있습니다. 많은 개발자들이 버그 리포트나 사내 문서 작성 시
+          Video to GIF를 사용하는 이유입니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>변환 이력이 남나요?</summary>
+        <p>아니요, 어떠한 이력도 남지 않습니다. 쿠키나 로컬 스토리지에 변환 기록을 저장하지 않으며, 다크모드 설정 등 UI 환경설정만 저장됩니다. 파일 이름, 크기, 변환 시간 등 어떤 정보도 수집하지
+          않습니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 기술 및 브라우저 지원 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">기술 및 브라우저 지원</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>어떤 브라우저를 지원하나요?</summary>
+        <p>WebAssembly와 HTML5 Video API를 지원하는 최신 브라우저에서 작동합니다:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li>Chrome/Edge 90 이상</li>
+          <li>Firefox 88 이상</li>
+          <li>Safari 14 이상</li>
+          <li>Opera 76 이상</li>
+        </ul>
+        <p style="margin-top: 10px;">구형 브라우저(IE11 등)는 지원하지 않습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>인터넷 연결이 필요한가요?</summary>
+        <p>최초 페이지 로드 시에만 인터넷 연결이 필요합니다. 페이지가 로드된 후에는 오프라인에서도 GIF 변환이 가능합니다. Service Worker를 활용하면 완전한 오프라인 사용도 가능하지만, 현재는
+          구현되어 있지 않습니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>WebAssembly가 무엇인가요?</summary>
+        <p>WebAssembly(WASM)는 웹 브라우저에서 네이티브 코드 수준의 성능을 제공하는 기술입니다. C, C++, Rust 등으로 작성된 코드를 브라우저에서 실행할 수 있게 해주며,
+          JavaScript보다 10-20배 빠른 성능을 제공합니다. Video to GIF는 Rust로 작성된 gifski 라이브러리를 WebAssembly로 컴파일하여 사용합니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>브라우저 확장 프로그램이 필요한가요?</summary>
+        <p>아니요, 브라우저만 있으면 바로 사용할 수 있습니다. 별도의 플러그인이나 확장 프로그램 설치가 필요하지 않습니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 문제 해결 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">문제 해결</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>변환이 중간에 멈추는데 어떻게 해야 하나요?</summary>
+        <p>다음 방법들을 시도해보세요:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li>브라우저 탭을 새로고침하고 다시 시도</li>
+          <li>다른 브라우저 탭/창을 모두 닫아 메모리 확보</li>
+          <li>파일 크기를 줄이거나 동영상 길이를 짧게 자르기</li>
+          <li>출력 크기와 FPS를 낮추기</li>
+          <li>Chrome의 경우 작업 관리자(Shift+Esc)에서 메모리 사용량 확인</li>
+        </ul>
+      </details>
+
+      <details class="faq-item">
+        <summary>"메모리 부족" 오류가 발생합니다</summary>
+        <p>브라우저가 사용 가능한 메모리를 모두 소진한 상태입니다. 다음 조치를 취하세요:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li>다른 탭과 프로그램 닫기</li>
+          <li>동영상 길이를 5-10초로 짧게 자르기</li>
+          <li>출력 크기를 480px 이하로 낮추기</li>
+          <li>프레임 간격을 0.5초 이상으로 늘리기</li>
+          <li>브라우저를 완전히 종료하고 다시 시작</li>
+        </ul>
+      </details>
+
+      <details class="faq-item">
+        <summary>동영상 파일을 업로드할 수 없습니다</summary>
+        <p>다음 사항을 확인해보세요:</p>
+        <ul style="margin-top: 10px; padding-left: 25px;">
+          <li>파일 포맷이 지원되는지 확인 (MP4, MOV, WebM 등)</li>
+          <li>파일이 손상되지 않았는지 다른 플레이어에서 재생 확인</li>
+          <li>파일 크기가 너무 크지 않은지 확인 (500MB 이하 권장)</li>
+          <li>브라우저 버전이 최신인지 확인</li>
+        </ul>
+      </details>
+
+      <details class="faq-item">
+        <summary>GIF가 예상과 다르게 나왔어요</summary>
+        <p>설정을 조정하여 재생성해보세요. "고급 설정" 메뉴에서 프레임 간격, 크기, 품질, FPS를 변경한 후 "새 설정으로 GIF 재생성" 버튼을 클릭하면 빠르게 다시 만들 수 있습니다. 여러 설정을
+          실험하면서 원하는 결과를 찾아보세요.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 기타 -->
+  <section class="content-section faq-category">
+    <h2 class="faq-category-title">기타</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>비용이 정말 무료인가요?</summary>
+        <p>네, 완전히 무료입니다. 숨겨진 비용이나 프리미엄 기능이 없으며, 광고도 없습니다. 서버 비용이 들지 않아 무료로 서비스를 제공할 수 있습니다. GitHub Pages에서 무료 호스팅되며,
+          오픈소스 프로젝트입니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>상업적으로 사용해도 되나요?</summary>
+        <p>네, 자유롭게 사용하실 수 있습니다. Video to GIF로 만든 GIF는 제한 없이 상업적으로 사용 가능합니다. 단, 원본 동영상의 저작권은 사용자에게 있으므로, 저작권에 유의하여 사용하시기
+          바랍니다.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>오픈소스인가요?</summary>
+        <p>네, Video to GIF는 GitHub에서 오픈소스로 공개되어 있습니다. 코드를 자유롭게 확인하고 기여할 수 있으며, MIT 라이선스를 따릅니다. 투명성과 보안을 중요시하는 프로젝트입니다.
+        </p>
+      </details>
+
+      <details class="faq-item">
+        <summary>피드백이나 버그를 어디에 보고하나요?</summary>
+        <p>이메일, 혹은 Blog 댓글, 어디든 좋습니다. 의견을 적극 반영하여 서비스를 개선하고 있습니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="content-section cta-section" style="margin-top: 60px;">
+    <h2>더 궁금한 점이 있으신가요?</h2>
+    <p>FAQ에서 답을 찾지 못하셨다면 이메일로 질문을 남겨주세요.</p>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+      <a href="{{ '/' | relative_url }}" class="start-button">GIF 변환 시작하기 →</a>
+      <a href="{{ '/blog/' | relative_url }}" class="start-button"
+        style="background: var(--bg-section); color: var(--text-primary); border: 2px solid var(--border-color);">블로그
+        보기</a>
+    </div>
+  </section>
+</div>
