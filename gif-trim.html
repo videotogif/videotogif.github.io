@@ -1,0 +1,78 @@
+---
+layout: default
+title: "GIF 자르기 - Video to GIF"
+description: "이미 생성된 GIF 파일을 원하는 구간만 잘라서 저장하세요. 빠르고 간편한 온라인 GIF 편집 도구."
+permalink: /gif-trim/
+---
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">GIF 자르기</h1>
+    <p class="page-subtitle">GIF 파일을 업로드하여 원하는 구간만 잘라보세요</p>
+  </header>
+
+  <div class="content-section">
+    <section class="upload-section" id="gifUploadSection">
+      <div class="upload-icon">📎</div>
+      <div class="upload-text" id="gifUploadText">GIF 파일을 선택하세요</div>
+      <div class="upload-subtext" id="gifUploadSubtext">클릭하거나 드래그 & 드롭으로 GIF 파일을 업로드하세요</div>
+      <br>
+      <input type="file" id="gifInput" accept="image/gif">
+    </section>
+
+    <!-- 결과 -->
+    <section class="output-section" id="trimOutputSection" style="display:none;">
+      <h2 class="sr-only">GIF 미리보기</h2>
+      <div class="section-title">
+        <span>✨</span>
+        <span>GIF 미리보기</span>
+      </div>
+      <div id="trimOutput"></div>
+
+      <!-- GIF 자르기 슬라이더 -->
+      <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+        <!-- 타임라인 슬라이더 with 프레임 썸네일 배경 -->
+        <div class="trim-timeline">
+          <div class="trim-timeline-track" id="trimTrack">
+            <!-- 프레임 썸네일 배경 레이어 -->
+            <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
+
+            <div class="trim-timeline-selected" id="trimSelected"></div>
+            <div class="trim-handle trim-handle-start" id="trimHandleStart">
+              <div class="trim-handle-line"></div>
+            </div>
+            <div class="trim-handle trim-handle-end" id="trimHandleEnd">
+              <div class="trim-handle-line"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 영상 길이 정보 -->
+        <div class="trim-info-row">
+          <div class="trim-info-item">
+            <label>원본 길이:</label>
+            <span id="originalDuration" class="duration-value">0.0초</span>
+          </div>
+          <div class="trim-info-item trim-separator">→</div>
+          <div class="trim-info-item">
+            <label>잘라낸 길이:</label>
+            <span id="trimmedDuration" class="duration-value highlight">0.0초</span>
+          </div>
+        </div>
+
+        <!-- GIF 생성 버튼 -->
+        <button id="generateTrimmedGifBtn" class="convert-btn">
+          <span>✂️ 선택한 구간으로 GIF 자르기</span>
+        </button>
+      </div>
+
+      <a id="trimDownloadLink" style="display:none;" download="trimmed.gif">
+        <span>GIF 다운로드</span>
+      </a>
+    </section>
+  </div>
+</div>
+
+<canvas id="trimCanvas" style="display:none;"></canvas>
+
+<script type="module" src="{{ '/assets/js/gif-trim.js' | relative_url }}"></script>

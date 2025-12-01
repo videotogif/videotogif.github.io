@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/jekyll/jekyll-sass-converter".freeze
   s.licenses = ["MIT".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
-  s.rubygems_version = "3.3.27".freeze
+  s.rubygems_version = "3.5.3".freeze
   s.summary = "A basic Sass converter for Jekyll.".freeze
 
-  s.installed_by_version = "3.7.2".freeze
+  s.installed_by_version = "3.5.3".freeze if s.respond_to? :installed_by_version
 
   s.specification_version = 4
 

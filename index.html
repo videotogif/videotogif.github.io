@@ -63,34 +63,22 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
   })();
 </script>
 
-<div class="zif-container">
-  <!-- Hero Section -->
-  <section class="zif-hero">
-    <h1 class="zif-hero-title" data-i18n="hero.title">Video to GIF 컨버터</h1>
-    <p class="zif-hero-subtitle" data-i18n="hero.subtitle">
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title" data-i18n="hero.title">Video to GIF 컨버터</h1>
+    <p class="page-subtitle" data-i18n="hero.subtitle">
       브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF 컨버터입니다.<br>
       개인정보 유출 걱정 없이 고화질 GIF를 손쉽게 만들어보세요.
     </p>
-  </section>
+  </header>
 
-  <div class="zif-app">
-    <main class="content">
+  <div class="content-section">
       <h1 class="sr-only">Video to GIF 변환 서비스</h1>
       <section class="upload-section" id="uploadSection">
         <div class="upload-icon">📁</div>
         <div class="upload-text" id="uploadText">비디오 파일을 선택하세요</div>
         <div class="upload-subtext" id="uploadSubtext">클릭하거나 드래그 & 드롭으로 업로드하면 GIF가 생성됩니다.</div>
         <input type="file" id="videoInput" accept="video/*">
-      </section>
-
-      <!-- 프리뷰 -->
-      <section class="preview-section" id="previewSection" style="display:none;">
-        <h2 class="sr-only">GIF 변환 프레임 미리보기</h2>
-        <div class="section-title">
-          <span>📸</span>
-          <span id="previewTitle">프레임 미리보기</span>
-        </div>
-        <div id="preview"></div>
       </section>
 
       <!-- 결과 -->
@@ -100,12 +88,50 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
           <span>✨</span>
           <span id="outputTitle">생성된 GIF</span>
         </div>
-        <div id="output"></div>
+        <div id="output" style="position: relative;"></div>
+
         <a id="downloadLink" style="display:none;" download="output.gif">
           <span id="downloadText">GIF 다운로드</span>
         </a>
 
-        <!-- 고급 설정 -->
+        <!-- GIF 자르기 슬라이더 (GIF 자르기 기능 활성화 시 표시) -->
+        <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+          <!-- 타임라인 슬라이더 with 프레임 썸네일 배경 -->
+          <div class="trim-timeline">
+            <div class="trim-timeline-track" id="trimTrack">
+              <!-- 프레임 썸네일 배경 레이어 -->
+              <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
+
+              <div class="trim-timeline-selected" id="trimSelected"></div>
+              <div class="trim-handle trim-handle-start" id="trimHandleStart">
+                <div class="trim-handle-line"></div>
+              </div>
+              <div class="trim-handle trim-handle-end" id="trimHandleEnd">
+                <div class="trim-handle-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 영상 길이 정보 -->
+          <div class="trim-info-row">
+            <div class="trim-info-item">
+              <label>원본 길이:</label>
+              <span id="originalDuration" class="duration-value">0.0초</span>
+            </div>
+            <div class="trim-info-item trim-separator">→</div>
+            <div class="trim-info-item">
+              <label>잘라낸 길이:</label>
+              <span id="trimmedDuration" class="duration-value highlight">0.0초</span>
+            </div>
+          </div>
+
+          <!-- GIF 생성 버튼 -->
+          <button id="generateGifBtn" class="convert-btn">
+            <span>🎬 선택한 구간으로 GIF 생성</span>
+          </button>
+        </div>
+
+        <!-- 고급 설정 (GIF 생성 후 표시) -->
         <div class="advanced-settings" id="advancedSettings">
           <h2 class="sr-only">GIF 변환 고급 설정</h2>
           <div class="advanced-settings-header" id="advancedToggle">
@@ -186,6 +212,17 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
               <span id="textReconvertText">🔄 텍스트 설정으로 GIF 재생성</span>
             </button>
           </div>
+        </div>
+
+        <!-- GIF 자르기 설정 -->
+        <div class="advanced-settings" id="trimSettings">
+          <a href="{{ '/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink">
+            <div class="advanced-settings-title">
+              <span>✂️</span>
+              <span id="trimSettingsTitle">GIF 자르기</span>
+            </div>
+            <div class="toggle-icon">→</div>
+          </a>
         </div>
       </section>
 
@@ -312,8 +349,6 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
           </div>
         </div>
       </section>
-
-    </main>
   </div>
 </div>
 

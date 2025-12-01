@@ -13,12 +13,12 @@ NULLCMD = :
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /Users/minz/.rbenv/versions/3.3.5/include/ruby-3.3.0
+topdir = /Users/minz/.rbenv/versions/3.3.0/include/ruby-3.3.0
 hdrdir = $(topdir)
-arch_hdrdir = /Users/minz/.rbenv/versions/3.3.5/include/ruby-3.3.0/x86_64-darwin23
+arch_hdrdir = /Users/minz/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-darwin23
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = $(DESTDIR)/Users/minz/.rbenv/versions/3.3.5
+prefix = $(DESTDIR)/Users/minz/.rbenv/versions/3.3.0
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -96,7 +96,7 @@ ARCH_FLAG =
 DLDFLAGS = $(ldflags) $(dldflags) $(ARCH_FLAG)
 LDSHARED = $(CC) -dynamic -bundle
 LDSHAREDXX = $(CXX) -dynamic -bundle
-AR = ar
+AR = /Library/Developer/CommandLineTools/usr/bin/ar
 EXEEXT = 
 
 RUBY_INSTALL_NAME = $(RUBY_BASE_NAME)

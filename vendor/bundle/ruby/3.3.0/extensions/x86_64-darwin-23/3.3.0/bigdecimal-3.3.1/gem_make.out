@@ -1,5 +1,5 @@
-current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-/Users/minz/.rbenv/versions/3.3.5/bin/ruby extconf.rb
+current directory: /Users/minz/videotogif.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
+/Users/minz/.rbenv/versions/3.3.0/bin/ruby extconf.rb
 checking for __builtin_clz()... yes
 checking for __builtin_clzl()... yes
 checking for __builtin_clzll()... yes
@@ -21,18 +21,18 @@ checking for rb_category_warn() in ruby.h... yes
 checking for RB_WARN_CATEGORY_DEPRECATED in ruby.h... yes
 creating Makefile
 
-current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20251022-64652-h60hyn sitelibdir\=./.gem.20251022-64652-h60hyn clean
+current directory: /Users/minz/videotogif.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20251201-70143-vxntqe sitelibdir\=./.gem.20251201-70143-vxntqe clean
 
-current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20251022-64652-h60hyn sitelibdir\=./.gem.20251022-64652-h60hyn
+current directory: /Users/minz/videotogif.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20251201-70143-vxntqe sitelibdir\=./.gem.20251201-70143-vxntqe
 compiling bigdecimal.c
 compiling missing.c
 linking shared-object bigdecimal.bundle
 
-current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20251022-64652-h60hyn sitelibdir\=./.gem.20251022-64652-h60hyn install
-/usr/local/bin/ginstall -c -m 0755 bigdecimal.bundle ./.gem.20251022-64652-h60hyn
+current directory: /Users/minz/videotogif.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20251201-70143-vxntqe sitelibdir\=./.gem.20251201-70143-vxntqe install
+/usr/local/bin/ginstall -c -m 0755 bigdecimal.bundle ./.gem.20251201-70143-vxntqe
 
-current directory: /Users/minz/zif-ko.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20251022-64652-h60hyn sitelibdir\=./.gem.20251022-64652-h60hyn clean
+current directory: /Users/minz/videotogif.github.io/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.3.1/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20251201-70143-vxntqe sitelibdir\=./.gem.20251201-70143-vxntqe clean

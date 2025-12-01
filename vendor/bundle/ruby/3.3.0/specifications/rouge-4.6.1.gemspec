@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://rouge.jneen.net/".freeze
   s.licenses = ["MIT".freeze, "BSD-2-Clause".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 2.7".freeze)
-  s.rubygems_version = "3.6.7".freeze
+  s.rubygems_version = "3.5.3".freeze
   s.summary = "A pure-ruby colorizer based on pygments".freeze
 
-  s.installed_by_version = "3.7.2".freeze
+  s.installed_by_version = "3.5.3".freeze if s.respond_to? :installed_by_version
 end

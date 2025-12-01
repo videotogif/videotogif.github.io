@@ -3,7 +3,7 @@ layout: default
 title: "About Video to GIF"
 subtitle: "무료 gif 만들기 프로그램, Video to GIF에 대하여"
 tagline: "100% 사생활 보장되는 GIF 변환기"
-description: "gif 만들기 사이트 Video to GIF converter 사용 설명서. ZIF는 무료 gif 만들기 프로그램 입니다. 동영상을 고화질 gif로 변환하는 방법을 안내합니다.
+description: "gif 만들기 사이트 Video to GIF converter 사용 설명서. ZIF는 무료 gif 만들기 프로그램 입니다. 동영상을 고화질 gif로 변환하는 방법을 안내합니다."
 permalink: /about/
 ---
 
@@ -94,11 +94,14 @@ permalink: /about/
       Video to GIF converter는 최신 웹 기술을 활용하여 브라우저에서 네이티브 앱 수준의 성능을 제공합니다. 다음은 주요 기술 스택과 각각의 역할입니다:
     </p>
     <ul class="tech-list">
-      <li><strong>WebAssembly (WASM)</strong> - C/Rust로 작성된 고성능 코드를 브라우저에서 실행. 네이티브에 가까운 속도로 GIF 인코딩을 수행하며, JavaScript보다 10-20배 빠른 처리 속도를 제공합니다.</li>
-      <li><strong>gifski-wasm</strong> - Rust로 작성된 최고 품질의 GIF 생성 라이브러리를 WebAssembly로 컴파일. 팔레트 최적화 알고리즘을 통해 선명하고 자연스러운 색상 표현이 가능합니다.</li>
+      <li><strong>WebAssembly (WASM)</strong> - C/Rust로 작성된 고성능 코드를 브라우저에서 실행. 네이티브에 가까운 속도로 GIF 인코딩을 수행하며, JavaScript보다
+        10-20배 빠른 처리 속도를 제공합니다.</li>
+      <li><strong>gifski-wasm</strong> - Rust로 작성된 최고 품질의 GIF 생성 라이브러리를 WebAssembly로 컴파일. 팔레트 최적화 알고리즘을 통해 선명하고 자연스러운 색상
+        표현이 가능합니다.</li>
       <li><strong>Canvas API</strong> - 동영상에서 프레임을 추출하고 크기를 조정. 각 프레임을 이미지 데이터로 변환하여 GIF 인코더에 전달합니다.</li>
       <li><strong>HTML5 Video API</strong> - 동영상 재생을 제어하고 특정 시간대의 프레임을 정확히 추출. seekTime()과 currentTime 속성을 활용합니다.</li>
-      <li><strong>Service Worker</strong> - Cross-Origin Isolation 환경을 제공하여 SharedArrayBuffer 사용 가능. 멀티스레드 처리로 변환 성능을 향상시킵니다.</li>
+      <li><strong>Service Worker</strong> - Cross-Origin Isolation 환경을 제공하여 SharedArrayBuffer 사용 가능. 멀티스레드 처리로 변환 성능을
+        향상시킵니다.</li>
       <li><strong>Jekyll</strong> - 정적 사이트 생성 프레임워크. GitHub Pages에서 무료 호스팅이 가능하며 빠른 로딩 속도를 제공합니다.</li>
     </ul>
 

@@ -65,3 +65,12 @@ exclude:
   - package.json
   - package-lock.json
   - vite.config.js
+
+# WASM 파일 지원
+include:
+  - "*.wasm"
+
+# WebAssembly MIME type
+webrick:
+  headers:
+    Access-Control-Allow-Origin: "*"
