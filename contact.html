@@ -1,0 +1,166 @@
+---
+layout: default
+title: "문의하기"
+description: "Video to GIF converter 서비스 문의 및 피드백"
+permalink: /contact/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">문의하기</h1>
+    <p class="page-subtitle">궁금한 점이 있으신가요? 언제든지 연락 주세요</p>
+  </header>
+
+  <section class="content-section">
+    <h2>빠른 답변을 위한 안내</h2>
+    <p>
+      문의하시기 전에 <a href="{{ '/faq/' | relative_url }}">자주 묻는 질문(FAQ)</a>을 먼저 확인해주시면
+      더욱 빠르게 해결하실 수 있습니다.
+      일반적인 사용 방법, 파일 크기 제한, 브라우저 호환성 등에 대한 답변을 확인하실 수 있습니다.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>이메일 문의</h2>
+    <p>
+      서비스 이용 중 문제가 발생했거나, 개선 제안, 버그 리포트, 제휴 문의 등이 있으시면
+      아래 이메일로 연락 주시기 바랍니다.
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">📧</span>
+        <div class="point-content">
+          <h4>이메일 주소</h4>
+          <p><a href="mailto:ghdalswl162@gmail.com"
+              style="font-size: 1.1em; font-weight: 500;">ghdalswl162@gmail.com</a>
+          </p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">⏱️</span>
+        <div class="point-content">
+          <h4>응답 시간</h4>
+          <p>영업일 기준 1-3일 이내 답변드립니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>문의 유형별 안내</h2>
+
+    <h3>🐛 버그 리포트</h3>
+    <p>서비스 이용 중 오류가 발생했다면 다음 정보를 함께 보내주세요:</p>
+    <ul class="tech-list">
+      <li><strong>사용 브라우저 및 버전</strong> (예: Chrome 120.0, Safari 17.1)</li>
+      <li><strong>운영체제</strong> (예: Windows 11, macOS 14.0, Android 13)</li>
+      <li><strong>오류 발생 상황</strong> (동영상 업로드 시, GIF 생성 시, 다운로드 시 등)</li>
+      <li><strong>오류 메시지</strong> (스크린샷 첨부 시 더욱 좋습니다)</li>
+      <li><strong>동영상 파일 정보</strong> (포맷, 파일 크기, 길이)</li>
+    </ul>
+    <p>
+      상세한 정보를 제공해주실수록 문제 해결이 빠르게 이루어집니다.
+      개인정보가 포함된 동영상 파일을 보내실 필요는 없으며, 유사한 조건의 샘플 파일로 테스트 가능합니다.
+    </p>
+
+    <h3>💡 기능 제안</h3>
+    <p>새로운 기능에 대한 아이디어가 있으신가요? 다음 내용을 포함해주세요:</p>
+    <ul class="tech-list">
+      <li><strong>제안하는 기능</strong> (구체적으로 설명해주세요)</li>
+      <li><strong>필요성</strong> (어떤 상황에서 유용할지)</li>
+      <li><strong>기대 효과</strong> (이 기능이 추가되면 어떤 점이 개선될지)</li>
+    </ul>
+    <p>
+      여러분의 소중한 의견은 서비스 개선에 큰 도움이 됩니다.
+      모든 제안을 검토하여 실현 가능성을 평가하고, 유익한 기능은 우선적으로 개발하겠습니다.
+    </p>
+
+    <h3>🤝 제휴 및 협업 문의</h3>
+    <p>다음과 같은 제휴 문의를 환영합니다:</p>
+    <ul class="check-list">
+      <li>✅ 서비스 API 연동</li>
+      <li>✅ 교육 기관 협업</li>
+      <li>✅ 기업 맞춤형 솔루션</li>
+      <li>✅ 오픈소스 프로젝트 기여</li>
+    </ul>
+    <p>
+      제휴 제안 시 귀사/귀 기관 소개, 제휴 목적, 기대 효과 등을 간략히 작성해주시면 검토 후 회신드리겠습니다.
+    </p>
+
+    <h3>🔐 보안 취약점 신고</h3>
+    <p>
+      서비스의 보안 취약점을 발견하셨다면, 공개 게시가 아닌 이메일로 비공개 보고 부탁드립니다.
+      확인 후 신속히 조치하고, 기여해주신 분께는 공식적으로 감사 인사를 전하겠습니다.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>자주 문의하시는 내용</h2>
+    <details class="faq-item">
+      <summary>변환이 너무 느려요. 어떻게 하나요?</summary>
+      <p>
+        변환 속도는 동영상 길이, 해상도, 기기 성능에 따라 달라집니다.
+        빠른 변환을 위해서는 동영상 길이를 10초 이하로 줄이고, 출력 크기를 500px 이하로 설정하세요.
+        또한 프레임 간격을 0.3초 이상으로 늘리면 처리할 프레임 수가 줄어 속도가 개선됩니다.
+      </p>
+    </details>
+    <details class="faq-item">
+      <summary>모바일에서 잘 안 돼요.</summary>
+      <p>
+        모바일 기기는 PC에 비해 메모리와 처리 성능이 제한적입니다.
+        모바일 환경에서는 5초 이하의 짧은 영상, 출력 크기 400px 이하를 권장합니다.
+        긴 영상이나 고해상도 변환은 PC 환경에서 진행해주세요.
+      </p>
+    </details>
+    <details class="faq-item">
+      <summary>상업적으로 사용할 수 있나요?</summary>
+      <p>
+        네, 본 서비스는 무료이며 상업적 용도로도 사용 가능합니다.
+        다만, 생성한 GIF의 저작권은 원본 동영상의 저작권을 따르므로,
+        원본 콘텐츠에 대한 적법한 사용 권한이 있어야 합니다.
+        서비스 자체의 소스코드 복제나 재배포는 불가합니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>개인정보 처리 관련 문의</h2>
+    <p>
+      본 서비스는 클라이언트 측에서만 동작하여 개인정보를 수집하지 않지만,
+      개인정보 처리방침에 대한 문의사항이 있으시면 언제든 연락 주시기 바랍니다.
+      <a href="{{ '/privacy/' | relative_url }}">개인정보처리방침 보기</a>
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>소셜 미디어</h2>
+    <p>
+      서비스 업데이트 소식, GIF 제작 팁 등을 확인하고 싶으시다면 블로그를 방문해주세요.
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">📝</span>
+        <div class="point-content">
+          <h4>블로그</h4>
+          <p><a href="{{ '/blog/' | relative_url }}">Video to GIF 블로그 방문하기</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>언제든 편하게 연락주세요</h2>
+    <p>여러분의 피드백이 서비스를 더 나아지게 만듭니다.</p>
+    <a href="mailto:ghdalswl162@gmail.com" class="start-button">이메일로 문의하기 →</a>
+  </section>
+</div>

@@ -1,0 +1,384 @@
+---
+layout: default
+title: "자주 묻는 질문 (FAQ)"
+description: "Video to GIF 변환 서비스에 대한 자주 묻는 질문과 답변"
+permalink: /faq/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">자주 묻는 질문</h1>
+    <p class="page-subtitle">Video to GIF 서비스 이용 시 궁금한 점을 해결해드립니다</p>
+  </header>
+
+  <section class="content-section">
+    <h2>서비스 기본 정보</h2>
+
+    <details class="faq-item" open>
+      <summary>Video to GIF는 무엇인가요?</summary>
+      <p>
+        Video to GIF는 동영상 파일을 GIF 애니메이션으로 변환하는 무료 웹 서비스입니다.
+        브라우저에서 100% 로컬로 동작하므로 파일이 서버에 업로드되지 않으며,
+        회원가입이나 소프트웨어 설치 없이 즉시 사용할 수 있습니다.
+        WebAssembly 기술을 활용하여 고품질 GIF를 빠르게 생성합니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>무료로 사용할 수 있나요?</summary>
+      <p>
+        네, 완전히 무료입니다. 모든 기능을 제한 없이 사용하실 수 있으며,
+        숨겨진 비용이나 유료 구독 요금이 전혀 없습니다.
+        브라우저에서 로컬로 처리되기 때문에 서버 비용이 발생하지 않아
+        지금도, 앞으로도 무료로 제공될 예정입니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>회원가입이 필요한가요?</summary>
+      <p>
+        아니요, 회원가입이나 로그인이 전혀 필요하지 않습니다.
+        웹사이트에 접속하여 바로 파일을 업로드하고 변환을 시작할 수 있습니다.
+        이메일, 전화번호 등 어떠한 개인정보도 요구하지 않으며,
+        사용 이력이나 변환 기록도 저장되지 않습니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>지원 포맷 및 제한사항</h2>
+
+    <details class="faq-item">
+      <summary>어떤 동영상 포맷을 지원하나요?</summary>
+      <p>
+        MP4, MOV, AVI, WebM, MKV 등 HTML5 Video API가 지원하는 대부분의 동영상 포맷을 사용할 수 있습니다.
+        가장 일반적인 MP4(H.264 코덱)는 모든 브라우저에서 지원되며,
+        WebM, OGV 등도 대부분의 최신 브라우저에서 재생 가능합니다.
+        만약 특정 포맷이 작동하지 않는다면, 무료 변환 도구(예: HandBrake)로 MP4로 변환 후 사용해보세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>파일 크기 제한이 있나요?</summary>
+      <p>
+        서버 업로드가 아닌 브라우저 메모리에서 처리되므로, 공식적인 파일 크기 제한은 없습니다.
+        다만 사용 중인 기기의 메모리 용량과 브라우저 성능에 따라 달라집니다.
+        일반적으로 <strong>100MB 이하의 동영상</strong>은 대부분의 PC 환경에서 문제없이 처리됩니다.
+        모바일 기기에서는 30-50MB 이하를 권장하며, 매우 큰 파일(200MB 이상)은 브라우저가 느려지거나 멈출 수 있습니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>동영상 길이 제한이 있나요?</summary>
+      <p>
+        시간 제한은 없지만, GIF 특성상 <strong>3-10초 길이가 가장 이상적</strong>입니다.
+        너무 긴 영상은 파일 크기가 수십 MB에 달해 로딩이 느려지고, 웹사이트나 SNS에서 업로드가 제한될 수 있습니다.
+        30초 이상의 긴 영상은 핵심 부분만 잘라서 여러 개의 짧은 GIF로 나누는 것을 권장합니다.
+        동영상 편집 도구로 원하는 구간만 자른 후 변환하면 더욱 효율적입니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>최대 해상도는 얼마인가요?</summary>
+      <p>
+        출력 가로 크기는 최대 <strong>900px</strong>까지 설정 가능합니다.
+        일반적으로 SNS용은 480-640px, 블로그용은 640-800px이 적합합니다.
+        해상도가 높을수록 파일 크기가 커지므로, 용도에 맞게 적절한 크기를 선택하세요.
+        원본 동영상보다 크게 확대하면 오히려 화질이 떨어지므로, 원본 크기 또는 축소 사용을 권장합니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>개인정보 및 보안</h2>
+
+    <details class="faq-item">
+      <summary>내 파일이 서버에 저장되나요?</summary>
+      <p>
+        <strong>절대 저장되지 않습니다.</strong> 이것이 저희 서비스의 가장 큰 특징입니다.
+        모든 변환 작업은 사용자의 브라우저에서만 이루어지며, 동영상 파일이나 생성된 GIF가 서버로 전송되지 않습니다.
+        파일은 사용자의 컴퓨터 메모리에서만 처리되고, 페이지를 닫거나 새로고침하면 즉시 삭제됩니다.
+        네트워크 모니터링 도구로 확인하시면 파일 업로드 트래픽이 전혀 발생하지 않음을 확인하실 수 있습니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>개인정보를 수집하나요?</summary>
+      <p>
+        아니요, 어떠한 개인정보도 수집하지 않습니다. 회원가입이 없으므로 이름, 이메일, 전화번호 등을 요구하지 않으며,
+        변환 이력, 파일 메타데이터, IP 주소 등 어떠한 사용 기록도 저장하지 않습니다.
+        일부 익명 웹 분석 도구(방문자 수 집계)를 사용할 수 있으나, 이는 개인 식별이 불가능한 통계 정보입니다.
+        자세한 내용은 <a href="{{ '/privacy/' | relative_url }}">개인정보처리방침</a>을 참조하세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>회사 기밀 자료를 변환해도 안전한가요?</summary>
+      <p>
+        네, 안전합니다. 파일이 외부로 전송되지 않으므로 민감한 내부 자료, 개인 영상, 기밀 콘텐츠도 안심하고 변환하실 수 있습니다.
+        다만, 공용 컴퓨터나 타인과 공유하는 기기에서 사용 시에는 변환 후 다운로드한 GIF 파일을 직접 삭제하시기 바랍니다.
+        본 서비스는 HTTPS 보안 연결을 사용하여 웹사이트 자체의 보안도 철저히 유지합니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>변환 속도 및 성능</h2>
+
+    <details class="faq-item">
+      <summary>변환이 너무 느린데 어떻게 하나요?</summary>
+      <p>
+        변환 속도는 동영상 길이, 해상도, 프레임 수, 기기 성능에 따라 달라집니다. 빠른 변환을 위한 팁:
+      </p>
+      <ul class="tech-list">
+        <li><strong>동영상 길이 단축:</strong> 5초 이하로 자르면 매우 빠릅니다.</li>
+        <li><strong>출력 크기 축소:</strong> 800px → 500px로 줄이면 처리 시간이 크게 감소합니다.</li>
+        <li><strong>프레임 간격 증가:</strong> 0.1초 → 0.3초로 늘리면 처리할 프레임 수가 줄어듭니다.</li>
+        <li><strong>품질 낮춤:</strong> 90 → 70-80으로 설정해도 육안 차이가 거의 없습니다.</li>
+        <li><strong>FPS 조정:</strong> 30fps → 10-15fps로 낮추면 파일도 작아지고 빨라집니다.</li>
+      </ul>
+      <p>
+        일반적으로 5초 영상(500px, 품질 80, FPS 10)은 최신 PC에서 10-20초 내 변환됩니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>모바일에서도 사용할 수 있나요?</summary>
+      <p>
+        네, 모바일 브라우저에서도 작동합니다. Android의 Chrome, Samsung Internet, iOS의 Safari 등에서 사용 가능합니다.
+        다만 <strong>모바일 기기는 PC에 비해 메모리와 성능이 제한적</strong>이므로 다음을 권장합니다:
+      </p>
+      <ul class="check-list">
+        <li>✅ 영상 길이: 5초 이하</li>
+        <li>✅ 출력 크기: 400px 이하</li>
+        <li>✅ 프레임 간격: 0.3초 이상</li>
+        <li>✅ 품질: 70-80</li>
+      </ul>
+      <p>
+        긴 영상이나 고해상도 변환은 PC 환경에서 진행하시길 권장합니다.
+        모바일에서 브라우저가 멈춘다면 더 짧고 가벼운 설정으로 다시 시도해보세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>어떤 브라우저를 사용해야 하나요?</summary>
+      <p>
+        WebAssembly를 지원하는 모든 최신 브라우저에서 작동합니다. 권장 브라우저:
+      </p>
+      <ul class="tech-list">
+        <li><strong>Chrome / Edge:</strong> 가장 빠르고 안정적 (권장)</li>
+        <li><strong>Firefox:</strong> 우수한 성능</li>
+        <li><strong>Safari:</strong> macOS/iOS에서 사용 가능</li>
+      </ul>
+      <p>
+        Internet Explorer는 WebAssembly를 지원하지 않아 사용 불가합니다.
+        브라우저 버전이 너무 오래되었다면 최신 버전으로 업데이트하시기 바랍니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>GIF 품질 및 설정</h2>
+
+    <details class="faq-item">
+      <summary>GIF 파일 크기가 너무 큰데 어떻게 줄이나요?</summary>
+      <p>
+        GIF는 압축 효율이 낮아 파일 크기가 쉽게 커집니다. 크기를 줄이는 방법:
+      </p>
+      <ul class="tech-list">
+        <li><strong>동영상 길이 단축:</strong> 10초 → 5초로 줄이면 파일 크기도 절반으로 감소합니다.</li>
+        <li><strong>출력 크기 축소:</strong> 720px → 480px로 줄이면 크기가 크게 감소합니다.</li>
+        <li><strong>프레임 간격 증가:</strong> 0.1초 → 0.3-0.5초로 늘리면 프레임 수가 줄어 파일이 작아집니다.</li>
+        <li><strong>품질 조정:</strong> 90 → 70-75로 낮춰도 육안 차이가 거의 없습니다.</li>
+        <li><strong>FPS 낮춤:</strong> 30fps → 10-15fps로 설정하면 부드러움은 약간 떨어지지만 크기는 크게 줄어듭니다.</li>
+      </ul>
+      <p>
+        SNS 업로드 제한(예: Twitter 15MB)에 걸린다면, 위 방법들을 조합하여 조정해보세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>GIF 화질이 떨어지는데 개선할 수 있나요?</summary>
+      <p>
+        GIF는 256색만 표현 가능한 포맷이므로, 원본 동영상보다 화질이 떨어질 수밖에 없습니다.
+        최대한 화질을 높이는 방법:
+      </p>
+      <ul class="check-list">
+        <li>✅ <strong>품질 설정을 90-100으로 상향</strong> (파일 크기는 커짐)</li>
+        <li>✅ <strong>출력 크기를 원본과 동일하게 유지</strong> (축소하지 않음)</li>
+        <li>✅ <strong>단순한 배경의 영상 사용</strong> (복잡한 장면은 색 번짐 발생)</li>
+        <li>✅ <strong>프레임 간격을 짧게 설정</strong> (0.1-0.2초로 부드러운 애니메이션)</li>
+      </ul>
+      <p>
+        그라데이션이 많은 사진, 실사 영상은 GIF보다 MP4가 더 적합합니다.
+        GIF는 UI 시연, 단순한 애니메이션, 로고 등에 가장 효과적입니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>프레임 간격과 FPS는 뭐가 다른가요?</summary>
+      <p>
+        둘 다 GIF의 부드러움을 결정하는 설정이지만, 접근 방식이 다릅니다:
+      </p>
+      <ul class="tech-list">
+        <li><strong>프레임 간격:</strong> 원본 동영상에서 몇 초마다 프레임을 추출할지 결정합니다.
+          예: 0.3초 간격이면 10초 영상에서 약 33장의 프레임을 추출합니다.</li>
+        <li><strong>FPS (Frames Per Second):</strong> 생성된 GIF가 1초당 몇 장의 프레임을 재생할지 결정합니다.
+          예: 10 FPS면 1초에 10장씩 재생되어 부드럽게 보입니다.</li>
+      </ul>
+      <p>
+        <strong>권장 조합:</strong> 프레임 간격 0.3초 + FPS 10 = 적절한 파일 크기와 자연스러운 애니메이션
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>텍스트 오버레이 기능은 어떻게 사용하나요?</summary>
+      <p>
+        GIF 생성 후 "텍스트 설정" 섹션에서 사용할 수 있습니다:
+      </p>
+      <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+        <li>텍스트 입력란에 원하는 문구 입력</li>
+        <li>텍스트 크기, 색상, 배경 색상, 투명도 조정</li>
+        <li>생성된 GIF에서 텍스트를 드래그하여 원하는 위치로 이동</li>
+        <li>"텍스트 설정으로 GIF 재생성" 버튼 클릭</li>
+      </ol>
+      <p>
+        워터마크, 자막, 설명 등을 추가하여 GIF의 완성도를 높일 수 있습니다.
+        대비가 높은 색상(흰색 글자 + 검은 배경)을 사용하면 가독성이 좋습니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>오류 및 문제 해결</h2>
+
+    <details class="faq-item">
+      <summary>"변환 실패" 오류가 나타나요.</summary>
+      <p>
+        다음 사항을 확인해보세요:
+      </p>
+      <ul class="check-list">
+        <li>✅ 동영상 파일이 손상되지 않았는지 (다른 플레이어에서 재생 가능한지)</li>
+        <li>✅ 파일 크기가 너무 크지 않은지 (100MB 이하 권장)</li>
+        <li>✅ 브라우저가 최신 버전인지 (Chrome, Firefox 권장)</li>
+        <li>✅ 다른 동영상 파일로 테스트해보기</li>
+        <li>✅ 페이지 새로고침 후 재시도</li>
+      </ul>
+      <p>
+        문제가 계속되면 <a href="{{ '/contact/' | relative_url }}">문의 페이지</a>를 통해
+        사용 환경(브라우저, OS, 파일 포맷 등)과 함께 알려주시면 도와드리겠습니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>브라우저가 멈추거나 느려져요.</summary>
+      <p>
+        이는 메모리 부족 때문일 가능성이 높습니다. 해결 방법:
+      </p>
+      <ul class="tech-list">
+        <li>다른 브라우저 탭을 모두 닫고 재시도</li>
+        <li>동영상 길이를 5초 이하로 줄이기</li>
+        <li>출력 크기를 400-500px로 축소</li>
+        <li>프레임 간격을 0.5초 이상으로 증가</li>
+        <li>컴퓨터 재시작 후 다시 시도</li>
+      </ul>
+      <p>
+        모바일 기기에서 자주 발생한다면 PC 환경에서 사용하시거나, 더 짧고 가벼운 설정을 사용해보세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>다운로드 버튼이 작동하지 않아요.</summary>
+      <p>
+        일부 브라우저나 보안 설정에서 발생할 수 있습니다. 해결 방법:
+      </p>
+      <ul class="tech-list">
+        <li>생성된 GIF 이미지를 우클릭 → "다른 이름으로 저장"</li>
+        <li>브라우저의 팝업 차단 설정 확인</li>
+        <li>다른 브라우저에서 시도 (Chrome 권장)</li>
+        <li>페이지 새로고침 후 재변환</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>저작권 및 이용 정책</h2>
+
+    <details class="faq-item">
+      <summary>상업적으로 사용할 수 있나요?</summary>
+      <p>
+        네, 본 서비스는 무료이며 상업적 용도로도 사용 가능합니다.
+        다만, <strong>생성한 GIF의 저작권은 원본 동영상의 저작권을 따릅니다.</strong>
+        타인의 동영상을 무단으로 변환하여 상업적으로 사용하는 것은 저작권 침해에 해당할 수 있으므로,
+        원본 콘텐츠에 대한 적법한 사용 권한이 있는지 확인하시기 바랍니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>YouTube 동영상을 GIF로 만들 수 있나요?</summary>
+      <p>
+        기술적으로는 YouTube 동영상을 다운로드한 후 변환할 수 있지만,
+        <strong>저작권 문제를 반드시 확인</strong>해야 합니다.
+        본인이 업로드한 영상이거나, 창작자로부터 허가를 받았거나, 공정 이용(Fair Use) 범위 내에서만 사용하세요.
+        타인의 콘텐츠를 무단 변환하여 재배포하는 것은 저작권법 위반입니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>이 서비스의 소스코드를 사용할 수 있나요?</summary>
+      <p>
+        본 서비스의 소스코드는 공개되어 있지 않으며, 무단 복제나 재배포는 금지됩니다.
+        다만, 개인적인 학습 목적으로 분석하시는 것은 가능합니다.
+        오픈소스 라이브러리(gifski-wasm 등)는 각각의 라이선스를 따릅니다.
+        자세한 내용은 <a href="{{ '/terms/' | relative_url }}">이용약관</a>을 참조하세요.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>추가 기능 및 로드맵</h2>
+
+    <details class="faq-item">
+      <summary>동영상 자르기 기능이 있나요?</summary>
+      <p>
+        현재는 전체 동영상이 변환됩니다. 동영상 편집 기능은 향후 추가 예정입니다.
+        지금은 외부 편집 도구(예: Windows 포토, iMovie, 온라인 편집기)로 원하는 구간을 잘라낸 후
+        변환하시는 것을 권장합니다. 짧은 구간만 변환하면 파일 크기도 작아지고 속도도 빨라집니다.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>여러 파일을 한 번에 변환할 수 있나요?</summary>
+      <p>
+        현재는 한 번에 하나의 파일만 변환 가능합니다.
+        배치 변환 기능은 많은 분들이 요청하신 기능으로, 향후 업데이트에서 추가될 예정입니다.
+        지금은 파일을 하나씩 변환하셔야 하며, 각 변환이 완료된 후 다음 파일을 업로드해주세요.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>GIF를 동영상으로 역변환할 수 있나요?</summary>
+      <p>
+        현재는 동영상 → GIF 변환만 지원합니다.
+        GIF → 동영상 역변환 기능은 수요를 파악하여 향후 고려하겠습니다.
+        GIF를 MP4로 변환해야 한다면 무료 온라인 도구(CloudConvert 등)나 FFmpeg 같은 소프트웨어를 사용하실 수 있습니다.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>더 궁금한 점이 있으신가요?</h2>
+    <p>FAQ에서 답을 찾지 못하셨다면 언제든 문의해주세요.</p>
+    <a href="{{ '/contact/' | relative_url }}" class="start-button">문의하기 →</a>
+  </section>
+</div>
