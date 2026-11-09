@@ -9,6 +9,7 @@ tags: [GIF변환기, 개발스토리, 브라우저기반, videotogif]
 excerpt: "내가 더 잘 만들겠는데? 동영상을 GIF로 바꿀 때마다 느꼈던 불편함을 해결하려고 브라우저에서 돌아가는 변환기를 만들게 된 이야기입니다."
 description: "동영상을 GIF로 바꿀 때마다 느꼈던 불편함을 해결하려고 브라우저 기반 Video to GIF 변환기를 만들게 된 이야기"
 image: /assets/img/why-i-made-pixel.png
+thumb: /assets/img/why-i-made-cutout-pixel.png
 image_alt: "안경을 쓰고 손가락 하나를 든 기니피그 픽셀 그림"
 redirect_from:
   - /소개/2025/10/22/why-i-made-videotogif/
@@ -20,7 +21,7 @@ permalink: /blog/why-i-built-video-to-gif/
 
 안녕하세요. 이 사이트를 만든 개발자입니다. 메인 화면에 있는 안경 쓴 친구가 저 대신 인사드려요.
 
-![안경을 쓰고 손가락 하나를 든 기니피그 픽셀 그림](/assets/img/why-i-made-pixel.png){: .post-figure-small width="960" height="600"}
+![안경을 쓰고 손가락 하나를 든 기니피그 픽셀 그림](/assets/img/why-i-made-cutout-pixel.png){: .post-figure-small width="368" height="312"}
 
 평소에 일이나 개인 프로젝트를 하면서 동영상을 GIF로 바꿀 일이 자주 있었어요. 버그 리포트를 쓸 때, 튜토리얼 문서를 만들 때, 블로그에 글을 쓸 때.. 생각보다 GIF가 필요한 순간이 많더라고요.
 

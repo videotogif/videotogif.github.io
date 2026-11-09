@@ -2400,7 +2400,6 @@ html {
 .story-card-thumb {
   display: flex;
   align-items: center;
-  background: #ffffff; /* 그림 배경이 흰색이라 다크 모드에서도 흰 바탕 유지 */
   min-width: 0;
 }
 
@@ -2410,6 +2409,7 @@ html {
   height: auto;
   max-width: 100%;
   aspect-ratio: 16 / 10;
+  object-fit: contain;
 }
 
 .story-card-body {
@@ -2703,12 +2703,12 @@ img[src$="-pixel.png"] {
 }
 
 .post-article-body img.post-figure-small {
-  width: 280px;
-  max-width: 70%;
+  width: 150px;
+  max-width: 50%;
   margin: 1.5rem auto 2rem;
   box-shadow: none;
-  border-radius: 12px;
-  background: #ffffff;
+  border-radius: 0;
+  background: none;
 }
 
 .post-cta {
@@ -2780,9 +2780,6 @@ img[src$="-pixel.png"] {
   flex-shrink: 0;
   width: 64px;
   height: 64px;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
 }
 
 .post-author-body p {

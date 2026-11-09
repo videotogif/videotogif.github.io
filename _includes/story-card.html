@@ -7,7 +7,7 @@
 {%- assign sc_en = false -%}{%- if include.lang contains "en" -%}{%- assign sc_en = true -%}{%- endif -%}
 <a class="story-card" href="{{ sc_post.url | relative_url }}">
   <div class="story-card-thumb">
-    <img src="{{ sc_post.image | relative_url }}" alt="{{ sc_post.image_alt | default: sc_post.title | escape }}" width="960" height="600" loading="lazy">
+    <img src="{{ sc_post.thumb | default: sc_post.image | relative_url }}" alt="{{ sc_post.image_alt | default: sc_post.title | escape }}"{% if sc_post.thumb %} width="368" height="312"{% else %} width="960" height="600"{% endif %} loading="lazy">
   </div>
   <div class="story-card-body">
     <span class="story-card-meta">{{ sc_post.category }} · {% if sc_en %}{{ sc_post.date | date: "%B %-d, %Y" }}{% else %}{{ sc_post.date | date: "%Y년 %m월 %d일" }}{% endif %}</span>

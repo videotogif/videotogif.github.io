@@ -11,6 +11,7 @@ tags: [GIFConverter, DevStory, BrowserBased, VideoToGIF, SideProject]
 excerpt: "\"I could make a better one.\" How the hassles I ran into every time I turned a video into a GIF led me to build a converter that runs in the browser."
 description: "Why I built Video to GIF, a browser-based converter, after getting fed up with the hassles of turning videos into GIFs."
 image: /assets/img/why-i-made-pixel.png
+thumb: /assets/img/why-i-made-cutout-pixel.png
 image_alt: "Pixel art of a guinea pig wearing glasses, holding up one finger"
 permalink: /en/blog/why-i-built-video-to-gif/
 ---
@@ -19,7 +20,7 @@ permalink: /en/blog/why-i-built-video-to-gif/
 
 Hi, I'm the developer who made this site. The little guy in glasses on the home page is saying hello for me.
 
-![Pixel art of a guinea pig wearing glasses, holding up one finger](/assets/img/why-i-made-pixel.png){: .post-figure-small width="960" height="600"}
+![Pixel art of a guinea pig wearing glasses, holding up one finger](/assets/img/why-i-made-cutout-pixel.png){: .post-figure-small width="368" height="312"}
 
 Between work and side projects, I end up turning videos into GIFs pretty often. Writing a bug report, putting together a tutorial, writing a blog post... there are more moments that call for a GIF than you'd think.
 
