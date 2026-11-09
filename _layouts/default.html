@@ -46,13 +46,14 @@
                     <li><a href="{{ '/gif-trim/' | relative_url }}">GIF Trim</a></li>
                     <li><a href="{{ '/about/' | relative_url }}">About</a></li>
                     <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
-                    {%- if is_en %}
-                    <li><a href="{{ '/' | relative_url }}" hreflang="ko" lang="ko">한국어</a></li>
-                    {%- else %}
-                    <li><a href="{{ '/en/' | relative_url }}" hreflang="en" lang="en">English</a></li>
-                    {%- endif %}
                 </ul>
             </nav>
+
+            <!-- 언어 전환 (메뉴와 분리된 토글) -->
+            <div class="lang-switch" role="group" aria-label="Language / 언어">
+                <a href="{{ '/' | relative_url }}" hreflang="ko" lang="ko" title="한국어"{% unless is_en %} aria-current="true"{% endunless %}>KO</a>
+                <a href="{{ '/en/' | relative_url }}" hreflang="en" lang="en" title="English"{% if is_en %} aria-current="true"{% endif %}>EN</a>
+            </div>
         </div>
     </header>
 
