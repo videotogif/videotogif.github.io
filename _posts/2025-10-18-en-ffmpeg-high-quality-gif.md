@@ -102,6 +102,8 @@ ffmpeg -framerate 15 -i frame%04d.png -vf "scale=480:-1:flags=lanczos" output.gi
 
 This command takes the PNG sequence (frame images) extracted above and turns it into a high-quality GIF at 15 frames per second.
 
+⚠️ **Heads-up**: Step 2-1 extracted every frame of the original (say, 30 per second). Packing them at 15 frames per second makes the GIF play slower than the original (half speed for a 30fps video). To keep the original speed, add `fps=15,` to the start of the `-vf` in the 2-1 command so it only extracts 15 frames per second. That also means this method may have come out bigger than method 3 simply because it has more frames.
+
 **Result**: 35.6MB
 
 This gives you a pretty decent GIF.
@@ -117,7 +119,7 @@ This time, I first generate a **"palette image."**
 ffmpeg -i input.mp4 -vf "fps=15,scale=480:-1:flags=lanczos,zscale=primaries=bt709:m=bt709:range=full,palettegen" palette.png
 ```
 
-Run the command above and you get a 16px palette image like this one:
+Run the command above and you get a 16×16-pixel palette image like this one (one cell per color, 256 in total):
 
 ![Palette image](/assets/img/post04_6.png)
 
@@ -126,9 +128,9 @@ I'll use this palette to make the GIF.
 
 #### Why do you need a palette?
 
-Remember how GIF can only show 256 colors? On top of that, the 256 colors get picked separately for each frame, so the colors come out unstable.
+Remember how GIF can only show 256 colors? If you convert without any options, FFmpeg maps everything to a generic, predefined set of 256 colors that has nothing to do with your video. That's why the colors look muddy and blotchy.
 
-To make up for that, **you pick 256 colors based on every frame of the whole video and build a palette from them (palettegen).**
+To make up for that, **you look at every frame of the whole video, pick the 256 colors it actually uses most, and build a palette from them (palettegen).**
 
 ```bash
 ffmpeg -i input.mp4 -i palette.png -filter_complex "fps=15,scale=480:-1:flags=lanczos,zscale=primaries=bt709:m=bt709:range=full[x];[x][1:v]paletteuse" output.gif

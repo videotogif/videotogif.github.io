@@ -32,7 +32,7 @@ First off, it turns out the GIF format just "has bad color to begin with." Heh.
 
 That's because GIF has a technical constraint: it can **only display up to 256 colors**.
 
-You're taking 24-bit video with hundreds of thousands of colors and squeezing it into an 8-bit image with only 256. A lot of color gets lost along the way, so it's no surprise a GIF looks muddier than the original.
+You're taking 24-bit video that can hold over 16 million colors and squeezing it into an 8-bit image with only 256. A lot of color gets lost along the way, so it's no surprise a GIF looks muddier than the original.
 
 ### The 256-color limit
 
@@ -46,7 +46,7 @@ This huge loss of color is the fundamental reason GIFs look muddier than the ori
 
 ### Naver Blog's secret
 
-By the way, GIFs made with Naver Blog have pretty nice colors, and there's a good chance they use some GIF technique to correct the tones. That's your hint! I'll explain this technique in more detail around part 3.
+By the way, GIFs made with Naver Blog have pretty nice colors, and there's a good chance they use some GIF technique to correct the tones. That's your hint! In [part 3]({% post_url 2025-10-20-en-gifski-256-colors %}) I open up the GIF files themselves and compare them.
 
 That's where my guessing about GIF colors ended for now. So how do you make a smoother GIF?
 
@@ -66,7 +66,7 @@ Why do I think so? Because the description at the bottom of the ezgif site inclu
 >
 > "If you want to change the dimensions of the GIF or crop out only part of the video, you can use our resize and crop tools..."
 
-That's exactly how things usually work with FFmpeg's `palettegen`, `paletteuse`, and `scale` filter chain.
+Adjusting the frame rate and handling resizing and cropping as separate tools is a setup you often see in services that process video with FFmpeg. (That's my guess, not something I've confirmed.)
 
 ## Aha! So it converts with FFmpeg!
 

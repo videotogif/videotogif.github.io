@@ -28,7 +28,7 @@ When you pick a file, the browser creates a temporary URL that points to it (one
 
 ### 2. Grabbing frames
 
-The video is jumped forward by the frame interval each time (0.04 to 0.2 seconds, depending on the quality level), the frame at that point is drawn onto a `<canvas>`, and then it's saved as a PNG image. For example, a 4.5-second video at the Balanced level (a 0.1-second interval) gives you 45 frames. The interval and width are picked automatically from the video's length and resolution and the level you chose, and width scaling happens here too. Each frame is just drawn onto the canvas at the size you want, so there's no separate resize step.
+The video is jumped forward by the frame interval each time (0.04 to 0.2 seconds, depending on the quality level), the frame at that point is drawn onto a `<canvas>`, and then it's saved as a PNG image. For example, a 4.5-second video at the Balanced level (a 0.1-second interval) gives you 45 frames. The interval and size are picked automatically from the video's length and resolution and the level you chose, and resizing happens here too. Each frame is just drawn onto the canvas at the size you want, so there's no separate resize step.
 
 ### 3. Adding text (only if you entered some)
 
@@ -55,7 +55,7 @@ When you close or refresh the page, the temporary URLs and frames from the steps
 3. Pick a video and convert it.
 4. Look through the list of requests.
 
-The first time you convert, you'll see it download one file called `gifski_wasm_bg.wasm`. That's the encoder program being downloaded from this site. You might also see a few ad-related requests. But you won't see any request the size of your video **going out** to a server. Sort the list by the Size column and you can confirm it in a few seconds.
+The first time you convert, you'll see it download one file called `gifski_wasm_bg.wasm`. That's the encoder program being downloaded from this site. You might also see a few requests for ads and visitor statistics (Google Analytics). But you won't see any request the size of your video **going out** to a server. Sort the list by the Size column and you can confirm it in a few seconds.
 
 ### By turning off the internet
 
@@ -72,7 +72,7 @@ By the way, this site's code is public on [GitHub](https://github.com/videotogif
 It's not all upside, so I want to be upfront about these.
 
 - **It uses your device's power.** There's no server doing the work for you, so it's slow on older laptops and phones. That's also why your fan kicks on while it converts.
-- **It uses quite a bit of memory.** During encoding, the frames are laid out as uncompressed pixels. At 900×506, one frame is about 1.8MB, so 45 frames take up more than 80MB on their own. That's why the browser can get sluggish with long, large videos. It's also why I [capped the width at 900px]({% post_url 2025-10-28-en-why-900px %}).
+- **It uses quite a bit of memory.** During encoding, the frames are laid out as uncompressed pixels. At 900×506, one frame is about 1.8MB, so 45 frames take up more than 80MB on their own. That's why the browser can get sluggish with long, large videos. It's also why I [capped the longer side at 900px]({% post_url 2025-10-28-en-why-900px %}).
 - **The encoder has to be downloaded once.** So the first conversion takes a little longer.
 
 Still, when I'm dealing with files I'd rather not upload to someone else's server, like personal videos or screen recordings from work, this approach just feels better to me. That's the reason I built this site in the first place.

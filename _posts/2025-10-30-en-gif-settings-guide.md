@@ -48,7 +48,7 @@ Frames ≈ video length ÷ frame interval
 4.5s video, 0.1s interval → 45 frames
 ```
 
-A shorter interval makes the motion smoother, and the file gets bigger with the extra frames. The shortest interval you can pick in this converter is 0.1 seconds.
+A shorter interval makes the motion smoother, and the file gets bigger with the extra frames. The shortest interval you could pick in the old version was 0.1 seconds; now the High-spec level captures as densely as every 0.04 seconds (25 frames per second).
 
 ## FPS: how many of those frames to show per second
 
@@ -79,7 +79,7 @@ Playback speed = frame interval × FPS
 0.2s × 5fps  = 1x (original speed, but choppier)
 ```
 
-The old defaults played three times faster than the original. For short meme clips that can actually be kind of fun, but not when speed matters, like in a screen recording. So the automatic settings now always set FPS to `1 ÷ interval`, and every level plays at the original speed. A 0.1s interval means FPS 10, 0.2s means 5, and so on.
+The old defaults played three times faster than the original. For short meme clips that can actually be kind of fun, but not when speed matters, like in a screen recording. So the automatic settings now always set FPS to `1 ÷ interval`, and every level plays at the original speed (the only exception is a video so long the browser's memory can't keep up). A 0.1s interval means FPS 10, 0.2s means 5, and so on.
 
 ## Comparison table
 
@@ -91,13 +91,13 @@ Every GIF in this post was made from the same 4.5-second video, converted at 900
 | 0.1s | 10 | 45 | 4.5s (original speed) | 14.0MB |
 | 0.1s | 20 | 45 | 2.25s (2x speed) | 14.0MB |
 | 0.2s | 5 | 23 | 4.6s (original speed) | 7.5MB |
-| 0.3s | 3 | 15 | 5.0s (original speed) | 5.0MB |
+| 0.3s | 3 | 15 | 5.0s (close to original speed) | 5.0MB |
 | 0.5s | 10 | 9 | 0.9s (5x speed) | 3.0MB |
 | 1s | 10 | 5 | 0.5s (10x speed) | 1.7MB |
 
 As you can see, file size follows the frame count no matter what the FPS is. Going from a 0.1s interval to 0.2s cut both the frame count and the file size almost in half.
 
-Here's what happens if you keep the original speed and only stretch the interval. You can see the motion getting choppier.
+Here's what happens if you match the original speed and only stretch the interval (for 0.3s, FPS had to be a whole number, so 3 was the closest). You can see the motion getting choppier.
 
 <div class="gif-compare">
   <figure>

@@ -78,7 +78,7 @@ Here's a 540px landscape photo. I'll test two versions with it.
 ```bash
 brew install imagemagick  # install imagemagick
 
-magick sunset_540.png -colors 256 -dither FloydSteinberg naive_256.png
+magick sunset_540.png -dither FloydSteinberg -colors 256 naive_256.png
 ```
 
 The command above runs ImageMagick's built-in color quantization algorithm on the sample image to:
@@ -90,7 +90,7 @@ The command above runs ImageMagick's built-in color quantization algorithm on th
 ![Naive quantization example](/assets/img/post05_4.png)
 
 That's the naive quantization example.
-It's fast and simple, but looking at the result, you can see the sky and sunset getting squashed (banding).
+It's fast and simple, but looking at the result, you can see the sky and sunset breaking into stair-step bands of color (banding).
 
 **b) libimagequant-based pngquant (the color master)**
 
@@ -211,8 +211,6 @@ Last up is **temporal dithering**.
 
 Before getting into that, a quick word on regular image dithering: it's a technique for showing a wider range of colors using a limited color palette.
 
-> 💡 **Note**: [What is dithering? Types of image dithering](https://sudo-minz.tistory.com) (in Korean) - I found a page that explains it well, so I'm linking it here.
-
 Dithering usually mixes pixel patterns inside a single frame, but **gifski stretches it across time (multiple frames).**
 
 | Regular spatial dithering                              | Temporal dithering                                                                     |
@@ -230,9 +228,9 @@ So if you flash red and blue back and forth really fast, you can't tell the two 
 ![FFmpeg vs gifski comparison](/assets/img/post05_10.gif)
 ![FFmpeg_Gifski](/assets/img/post05_11.gif)
 
-### FFmpeg's basic pipeline
+### FFmpeg's pipeline (palettegen + paletteuse)
 
-Picks one 256-color global palette and applies it to every frame
+Picks one 256-color palette from the whole video and applies it to every frame
 
 ### gifski's pipeline
 
@@ -252,13 +250,13 @@ But gifski had one pretty serious drawback...
 
 You **can't just use it quickly** the way you can with ezgif or the Naver app. Sigh.
 
-First, you have to install an app from the App Store.
+You have to install either the Mac App Store app or the command-line tool (`brew install gifski`) before you can use it.
 
 I'm not a big fan of installing programs... and I don't love that uneasy feeling of not knowing where stuff gets saved, either.
 
 ## So I built my own
 
-**So I made my own site where the files I upload aren't stored anywhere, the quality is good, and conversion doesn't take long.**
+**So I made my own site where my videos aren't stored anywhere, the quality is good, and conversion doesn't take long.**
 
 **[Video to GIF - High-quality GIF converter that runs in your browser](https://videotogif.github.io/en/)**
 
@@ -269,7 +267,7 @@ I'm not a big fan of installing programs... and I don't love that uneasy feeling
 - 🎨 **High quality**: powered by gifski
 - 💰 **Free**: nothing to install, no sign-up
 
-I built it so anyone can use it without reading a manual, but I'll go into more detail about the site in the next post!
+I built it so anyone can use it without reading a manual, and the story of how I built the site continues in [the next post]({% post_url 2025-10-22-en-why-i-built-video-to-gif %})!
 
 ---
 
