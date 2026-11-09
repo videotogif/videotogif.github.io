@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<main class="post-page-wrapper">
+<div class="post-page-wrapper">
     <article class="post-article">
         <header class="post-header">
             <h1 class="post-title">{{ page.title }}</h1>
@@ -27,6 +27,8 @@ layout: default
             {{ content }}
         </section>
     </article>
+
+    {% include ad-unit.html slot="post" %}
 
     <!-- ▼ 포스트 하단 네비게이션 추가 -->
     <div class="post-navigation">
@@ -54,4 +56,4 @@ layout: default
     {% if page.comments %}
     {% include comments.html %}
     {% endif %}
-</main>
+</div>

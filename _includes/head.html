@@ -1,70 +1,63 @@
-<!-- _includes/head.html -->
+<!-- _includes/head.html : 모든 <head> 메타는 여기서 한 번만 출력 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 
-<link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }} RSS"
-    href="{{ '/rss.xml' | relative_url }}">
-
-<!-- 다크모드 깜빡임 방지(옵션) -->
-<script>
-    try {
-        const t = localStorage.getItem('theme');
-        if (t) document.documentElement.dataset.theme = t;
-    } catch (e) { }
-</script>
-
-<!-- SEO 자동 메타: title / description / canonical / OG / Twitter -->
+<!-- SEO 자동 메타: title / description / canonical / OG / Twitter / JSON-LD -->
 {% seo %}
 
 <!-- 로봇 제어(페이지별 robots 값을 우선) -->
 <meta name="robots" content="{{ page.robots | default: 'index,follow' }}">
 
-<!-- 파비콘 -->
-<link rel="icon" href="{{ site.url }}{{ site.baseurl }}/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="{{ site.url }}{{ site.baseurl }}/favicon.png">
-<link rel="apple-touch-icon" href="{{ site.url }}{{ site.baseurl }}/favicon.png">
+<!-- hreflang: 번역 페이지가 있는 경우에만 출력 (front matter 예: hreflang: { ko: "/", en: "/en/" }) -->
+{%- if page.hreflang %}
+{%- for alt in page.hreflang %}
+<link rel="alternate" hreflang="{{ alt[0] }}" href="{{ alt[1] | absolute_url }}">
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ page.hreflang.en | default: page.hreflang.ko | absolute_url }}">
+{%- endif %}
 
-<!-- RSS/Atom 피드 메타 -->
+<!-- 파비콘 -->
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="icon" href="{{ '/favicon.png' | relative_url }}" type="image/png">
+<link rel="apple-touch-icon" href="{{ '/favicon.png' | relative_url }}">
+
+<!-- RSS/Atom 피드 -->
+<link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }} RSS" href="{{ '/rss.xml' | relative_url }}">
 {% feed_meta %}
 
 <!-- 브라우저 테마 컬러(라이트/다크) -->
 <meta name="theme-color" content="#0b0d10" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
-<!-- hreflang: 단일 언어라도 기본 + 현재 언어 표기 -->
-<link rel="alternate" hreflang="x-default"
-    href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}">
-<link rel="alternate" hreflang="{{ page.lang | default: site.lang | default: 'ko' }}"
-    href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}">
-
-<!-- 사이트 소유권 인증: _config.yml에 값이 있을 때만 출력 -->
-{%- if site.google_site_verification -%}
-<meta name="google-site-verification" content="{{ site.google_site_verification }}">
-{%- endif -%}
-{%- if site.naver_site_verification -%}
+<!-- 사이트 소유권 인증: Google은 {% raw %}{% seo %}{% endraw %}가 site.google_site_verification으로 자동 출력 -->
+{%- if site.naver_site_verification %}
 <meta name="naver-site-verification" content="{{ site.naver_site_verification }}">
-{%- endif -%}
+{%- endif %}
 
-<!-- Google AdSense: 프로덕션에서만 로드 -->
-{%- if jekyll.environment == "production" and site.adsense_client -%}
+<!-- Google AdSense (자동 광고): 프로덕션 빌드에서만 로드 -->
+{%- if site.adsense_client %}
 <meta name="google-adsense-account" content="{{ site.adsense_client }}">
+{%- if jekyll.environment == "production" %}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.adsense_client }}"
     crossorigin="anonymous"></script>
-{%- endif -%}
+{%- endif %}
+{%- endif %}
 
 <!-- 사이트 공용 CSS -->
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 
-<!-- (선택) 포스트에 한해 Breadcrumb 구조화 데이터 -->
-{% if page.collection == 'posts' or page.layout == 'post' %}
+<!-- 포스트: Breadcrumb 구조화 데이터 -->
+{%- if page.collection == 'posts' or page.layout == 'post' %}
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
   "@type":"BreadcrumbList",
   "itemListElement":[
-    {"@type":"ListItem","position":1,"name":"Blog","item":"{{ site.url }}{{ site.baseurl }}/blog.html"},
-    {"@type":"ListItem","position":2,"name":{{ page.title | jsonify }},"item":"{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html','' }}"}
+    {"@type":"ListItem","position":1,"name":"Video to GIF","item":"{{ '/' | absolute_url }}"},
+    {"@type":"ListItem","position":2,"name":"블로그","item":"{{ '/blog/' | absolute_url }}"},
+    {"@type":"ListItem","position":3,"name":{{ page.title | jsonify }},"item":"{{ page.url | absolute_url }}"}
   ]
 }
 </script>
-{% endif %}
+{%- endif %}

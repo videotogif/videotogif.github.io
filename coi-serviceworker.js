@@ -1,132 +1,20 @@
-/*! coi-serviceworker v0.1.6 - Guido Zuidhof, licensed under MIT */
-let coepCredentialless = false;
+/*
+ * 이전에 사용하던 coi-serviceworker(COOP/COEP 헤더 주입)를 제거하기 위한 "킬 스위치" 서비스 워커.
+ *
+ * - 변환기는 단일 스레드 gifski(encode.js)를 사용하므로 cross-origin isolation이 필요 없습니다.
+ * - COEP: require-corp 가 사이트 전체에 걸리면 Google AdSense 광고 iframe, giscus 댓글 iframe이 차단됩니다.
+ * - 이미 설치된 방문자 브라우저는 이 파일을 업데이트로 받아 스스로 등록 해제된 뒤 페이지를 새로고침합니다.
+ * - 이 파일은 일정 기간(수개월) 유지한 뒤 삭제해도 됩니다.
+ */
 if (typeof window === "undefined") {
     self.addEventListener("install", () => self.skipWaiting());
-    self.addEventListener("activate", (event) =>
-        event.waitUntil(self.clients.claim())
-    );
-
-    self.addEventListener("message", (ev) => {
-        if (!ev.data) {
-            return;
-        } else if (ev.data.type === "deregister") {
-            self.registration
-                .unregister()
-                .then(() => {
-                    return self.clients.matchAll();
-                })
-                .then((clients) => {
-                    clients.forEach((client) => client.navigate(client.url));
-                });
-        } else if (ev.data.type === "coepCredentialless") {
-            coepCredentialless = ev.data.value;
-        }
-    });
-
-    self.addEventListener("fetch", function (event) {
-        const r = event.request;
-        if (r.cache === "only-if-cached" && r.mode !== "same-origin") {
-            return;
-        }
-
-        const request =
-            coepCredentialless && r.mode === "no-cors"
-                ? new Request(r, {
-                    credentials: "omit",
-                })
-                : r;
-        event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    if (response.status === 0) {
-                        return response;
-                    }
-
-                    const newHeaders = new Headers(response.headers);
-                    newHeaders.set(
-                        "Cross-Origin-Embedder-Policy",
-                        coepCredentialless ? "credentialless" : "require-corp"
-                    );
-                    newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
-
-                    return new Response(response.body, {
-                        status: response.status,
-                        statusText: response.statusText,
-                        headers: newHeaders,
-                    });
-                })
-                .catch((e) => console.error(e))
+    self.addEventListener("activate", (event) => {
+        event.waitUntil(
+            (async () => {
+                await self.registration.unregister();
+                const clients = await self.clients.matchAll({ type: "window" });
+                clients.forEach((client) => client.navigate(client.url));
+            })()
         );
     });
-} else {
-    (() => {
-        // You can customize the behavior of this script through a global `coi` variable.
-        const coi = {
-            shouldRegister: () => true,
-            shouldDeregister: () => false,
-            coepCredentialless: () => false,
-            doReload: () => window.location.reload(),
-            quiet: false,
-            ...window.coi,
-        };
-
-        const n = navigator;
-
-        if (n.serviceWorker && n.serviceWorker.controller) {
-            n.serviceWorker.controller.postMessage({
-                type: "coepCredentialless",
-                value: coi.coepCredentialless(),
-            });
-
-            if (coi.shouldDeregister()) {
-                n.serviceWorker.controller.postMessage({ type: "deregister" });
-            }
-        }
-
-        // If we're already coi: do nothing. Perhaps it's due to this script doing its job, or COOP/COEP are
-        // already set from the origin server. Also if the browser has no notion of crossOriginIsolated, just give up here.
-        if (window.crossOriginIsolated !== false || !coi.shouldRegister()) return;
-
-        if (!window.isSecureContext) {
-            !coi.quiet &&
-                console.log(
-                    "COOP/COEP Service Worker not registered, a secure context is required."
-                );
-            return;
-        }
-
-        // In some environments (e.g. Chrome incognito mode) this won't be available
-        if (n.serviceWorker) {
-            n.serviceWorker.register(window.document.currentScript.src).then(
-                (registration) => {
-                    !coi.quiet &&
-                        console.log(
-                            "COOP/COEP Service Worker registered",
-                            registration.scope
-                        );
-
-                    registration.addEventListener("updatefound", () => {
-                        !coi.quiet &&
-                            console.log(
-                                "Reloading page to make use of updated COOP/COEP Service Worker."
-                            );
-                        coi.doReload();
-                    });
-
-                    // If the registration is active, but it's not controlling the page
-                    if (registration.active && !n.serviceWorker.controller) {
-                        !coi.quiet &&
-                            console.log(
-                                "Reloading page to make use of COOP/COEP Service Worker."
-                            );
-                        coi.doReload();
-                    }
-                },
-                (err) => {
-                    !coi.quiet &&
-                        console.error("COOP/COEP Service Worker failed to register:", err);
-                }
-            );
-        }
-    })();
 }

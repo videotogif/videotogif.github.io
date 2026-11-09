@@ -4,7 +4,12 @@ import encode from "../wasm/gifski-wasm/dist/encode.js";
 // -----------------------------
 // i18n (번역 리소스)
 // -----------------------------
-let currentLanguage = localStorage.getItem("zifLanguage") || "ko";
+// 페이지 언어(<html lang>)를 따른다: /en/ 페이지는 영어, 나머지는 한국어
+let currentLanguage = (document.documentElement.lang || "")
+  .toLowerCase()
+  .startsWith("en")
+  ? "en"
+  : "ko";
 
 const translations = {
   ko: {
@@ -724,25 +729,17 @@ ready(() => {
   }
 
   // GIF 자르기 페이지 링크 이벤트
+  // 링크 자체는 target="_blank" 로 새 탭에서 열리므로(기본 동작 유지),
+  // 현재 페이지는 그대로 두고 생성된 GIF가 있으면 다운로드만 해 준다.
   const trimPageLink = document.getElementById("trimPageLink");
   if (trimPageLink) {
-    trimPageLink.addEventListener("click", (e) => {
-      e.preventDefault();
-
+    trimPageLink.addEventListener("click", () => {
       const gifUrl = downloadLink?.href;
       if (gifUrl && gifUrl.startsWith("blob:")) {
-        // GIF가 있으면 다운로드 후 이동
         const link = document.createElement("a");
         link.href = gifUrl;
         link.download = "output.gif";
         link.click();
-
-        setTimeout(() => {
-          window.location.href = trimPageLink.href;
-        }, 100);
-      } else {
-        // GIF가 없으면 바로 이동
-        window.location.href = trimPageLink.href;
       }
     });
   }

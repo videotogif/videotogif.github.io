@@ -1,0 +1,345 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+title: "Free Video to GIF Converter – No Upload, 100% Private"
+description: "Convert MP4, MOV and WebM videos to high-quality GIFs for free. Runs entirely in your browser – no upload, no sign-up, no watermark. Add text captions and trim GIFs."
+permalink: /en/
+hreflang:
+  ko: "/"
+  en: "/en/"
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Video to GIF",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "inLanguage": "en",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free online video to GIF converter that runs 100% in your browser. No upload, no sign-up, no watermark.",
+  "url": "https://videotogif.github.io/en/",
+  "featureList": "Video upload, frame extraction, resolution control, FPS control, text overlay, GIF trimming, local processing",
+  "screenshot": "https://videotogif.github.io/assets/img/og-default.jpg"
+}
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Video to GIF Converter</h1>
+    <p class="page-subtitle">
+      Turn any video into a high-quality GIF right in your browser.<br>
+      Nothing is uploaded – your files never leave your device.
+    </p>
+  </header>
+
+  <div class="content-section">
+      <section class="upload-section" id="uploadSection">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text" id="uploadText">Select Video File</div>
+        <div class="upload-subtext" id="uploadSubtext">Click or drag &amp; drop to upload and automatically generate GIF.</div>
+        <input type="file" id="videoInput" accept="video/*">
+      </section>
+
+      <!-- Result -->
+      <section class="output-section" id="outputSection" style="display:none;">
+        <h2 class="sr-only">Download your GIF</h2>
+        <div class="section-title">
+          <span>✨</span>
+          <span id="outputTitle">Generated GIF</span>
+        </div>
+        <div id="output" style="position: relative;"></div>
+
+        <a id="downloadLink" style="display:none;" download="output.gif">
+          <span id="downloadText">Download GIF</span>
+        </a>
+
+        <!-- Trim slider (shown only when inline trimming is enabled) -->
+        <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+          <div class="trim-timeline">
+            <div class="trim-timeline-track" id="trimTrack">
+              <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
+              <div class="trim-timeline-selected" id="trimSelected"></div>
+              <div class="trim-handle trim-handle-start" id="trimHandleStart">
+                <div class="trim-handle-line"></div>
+              </div>
+              <div class="trim-handle trim-handle-end" id="trimHandleEnd">
+                <div class="trim-handle-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trim-info-row">
+            <div class="trim-info-item">
+              <label>Original:</label>
+              <span id="originalDuration" class="duration-value">0.0s</span>
+            </div>
+            <div class="trim-info-item trim-separator">→</div>
+            <div class="trim-info-item">
+              <label>Trimmed:</label>
+              <span id="trimmedDuration" class="duration-value highlight">0.0s</span>
+            </div>
+          </div>
+
+          <button id="generateGifBtn" class="convert-btn">
+            <span>🎬 Create GIF from selection</span>
+          </button>
+        </div>
+
+        <!-- Advanced settings -->
+        <div class="advanced-settings" id="advancedSettings">
+          <h2 class="sr-only">Advanced GIF settings</h2>
+          <div class="advanced-settings-header" id="advancedToggle">
+            <div class="advanced-settings-title">
+              <span>⚙️</span>
+              <span id="advancedSettingsTitle">Advanced Settings</span>
+            </div>
+            <div class="toggle-icon" id="toggleIcon">▼</div>
+          </div>
+          <div class="advanced-content" id="advancedContent">
+            <div class="settings-grid">
+              <div class="setting-group">
+                <label for="interval" id="intervalLabel">Frame Interval (seconds)</label>
+                <input type="number" id="interval" value="0.3" min="0.1" step="0.1">
+              </div>
+              <div class="setting-group tooltip">
+                <label for="outputWidth" id="outputWidthLabel">Output Width (px)</label>
+                <input type="number" id="outputWidth" value="420" min="1" max="900" title="Up to 900px is supported.">
+                <span class="tooltip-text" id="outputWidthTip">Up to 900px is supported.</span>
+              </div>
+              <div class="setting-group">
+                <label for="quality" id="qualityLabel">Quality (1~100)</label>
+                <input type="number" id="quality" value="90" min="1" max="100">
+              </div>
+              <div class="setting-group">
+                <label for="fps" id="fpsLabel">FPS (frames/second)</label>
+                <input type="number" id="fps" value="10" min="1" max="60">
+              </div>
+            </div>
+
+            <button id="reconvertBtn" class="convert-btn">
+              <span id="reconvertText">🔄 Regenerate GIF with New Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Text overlay -->
+        <div class="advanced-settings" id="textSettings">
+          <h2 class="sr-only">GIF text settings</h2>
+          <div class="advanced-settings-header" id="textToggle">
+            <div class="advanced-settings-title">
+              <span>✏️</span>
+              <span id="textSettingsTitle">Text Settings</span>
+            </div>
+            <div class="toggle-icon" id="textToggleIcon">▼</div>
+          </div>
+          <div class="advanced-content" id="textContent">
+            <div class="settings-grid">
+              <div class="setting-group">
+                <label for="overlayText" id="overlayTextLabel">Caption text</label>
+                <input type="text" id="overlayText" placeholder="Text to show on the GIF">
+              </div>
+              <div class="setting-group">
+                <label id="textPositionLabel">Text position</label>
+                <div class="text-position-hint">
+                  <span>💡 Drag the text on the generated GIF to move it</span>
+                </div>
+              </div>
+              <div class="setting-group">
+                <label for="textSize" id="textSizeLabel">Text size (px)</label>
+                <input type="number" id="textSize" value="30" min="10" max="200" step="1">
+              </div>
+              <div class="setting-group">
+                <label for="textColor" id="textColorLabel">Text color</label>
+                <input type="color" id="textColor" value="#ffffff">
+              </div>
+              <div class="setting-group">
+                <label for="textBgColor" id="textBgColorLabel">Background color</label>
+                <input type="color" id="textBgColor" value="#000000">
+              </div>
+              <div class="setting-group">
+                <label for="textBgOpacity" id="textBgOpacityLabel">Background opacity (0-1)</label>
+                <input type="number" id="textBgOpacity" value="0.6" min="0" max="1" step="0.1">
+              </div>
+            </div>
+
+            <button id="textReconvertBtn" class="convert-btn">
+              <span id="textReconvertText">🔄 Regenerate GIF with Text</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- GIF trim (opens in a new tab) -->
+        <div class="advanced-settings" id="trimSettings">
+          <a href="{{ '/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink" target="_blank" rel="noopener">
+            <div class="advanced-settings-title">
+              <span>✂️</span>
+              <span id="trimSettingsTitle">Trim GIF</span>
+            </div>
+            <div class="toggle-icon">→</div>
+          </a>
+        </div>
+      </section>
+
+      {% include ad-unit.html slot="home" %}
+
+      <section class="zif-how-to">
+        <h2>How to convert a video to GIF</h2>
+        <ol class="how-to-steps">
+          <li>
+            <strong>Upload your video</strong>
+            <p>Drag &amp; drop a video file or click to choose one. MP4, MOV, WebM, MKV and most formats your browser can play are supported. The file is read locally – it is never sent to a server.</p>
+          </li>
+          <li>
+            <strong>Check the frames</strong>
+            <p>Frames are extracted automatically and the GIF is generated right away, so you can preview exactly what the animation will look like.</p>
+          </li>
+          <li>
+            <strong>Fine-tune (optional)</strong>
+            <p>Open Advanced Settings to change the frame interval, output width (up to 900px), quality and FPS, then regenerate. Smaller widths and lower FPS make lighter files.</p>
+            <p>Use Text Settings to add a caption or watermark, then drag it anywhere on the GIF.</p>
+          </li>
+          <li>
+            <strong>Download the GIF</strong>
+            <p>Click Download GIF to save the result. Need a shorter clip? Open Trim GIF to cut it down to the exact part you want.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="zif-features">
+        <h2>Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>100% local processing</h3>
+            <p>Conversion happens in your browser. Your videos are never uploaded, stored or shared – safe for work files and personal clips.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast, no waiting</h3>
+            <p>Powered by WebAssembly. There is no upload or download queue, so short clips turn into GIFs in seconds.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>Full quality control</h3>
+            <p>Adjust frame interval, resolution, quality and FPS to balance sharpness and file size for any platform.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🚫</div>
+            <h3>No sign-up, no watermark</h3>
+            <p>Completely free. No account, no installation and no logo stamped on your GIF.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💎</div>
+            <h3>High-quality output</h3>
+            <p>Built on the gifski encoder, which uses smart palette optimization to keep colors smooth despite the 256-color GIF limit.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">✏️</div>
+            <h3>Text captions</h3>
+            <p>Add captions, labels or a watermark and position them by dragging – great for memes, tutorials and bug reports.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="zif-faq-preview">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Is this video to GIF converter really free?</summary>
+            <p>Yes. There are no limits, no sign-up and no watermark. The site is supported by ads.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Are my videos uploaded to a server?</summary>
+            <p>No. Your video is decoded and encoded entirely inside your browser using WebAssembly. Your video and the resulting GIF are never sent over the network.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Which video formats are supported?</summary>
+            <p>Any format your browser can play: MP4 (H.264), MOV, WebM, MKV and more. If a file does not open, try converting it to MP4 first or use the latest Chrome or Edge.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is there a file size limit?</summary>
+            <p>There is no fixed limit because nothing is uploaded, but processing uses your device's memory. Videos under about 100MB work smoothly on most computers; on phones, short clips (under 10 seconds) work best.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How do I make my GIF smaller?</summary>
+            <p>Increase the frame interval (e.g. 0.1s → 0.3s), reduce the output width (e.g. 720px → 480px) or lower the FPS. Trimming the clip to the essential 3–5 seconds is often the biggest win.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Does it work on iPhone and Android?</summary>
+            <p>Yes, it works in modern mobile browsers. Phones have less memory than computers, so keep clips short and the output width moderate for the best results.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="zif-use-cases">
+        <h2>What people use it for</h2>
+        <div class="use-cases-grid">
+          <div class="use-case-card">
+            <h3>📝 Blogs &amp; documentation</h3>
+            <p>Show a feature or a step-by-step process in motion. GIFs autoplay in almost every CMS, README and help center, making tutorials far easier to follow than static screenshots.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>💬 Social media &amp; chat</h3>
+            <p>Turn a funny moment into a looping GIF for X (Twitter), Reddit, Discord, Slack or iMessage. A short loop grabs attention in a busy feed.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🐛 Bug reports</h3>
+            <p>Record the bug, convert it and attach the GIF to a GitHub issue, Jira ticket or Linear task. Developers see exactly what happened without downloading a video.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🎓 Teaching &amp; presentations</h3>
+            <p>Add motion to slides and course material. GIFs play inside PowerPoint, Google Slides and Keynote without separate video files.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>🎨 Portfolios</h3>
+            <p>Show UI animations, app flows and design interactions on Behance, Dribbble or your personal site with lightweight GIF previews.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>📧 Email &amp; newsletters</h3>
+            <p>Most email clients cannot play video, but they do play GIFs – a simple way to add motion to product announcements.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="zif-how-to">
+        <h2>Tips for a great GIF</h2>
+
+        <h3>Keep it between 3 and 10 seconds</h3>
+        <p>
+          Short GIFs load faster and loop more naturally. If your video is long, split the key moments into several
+          short GIFs. Starting and ending on similar frames makes the loop look seamless.
+        </p>
+
+        <h3>Pick the right width</h3>
+        <p>
+          480–640px works well for social media and chat, 640–800px for blogs and docs, and 800–900px for portfolios and
+          presentations. If most viewers are on phones, staying under 500px gives fast loading and crisp results.
+          Avoid upscaling a low-resolution source.
+        </p>
+
+        <h3>Balance FPS and file size</h3>
+        <p>
+          Smooth motion needs a 0.1–0.2s frame interval (about 20–30 FPS), but files grow quickly. For tutorials and
+          screen recordings, 0.3–0.5s (about 10–15 FPS) is easier to follow and much lighter. Fast action and sports
+          clips benefit from shorter intervals.
+        </p>
+
+        <h3>Make captions readable</h3>
+        <p>
+          Use high-contrast colors such as white text on a dark background, set the background opacity to around 0.5–0.7 so
+          the video stays visible, and keep the text short – 30–50px usually reads well.
+        </p>
+      </section>
+  </div>
+</div>
+
+<!-- Processing elements -->
+<video id="video" crossorigin="anonymous"></video>
+<canvas id="canvas"></canvas>

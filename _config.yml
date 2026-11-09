@@ -43,6 +43,12 @@ google_site_verification: lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk
 naver_site_verification: 5bc446ed2588d2bddf6cac7b09788dc0e87bc67f
 adsense_client: ca-pub-1404060643961114
 
+# 수동 광고 단위 (선택). AdSense > 광고 > 광고 단위 기준 > 디스플레이 광고 생성 후
+# 나오는 data-ad-slot 숫자를 따옴표로 넣으세요. 비워두면 자동 광고만 동작합니다.
+adsense_slots:
+  home: ""   # 메인(한/영) 변환기 아래
+  post: ""   # 블로그 글 본문 아래
+
 # 로고/소셜 (가능하면 절대경로로)
 logo: https://videotogif.github.io/favicon.png
 
@@ -65,6 +71,10 @@ exclude:
   - package.json
   - package-lock.json
   - vite.config.js
+  - PROJECT_SPECIFICATION.md
+  # gifski 라이브러리 문서가 페이지로 렌더링되어 sitemap에 노출되는 것 방지
+  - assets/wasm/gifski-wasm/README.md
+  - assets/wasm/gifski-wasm/CHANGELOG.md
 
 # WASM 파일 지원
 include:

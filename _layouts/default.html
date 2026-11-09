@@ -1,21 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+{%- assign page_lang = page.lang | default: site.lang | default: "ko" -%}
+{%- assign is_en = false -%}
+{%- if page_lang contains "en" -%}{%- assign is_en = true -%}{%- endif %}
+<html lang="{{ page_lang }}">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="google-site-verification" content="lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk" />
-    <meta name="google-adsense-account" content="ca-pub-1404060643961114">
-    <meta name="naver-site-verification" content="5bc446ed2588d2bddf6cac7b09788dc0e87bc67f" />
-
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
-    {% seo %}
     {% include head.html %}
 
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <script type="module" src="{{ '/assets/js/main.js' | relative_url }}"></script>
 
     <!-- Theme init: run before paint -->
@@ -37,7 +28,7 @@
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="{{ '/' | relative_url }}">
+                <a href="{% if is_en %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}">
                     <span class="logo-text">Video to GIF</span>
                 </a>
             </div>
@@ -51,11 +42,15 @@
 
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ '/' | relative_url }}">Video to GIF</a></li>
+                    <li><a href="{% if is_en %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}">Video to GIF</a></li>
                     <li><a href="{{ '/gif-trim/' | relative_url }}">GIF Trim</a></li>
                     <li><a href="{{ '/about/' | relative_url }}">About</a></li>
                     <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
-                    <!-- <li><a href="{{ '/privacy/' | relative_url }}">Privacy</a></li> -->
+                    {%- if is_en %}
+                    <li><a href="{{ '/' | relative_url }}" hreflang="ko" lang="ko">한국어</a></li>
+                    {%- else %}
+                    <li><a href="{{ '/en/' | relative_url }}" hreflang="en" lang="en">English</a></li>
+                    {%- endif %}
                 </ul>
             </nav>
         </div>
@@ -69,7 +64,22 @@
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-content">
-                <p>© 2025 Video to GIF Converter. All rights reserved.</p>
+                <nav class="footer-links" aria-label="{% if is_en %}Site information{% else %}사이트 정보{% endif %}">
+                    {%- if is_en %}
+                    <a href="{{ '/about/' | relative_url }}">About</a>
+                    <a href="{{ '/faq/' | relative_url }}">FAQ</a>
+                    <a href="{{ '/contact/' | relative_url }}">Contact</a>
+                    <a href="{{ '/privacy/' | relative_url }}">Privacy Policy</a>
+                    <a href="{{ '/terms/' | relative_url }}">Terms</a>
+                    {%- else %}
+                    <a href="{{ '/about/' | relative_url }}">소개</a>
+                    <a href="{{ '/faq/' | relative_url }}">자주 묻는 질문</a>
+                    <a href="{{ '/contact/' | relative_url }}">문의하기</a>
+                    <a href="{{ '/privacy/' | relative_url }}">개인정보처리방침</a>
+                    <a href="{{ '/terms/' | relative_url }}">이용약관</a>
+                    {%- endif %}
+                </nav>
+                <p>© {{ site.time | date: "%Y" }} Video to GIF Converter. All rights reserved.</p>
                 <button class="dark-mode-toggle" aria-label="Toggle dark mode">
                     <span>Dark</span>
                 </button>
@@ -80,6 +90,17 @@
     <!-- 푸터 아래 한 번만 로드 -->
     <script src="{{ '/assets/js/darkmode-toggle.js' | relative_url }}"></script>
 
+    <!-- 예전에 설치된 COOP/COEP 서비스 워커 제거 (광고·댓글 iframe 차단 원인) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+                regs.forEach(function (r) {
+                    var sw = r.active || r.waiting || r.installing;
+                    if (sw && sw.scriptURL.indexOf('coi-serviceworker') !== -1) r.unregister();
+                });
+            }).catch(function () { });
+        }
+    </script>
 </body>
 
 </html>

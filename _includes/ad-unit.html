@@ -1,0 +1,13 @@
+{%- comment -%}
+  수동 광고 단위. 사용법: {% include ad-unit.html slot="home" %}
+  _config.yml 의 adsense_slots.<이름> 에 AdSense 광고 단위의 data-ad-slot 값을 넣으면 표시됩니다.
+  값이 비어 있으면 아무것도 출력하지 않습니다(자동 광고만 동작).
+{%- endcomment -%}
+{%- assign ad_slot = site.adsense_slots[include.slot] | default: "" | strip -%}
+{%- if jekyll.environment == "production" and site.adsense_client and ad_slot != "" %}
+<aside class="ad-unit" aria-label="Advertisement">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ site.adsense_client }}"
+        data-ad-slot="{{ ad_slot }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</aside>
+{%- endif -%}

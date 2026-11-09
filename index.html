@@ -1,7 +1,10 @@
 ---
 layout: default
-title: 무료 동영상 GIF 변환 | Video to GIF
-description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브라우저에서 바로 사용. 100% 로컬 처리로 개인정보 안전. 모바일 지원.
+title: "무료 동영상 GIF 변환기 - MP4·MOV를 고화질 GIF로"
+description: "동영상을 GIF로 무료 변환하세요. MP4·MOV·WebM 지원, 회원가입·설치·서버 업로드 없이 브라우저에서 바로 변환해 개인정보가 안전합니다. 텍스트 추가·GIF 자르기 지원."
+hreflang:
+  ko: "/"
+  en: "/en/"
 ---
 
 <script type="application/ld+json">
@@ -65,7 +68,7 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
 
 <div class="page-container">
   <header class="page-hero">
-    <h1 class="page-title" data-i18n="hero.title">Video to GIF 컨버터</h1>
+    <h1 class="page-title" data-i18n="hero.title">동영상 GIF 변환기</h1>
     <p class="page-subtitle" data-i18n="hero.subtitle">
       브라우저에서 100% 로컬로 동작하는 프리미엄 Video to GIF 컨버터입니다.<br>
       개인정보 유출 걱정 없이 고화질 GIF를 손쉽게 만들어보세요.
@@ -73,7 +76,6 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
   </header>
 
   <div class="content-section">
-      <h1 class="sr-only">Video to GIF 변환 서비스</h1>
       <section class="upload-section" id="uploadSection">
         <div class="upload-icon">📁</div>
         <div class="upload-text" id="uploadText">비디오 파일을 선택하세요</div>
@@ -216,7 +218,7 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
 
         <!-- GIF 자르기 설정 -->
         <div class="advanced-settings" id="trimSettings">
-          <a href="{{ '/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink">
+          <a href="{{ '/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink" target="_blank" rel="noopener">
             <div class="advanced-settings-title">
               <span>✂️</span>
               <span id="trimSettingsTitle">GIF 자르기</span>
@@ -225,6 +227,8 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
           </a>
         </div>
       </section>
+
+      {% include ad-unit.html slot="home" %}
 
       <section class="zif-how-to">
         <h2>사용 방법</h2>
@@ -446,5 +450,3 @@ description: 동영상을 GIF로 무료 변환. 회원가입·설치 없이 브�
 <!-- 처리용 요소 -->
 <video id="video" crossorigin="anonymous"></video>
 <canvas id="canvas"></canvas>
-
-<script src="{{ '/coi-serviceworker.js' | relative_url }}"></script>
