@@ -1,6 +1,24 @@
 // GIF Trim - Standalone GIF trimming functionality
 import encode from "/assets/wasm/gifski-wasm/dist/encode.js";
 
+// 페이지 언어(<html lang>)에 맞춰 문구 선택
+const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
+const T = IS_EN
+  ? {
+      generating: "Creating GIF...",
+      analyzing: "Reading GIF frames...",
+      unsupported:
+        "This browser can't extract GIF frames (ImageDecoder is not supported). Please use the latest Chrome or Edge.",
+      sec: "s",
+    }
+  : {
+      generating: "GIF 생성 중...",
+      analyzing: "GIF 파일을 분석 중...",
+      unsupported:
+        "이 브라우저는 GIF 프레임 추출( ImageDecoder )을 지원하지 않습니다. 최신 Chrome/Edge를 사용해주세요.",
+      sec: "초",
+    };
+
 function ready(fn) {
   if (document.readyState !== "loading") fn();
   else document.addEventListener("DOMContentLoaded", fn, { once: true });
@@ -9,7 +27,7 @@ function ready(fn) {
 ready(() => {
   let frames = [];
   let gifDuration = 0; // GIF 전체 길이 (초)
-  let frameInterval = 0.1; // 프레임 간격 (초, GIF 기본값)
+  let frameDurations = []; // 각 프레임 재생 시간 (ms). 원본 GIF 속도를 그대로 유지하기 위해 사용
 
   // Trim 관련 변수
   let trimStartIndex = 0;
@@ -89,10 +107,10 @@ ready(() => {
     if (trimOutput) trimOutput.innerHTML = "";
     if (trimDownloadLink) trimDownloadLink.style.display = "none";
 
-    setProgressMessage("GIF 생성 중...");
+    setProgressMessage(T.generating);
 
     const original = generateTrimmedGifBtn.innerHTML;
-    generateTrimmedGifBtn.innerHTML = `<span class="loading-spinner"></span> GIF 생성 중...`;
+    generateTrimmedGifBtn.innerHTML = `<span class="loading-spinner"></span> ${T.generating}`;
     generateTrimmedGifBtn.disabled = true;
 
     await generateTrimmedGIF(trimmedFrames);
@@ -121,7 +139,7 @@ ready(() => {
   }
 
   async function handleGifFile(file) {
-    setProgressMessage("GIF 파일을 분석 중...");
+    setProgressMessage(T.analyzing);
 
     // GIF에서 프레임 추출
     await extractFramesFromGif(file);
@@ -143,12 +161,11 @@ ready(() => {
 
   async function extractFramesFromGif(file) {
     frames = [];
+    frameDurations = [];
 
     // 브라우저가 ImageDecoder(WebCodecs)를 지원하는지 확인
     if (!("ImageDecoder" in window)) {
-      alert(
-        "이 브라우저는 GIF 프레임 추출( ImageDecoder )을 지원하지 않습니다. 최신 Chrome/Edge를 사용해주세요."
-      );
+      alert(T.unsupported);
       return;
     }
 
@@ -186,15 +203,28 @@ ready(() => {
       );
       frames.push(blob);
 
+      // 원본 프레임 재생 시간 (VideoFrame.duration은 마이크로초).
+      // 값이 없거나 20ms 미만이면 브라우저들이 실제로 쓰는 100ms로 맞춘다.
+      let durationMs = image.duration ? image.duration / 1000 : 100;
+      if (durationMs < 20) durationMs = 100;
+      frameDurations.push(Math.round(durationMs));
+
       // ImageBitmap 리소스 해제
       if (typeof image.close === "function") {
         image.close();
       }
     }
 
-    // 프레임 수 기준으로 길이/간격 계산 (일단 10fps 기준)
-    frameInterval = 0.1; // 1 / 10fps
-    gifDuration = frameCount * frameInterval;
+    gifDuration = sumDurations(0, frameDurations.length - 1) / 1000;
+  }
+
+  // start~end 프레임(포함)의 재생 시간 합계 (ms)
+  function sumDurations(start, end) {
+    let total = 0;
+    for (let i = start; i <= end && i < frameDurations.length; i++) {
+      total += frameDurations[i];
+    }
+    return total;
   }
 
   function initTrimFeature() {
@@ -298,8 +328,7 @@ ready(() => {
     trimSelected.style.width = `${endPercent - startPercent}%`;
 
     // 잘라낸 구간의 길이 계산
-    const selectedFrameCount = trimEndIndex - trimStartIndex + 1;
-    const trimmedLength = selectedFrameCount * frameInterval;
+    const trimmedLength = sumDurations(trimStartIndex, trimEndIndex) / 1000;
 
     // 드래그 중이 아닐 때만 텍스트 업데이트 (성능 최적화)
     if (!isDragging) {
@@ -308,11 +337,11 @@ ready(() => {
         originalDuration &&
         !originalDuration.textContent.includes(gifDuration.toFixed(1))
       ) {
-        originalDuration.textContent = `${gifDuration.toFixed(1)}초`;
+        originalDuration.textContent = `${gifDuration.toFixed(1)}${T.sec}`;
       }
 
       if (trimmedDuration && lastTrimmedLength !== trimmedLength) {
-        trimmedDuration.textContent = `${trimmedLength.toFixed(1)}초`;
+        trimmedDuration.textContent = `${trimmedLength.toFixed(1)}${T.sec}`;
         lastTrimmedLength = trimmedLength;
       }
     }
@@ -339,7 +368,8 @@ ready(() => {
       width: trimCanvas.width,
       height: trimCanvas.height,
       quality: 90,
-      fps: 10,
+      // 원본 GIF의 프레임별 재생 시간을 그대로 사용 (예전에는 10fps로 고정돼 속도가 바뀌었음)
+      frameDurations: frameDurations.slice(trimStartIndex, trimEndIndex + 1),
     });
 
     const gifBlob = new Blob([gifBuffer], { type: "image/gif" });
@@ -370,7 +400,7 @@ ready(() => {
 
   // Trim 핸들 드래그
   if (trimHandleStart) {
-    trimHandleStart.addEventListener("mousedown", (e) => {
+    trimHandleStart.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       isDraggingTrimHandle = true;
       activeTrimHandle = "start";
@@ -378,7 +408,7 @@ ready(() => {
   }
 
   if (trimHandleEnd) {
-    trimHandleEnd.addEventListener("mousedown", (e) => {
+    trimHandleEnd.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       isDraggingTrimHandle = true;
       activeTrimHandle = "end";
@@ -403,7 +433,8 @@ ready(() => {
     });
   }
 
-  document.addEventListener("mousemove", (e) => {
+  // 마우스와 터치 모두 지원하도록 pointer 이벤트 사용
+  document.addEventListener("pointermove", (e) => {
     if (!isDraggingTrimHandle || !trimTrack) return;
 
     const rect = trimTrack.getBoundingClientRect();
@@ -425,7 +456,7 @@ ready(() => {
     updateTrimUI(true);
   });
 
-  document.addEventListener("mouseup", () => {
+  document.addEventListener("pointerup", () => {
     if (isDraggingTrimHandle) {
       isDraggingTrimHandle = false;
       activeTrimHandle = null;

@@ -20,7 +20,8 @@ sitemap: false
       <link>{{ site.url }}{{ site.baseurl }}/</link>
     </image>
     {% endif %}
-    {% for post in site.posts limit: 20 %}
+    {% assign ko_posts = site.posts | where: "lang", "ko-KR" %}
+    {% for post in ko_posts limit: 20 %}
     <item>
       <title>{{ post.title | xml_escape }}</title>
       <link>{{ site.url }}{{ site.baseurl }}{{ post.url }}</link>

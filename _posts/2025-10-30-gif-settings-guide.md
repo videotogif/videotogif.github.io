@@ -1,5 +1,6 @@
 ---
 layout: post
+ref: settings-guide
 title: "GIF 변환 설정 정리: 프레임 간격, FPS, 크기, 품질"
 date: 2025-10-30 10:00:00 +0900
 last_modified_at: 2026-11-09 10:00:00 +0900

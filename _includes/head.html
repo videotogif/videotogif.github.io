@@ -19,12 +19,11 @@
 <!-- 로봇 제어(페이지별 robots 값을 우선) -->
 <meta name="robots" content="{{ page.robots | default: 'index,follow' }}">
 
-<!-- hreflang: 번역 페이지가 있는 경우에만 출력 (front matter 예: hreflang: { ko: "/", en: "/en/" }) -->
-{%- if page.hreflang %}
-{%- for alt in page.hreflang %}
-<link rel="alternate" hreflang="{{ alt[0] }}" href="{{ alt[1] | absolute_url }}">
-{%- endfor %}
-<link rel="alternate" hreflang="x-default" href="{{ page.hreflang.en | default: page.hreflang.ko | absolute_url }}">
+<!-- hreflang: 한/영 짝(같은 ref)이 모두 있을 때만 출력. alt_ko/alt_en은 _layouts/default.html에서 계산 -->
+{%- if alt_ko and alt_en %}
+<link rel="alternate" hreflang="ko" href="{{ alt_ko | absolute_url }}">
+<link rel="alternate" hreflang="en" href="{{ alt_en | absolute_url }}">
+<link rel="alternate" hreflang="x-default" href="{{ alt_en | absolute_url }}">
 {%- endif %}
 
 <!-- 파비콘 -->
@@ -64,8 +63,8 @@
   "@context":"https://schema.org",
   "@type":"BreadcrumbList",
   "itemListElement":[
-    {"@type":"ListItem","position":1,"name":"Video to GIF","item":"{{ '/' | absolute_url }}"},
-    {"@type":"ListItem","position":2,"name":"블로그","item":"{{ '/blog/' | absolute_url }}"},
+    {"@type":"ListItem","position":1,"name":"Video to GIF","item":"{{ lang_base | append: '/' | absolute_url }}"},
+    {"@type":"ListItem","position":2,"name":"{% if is_en %}Blog{% else %}블로그{% endif %}","item":"{{ lang_base | append: '/blog/' | absolute_url }}"},
     {"@type":"ListItem","position":3,"name":{{ page.title | jsonify }},"item":"{{ page.url | absolute_url }}"}
   ]
 }

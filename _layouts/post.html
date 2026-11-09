@@ -1,6 +1,31 @@
 ---
 layout: default
 ---
+{%- assign is_en = false -%}
+{%- if page.lang contains "en" -%}{%- assign is_en = true -%}{%- endif -%}
+{%- if is_en -%}
+  {%- assign date_fmt = "%B %-d, %Y" -%}
+  {%- assign blog_base = "/en/blog/" -%}
+{%- else -%}
+  {%- assign date_fmt = "%Y년 %m월 %d일" -%}
+  {%- assign blog_base = "/blog/" -%}
+{%- endif -%}
+{%- comment -%} 이전/다음 글은 같은 언어 글끼리만 연결 {%- endcomment -%}
+{%- assign same_lang_posts = site.posts | where: "lang", page.lang -%}
+{%- assign cur_idx = -1 -%}
+{%- for p in same_lang_posts -%}
+  {%- if p.url == page.url -%}{%- assign cur_idx = forloop.index0 -%}{%- endif -%}
+{%- endfor -%}
+{%- assign newer_post = nil -%}
+{%- assign older_post = nil -%}
+{%- if cur_idx > 0 -%}
+  {%- assign newer_idx = cur_idx | minus: 1 -%}
+  {%- assign newer_post = same_lang_posts[newer_idx] -%}
+{%- endif -%}
+{%- if cur_idx >= 0 -%}
+  {%- assign older_idx = cur_idx | plus: 1 -%}
+  {%- assign older_post = same_lang_posts[older_idx] -%}
+{%- endif %}
 
 <div class="post-page-wrapper">
     <article class="post-article">
@@ -8,10 +33,10 @@ layout: default
             <h1 class="post-title">{{ page.title }}</h1>
             <div class="post-meta">
                 <time datetime="{{ page.date | date_to_xmlschema }}">
-                    {{ page.date | date: "%Y년 %m월 %d일" }}
+                    {{ page.date | date: date_fmt }}
                 </time>
                 {% if page.last_modified_at %}
-                <span class="post-updated">수정 <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{{ page.last_modified_at | date: "%Y년 %m월 %d일" }}</time></span>
+                <span class="post-updated">{% if is_en %}Updated{% else %}수정{% endif %} <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{{ page.last_modified_at | date: date_fmt }}</time></span>
                 {% endif %}
                 {% if page.category %}
                 <span class="post-category">{{ page.category }}</span>
@@ -21,7 +46,7 @@ layout: default
             {% if page.tags and page.tags.size > 0 %}
             <div class="post-tags">
                 {% for tag in page.tags %}
-                <a href="/blog/?tag={{ tag | url_encode }}" class="post-tag">#{{ tag }}</a>
+                <a href="{{ blog_base | relative_url }}?tag={{ tag | url_encode }}" class="post-tag">#{{ tag }}</a>
                 {% endfor %}
             </div>
             {% endif %}
@@ -34,29 +59,28 @@ layout: default
 
     {% include ad-unit.html slot="post" %}
 
-    <!-- ▼ 포스트 하단 네비게이션 추가 -->
+    <!-- ▼ 포스트 하단 네비게이션 (같은 언어 글끼리) -->
     <div class="post-navigation">
-        {% if page.previous.url %}
+        {% if older_post %}
         <div class="nav-previous">
-            <a href="{{ page.previous.url | relative_url }}" rel="prev">
-                <span class="nav-label">← 이전 글</span>
-                <span class="nav-title">{{ page.previous.title }}</span>
+            <a href="{{ older_post.url | relative_url }}" rel="prev">
+                <span class="nav-label">{% if is_en %}← Previous post{% else %}← 이전 글{% endif %}</span>
+                <span class="nav-title">{{ older_post.title }}</span>
             </a>
         </div>
         {% endif %}
 
-        {% if page.next.url %}
+        {% if newer_post %}
         <div class="nav-next">
-            <a href="{{ page.next.url | relative_url }}" rel="next">
-                <span class="nav-label">다음 글 →</span>
-                <span class="nav-title">{{ page.next.title }}</span>
+            <a href="{{ newer_post.url | relative_url }}" rel="next">
+                <span class="nav-label">{% if is_en %}Next post →{% else %}다음 글 →{% endif %}</span>
+                <span class="nav-title">{{ newer_post.title }}</span>
             </a>
         </div>
         {% endif %}
     </div>
     <!-- ▲ 포스트 하단 네비게이션 -->
 
-    <!-- 댓글 섹션 (기존 유지) -->
     {% if page.comments %}
     {% include comments.html %}
     {% endif %}

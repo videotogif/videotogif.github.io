@@ -1,0 +1,169 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: contact
+title: "Contact"
+description: "Get in touch about the Video to GIF converter: questions, bug reports, feature ideas and feedback."
+permalink: /en/contact/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Contact</h1>
+    <p class="page-subtitle">Have a question? Feel free to reach out anytime</p>
+  </header>
+
+  <section class="content-section">
+    <h2>For a Faster Answer</h2>
+    <p>
+      Before you write, take a look at the <a href="{{ '/en/faq/' | relative_url }}">Frequently Asked Questions (FAQ)</a>.
+      You might find your answer there faster.
+      It covers basic usage, file size limits, browser compatibility and more.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Email</h2>
+    <p>
+      If you run into a problem while using the service, or have a suggestion, a bug report or a partnership inquiry,
+      please email me at the address below.
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">📧</span>
+        <div class="point-content">
+          <h4>Email Address</h4>
+          <p><a href="mailto:ghdalswl162@gmail.com"
+              style="font-size: 1.1em; font-weight: 500;">ghdalswl162@gmail.com</a>
+          </p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">⏱️</span>
+        <div class="point-content">
+          <h4>Response Time</h4>
+          <p>I reply within 1-3 business days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Types of Inquiries</h2>
+
+    <h3>🐛 Bug Reports</h3>
+    <p>If something went wrong while using the service, please include the following:</p>
+    <ul class="tech-list">
+      <li><strong>Browser and version</strong> (e.g., Chrome 120.0, Safari 17.1)</li>
+      <li><strong>Operating system</strong> (e.g., Windows 11, macOS 14.0, Android 13)</li>
+      <li><strong>When the error happened</strong> (while uploading the video, generating the GIF, downloading, etc.)</li>
+      <li><strong>Error message</strong> (a screenshot is even better)</li>
+      <li><strong>Video file details</strong> (format, file size, length)</li>
+    </ul>
+    <p>
+      The more detail you give me, the faster I can fix the problem.
+      You don't need to send video files that contain personal information; I can test with a sample file under similar conditions.
+    </p>
+
+    <h3>💡 Feature Requests</h3>
+    <p>Have an idea for a new feature? Please include:</p>
+    <ul class="tech-list">
+      <li><strong>The feature you're suggesting</strong> (please be specific)</li>
+      <li><strong>Why it's needed</strong> (in what situations it would be useful)</li>
+      <li><strong>Expected benefit</strong> (what would get better if it were added)</li>
+    </ul>
+    <p>
+      Your feedback really helps me improve the service.
+      I review every suggestion to see whether it's feasible, and the most useful features get built first.
+    </p>
+
+    <h3>🤝 Partnerships and Collaboration</h3>
+    <p>I welcome partnership inquiries such as:</p>
+    <ul class="check-list">
+      <li>✅ Service API integration</li>
+      <li>✅ Collaboration with educational institutions</li>
+      <li>✅ Custom solutions for businesses</li>
+      <li>✅ Contributions to the open-source project</li>
+    </ul>
+    <p>
+      When you reach out about a partnership, please include a short introduction to your company or organization, the purpose of the partnership and the expected benefits. I'll review it and get back to you.
+    </p>
+
+    <h3>🔐 Reporting Security Vulnerabilities</h3>
+    <p>
+      If you find a security vulnerability in the service, please report it privately by email instead of posting it publicly.
+      I'll look into it and fix it quickly, and I'll formally thank you for your help.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Common Questions</h2>
+    <details class="faq-item">
+      <summary>Conversion is too slow. What should I do?</summary>
+      <p>
+        Conversion speed depends on the video's length, resolution and your device's performance.
+        For faster conversion, shorten the video to 10 seconds or less and set the output size to 500px or less.
+        Increasing the frame interval to 0.3 seconds or more also helps, since there are fewer frames to process.
+      </p>
+    </details>
+    <details class="faq-item">
+      <summary>It doesn't work well on my phone.</summary>
+      <p>
+        Mobile devices have less memory and processing power than computers.
+        On mobile, I recommend short clips of 5 seconds or less and an output size of 400px or less.
+        For long videos or high-resolution conversions, please use a computer.
+      </p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I use it commercially?</summary>
+      <p>
+        Yes, the service is free and you can use it for commercial purposes too.
+        However, the copyright of a GIF you create follows the copyright of the original video,
+        so you need the legal right to use the original content.
+        Copying or redistributing the service's own source code is not allowed.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Privacy Questions</h2>
+    <p>
+      This service runs entirely on the client side and doesn't collect personal information,
+      but if you have any questions about the privacy policy, feel free to contact me anytime.
+      <a href="{{ '/en/privacy/' | relative_url }}">View the Privacy Policy</a>
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Social Media</h2>
+    <p>
+      For service updates and GIF-making tips, check out the blog.
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">📝</span>
+        <div class="point-content">
+          <h4>Blog</h4>
+          <p><a href="{{ '/en/blog/' | relative_url }}">Visit the Video to GIF blog</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>Reach Out Anytime</h2>
+    <p>Your feedback makes this service better.</p>
+    <a href="mailto:ghdalswl162@gmail.com" class="start-button">Email Me →</a>
+  </section>
+</div>

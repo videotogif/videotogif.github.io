@@ -10,9 +10,6 @@ locale: ko_KR # Open Graph/og:locale 용
 # 링크 형태 정규화
 permalink: pretty
 
-# 블로그 페이지네이션
-paginate: 9
-paginate_path: "/blog/page:num/"
 
 theme: minima
 
@@ -20,7 +17,6 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
-  - jekyll-paginate
   - jekyll-redirect-from
 
 # 기본값 (front matter 없을 때)

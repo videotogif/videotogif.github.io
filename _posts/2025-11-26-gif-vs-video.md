@@ -1,5 +1,6 @@
 ---
 layout: post
+ref: gif-vs-video
 title: "GIF로 만들까, 동영상으로 둘까? 제가 쓰는 기준"
 date: 2025-11-26 10:00:00 +0900
 last_modified_at: 2026-11-09 10:00:00 +0900

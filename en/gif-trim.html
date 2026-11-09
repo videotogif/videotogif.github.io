@@ -1,0 +1,106 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: gif-trim
+title: "Trim GIF - Keep Only the Part You Need"
+description: "Cut a GIF down to the part you need, right in your browser. No upload, and the original playback speed is kept."
+permalink: /en/gif-trim/
+---
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Trim GIF</h1>
+    <p class="page-subtitle">Upload a GIF and keep only the part you want</p>
+  </header>
+
+  <div class="content-section">
+    <section class="upload-section" id="gifUploadSection">
+      <div class="upload-icon">📎</div>
+      <div class="upload-text" id="gifUploadText">Select a GIF file</div>
+      <div class="upload-subtext" id="gifUploadSubtext">Click or drag &amp; drop a GIF file here</div>
+      <br>
+      <input type="file" id="gifInput" accept="image/gif">
+    </section>
+
+    <!-- Result -->
+    <section class="output-section" id="trimOutputSection" style="display:none;">
+      <h2 class="sr-only">GIF preview</h2>
+      <div class="section-title">
+        <span>✨</span>
+        <span>GIF Preview</span>
+      </div>
+      <div id="trimOutput"></div>
+
+      <!-- Trim slider -->
+      <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+        <div class="trim-timeline">
+          <div class="trim-timeline-track" id="trimTrack">
+            <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
+
+            <div class="trim-timeline-selected" id="trimSelected"></div>
+            <div class="trim-handle trim-handle-start" id="trimHandleStart">
+              <div class="trim-handle-line"></div>
+            </div>
+            <div class="trim-handle trim-handle-end" id="trimHandleEnd">
+              <div class="trim-handle-line"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Length info -->
+        <div class="trim-info-row">
+          <div class="trim-info-item">
+            <label>Original:</label>
+            <span id="originalDuration" class="duration-value">0.0s</span>
+          </div>
+          <div class="trim-info-item trim-separator">→</div>
+          <div class="trim-info-item">
+            <label>Trimmed:</label>
+            <span id="trimmedDuration" class="duration-value highlight">0.0s</span>
+          </div>
+        </div>
+
+        <button id="generateTrimmedGifBtn" class="convert-btn">
+          <span>✂️ Trim GIF to selection</span>
+        </button>
+      </div>
+
+      <a id="trimDownloadLink" style="display:none;" download="trimmed.gif">
+        <span>Download GIF</span>
+      </a>
+    </section>
+  </div>
+
+  <section class="zif-how-to">
+    <h2>How to trim a GIF</h2>
+    <ol class="how-to-steps">
+      <li>
+        <strong>Upload your GIF</strong>
+        <p>Drag a GIF file onto the box above or click to choose one. Nothing is uploaded; the file is processed inside your browser.</p>
+      </li>
+      <li>
+        <strong>Pick the part to keep</strong>
+        <p>Drag the green handles at both ends of the timeline. The frame at the handle shows up above while you drag. On a phone, just drag with your finger.</p>
+      </li>
+      <li>
+        <strong>Trim and save</strong>
+        <p>Click "Trim GIF to selection" to create the new GIF, then save it with Download GIF.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="zif-how-to">
+    <h2>Good to know</h2>
+    <ul>
+      <li>The original duration of every frame is kept, so the trimmed GIF plays at the same speed as the original.</li>
+      <li>The selected part is re-encoded, so the file size isn't exactly proportional to the original.</li>
+      <li>Reading GIF frames relies on a browser feature (ImageDecoder). It works best in the latest Chrome or Edge.</li>
+      <li>Don't have a GIF yet? Make one with the <a href="{{ '/en/' | relative_url }}">video to GIF converter</a> first, then trim it here. Cutting the length is the most reliable way to shrink a GIF.</li>
+    </ul>
+  </section>
+</div>
+
+<canvas id="trimCanvas" style="display:none;"></canvas>
+
+<script type="module" src="{{ '/assets/js/gif-trim.js' | relative_url }}"></script>

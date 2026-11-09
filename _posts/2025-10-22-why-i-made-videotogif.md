@@ -1,5 +1,6 @@
 ---
 layout: post
+ref: why-i-made
 title: "내가 GIF 변환 도구를 만든 이유"
 date: 2025-10-22 21:00:00 +0900
 last_modified_at: 2026-11-09 10:00:00 +0900

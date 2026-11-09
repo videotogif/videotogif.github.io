@@ -1,8 +1,9 @@
 ---
 layout: default
-title: "GIF 자르기 - 온라인 GIF 구간 자르기 무료 도구"
-description: "이미 생성된 GIF 파일을 원하는 구간만 잘라서 저장하세요. 빠르고 간편한 온라인 GIF 편집 도구."
+title: "GIF 자르기 - 원하는 구간만 남기는 무료 도구"
+description: "GIF에서 필요한 구간만 남겨서 저장하세요. 서버 업로드 없이 브라우저에서 바로 자르고, 원본 재생 속도도 그대로 유지돼요."
 permalink: /gif-trim/
+ref: gif-trim
 ---
 
 <div class="page-container">
@@ -71,6 +72,34 @@ permalink: /gif-trim/
       </a>
     </section>
   </div>
+
+  <section class="zif-how-to">
+    <h2>사용 방법</h2>
+    <ol class="how-to-steps">
+      <li>
+        <strong>GIF 올리기</strong>
+        <p>위 상자에 GIF 파일을 끌어다 놓거나 눌러서 고르세요. 파일은 서버로 올라가지 않고 브라우저 안에서만 처리돼요.</p>
+      </li>
+      <li>
+        <strong>남길 구간 고르기</strong>
+        <p>아래 타임라인 양 끝의 초록색 손잡이를 끌어서 남길 부분을 정하세요. 끄는 동안 위에 그 지점의 장면이 보여요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
+      </li>
+      <li>
+        <strong>자르고 저장하기</strong>
+        <p>"선택한 구간으로 GIF 자르기"를 누르면 새 GIF가 만들어지고, GIF 다운로드로 저장할 수 있어요.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="zif-how-to">
+    <h2>알아 두면 좋은 점</h2>
+    <ul>
+      <li>원본 GIF의 장면별 재생 시간을 그대로 유지해서, 자른 뒤에도 속도가 바뀌지 않아요.</li>
+      <li>자른 구간을 다시 인코딩해서 저장하기 때문에 용량이 원본과 딱 비례하지는 않아요.</li>
+      <li>GIF의 장면을 읽는 데 브라우저 기능(ImageDecoder)을 써요. 최신 크롬이나 엣지에서 가장 잘 동작합니다.</li>
+      <li>아직 GIF가 없다면 <a href="{{ '/' | relative_url }}">동영상 GIF 변환기</a>에서 먼저 만들고 와서 잘라 보세요. 길이를 줄이는 게 용량을 줄이는 가장 확실한 방법이에요.</li>
+    </ul>
+  </section>
 </div>
 
 <canvas id="trimCanvas" style="display:none;"></canvas>

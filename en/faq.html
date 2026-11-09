@@ -1,0 +1,389 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: faq
+title: "Frequently Asked Questions (FAQ)"
+description: "Answers to common questions about the free Video to GIF converter: supported formats, file size limits, privacy, settings and troubleshooting."
+permalink: /en/faq/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Frequently Asked Questions</h1>
+    <p class="page-subtitle">Answers to the most common questions about using Video to GIF</p>
+  </header>
+
+  <section class="content-section">
+    <h2>The Basics</h2>
+
+    <details class="faq-item" open>
+      <summary>What is Video to GIF?</summary>
+      <p>
+        Video to GIF is a free web tool that turns video files into animated GIFs.
+        It runs 100% locally in your browser, so your files are never uploaded to a server,
+        and you can start using it right away with no sign-up and no software to install.
+        It uses WebAssembly to create high-quality GIFs quickly.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is it free?</summary>
+      <p>
+        Yes, completely free. Every feature is available with no limits,
+        and there are no hidden costs or paid subscriptions.
+        Everything is processed locally in your browser, so there are no server costs,
+        which means it's free now and I plan to keep it that way.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Do I need to sign up?</summary>
+      <p>
+        No, there's no sign-up or login at all.
+        Just open the site, pick a file and start converting.
+        I don't ask for any personal information like your email or phone number,
+        and no usage history or conversion records are saved.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Supported Formats and Limits</h2>
+
+    <details class="faq-item">
+      <summary>Which video formats are supported?</summary>
+      <p>
+        You can use most formats the HTML5 Video API supports, including MP4, MOV, AVI, WebM and MKV.
+        MP4 (H.264 codec), the most common format, works in every browser,
+        and WebM and OGV play in most modern browsers too.
+        If a particular format doesn't work, convert it to MP4 with a free tool like HandBrake and try again.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is there a file size limit?</summary>
+      <p>
+        Files are processed in your browser's memory instead of being uploaded to a server, so there's no official file size limit.
+        What you can handle depends on your device's memory and your browser's performance.
+        In general, <strong>videos under 100MB</strong> work fine on most computers.
+        On mobile devices I recommend staying under 30-50MB, and very large files (200MB or more) can make the browser slow down or freeze.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is there a limit on video length?</summary>
+      <p>
+        There's no time limit, but because of how GIFs work, <strong>3-10 seconds is ideal</strong>.
+        Long clips can turn into GIFs that are tens of MB, which load slowly and may run into upload limits on websites and social media.
+        For videos longer than 30 seconds, I recommend cutting out just the key parts and splitting them into several short GIFs.
+        Trimming the section you want in a video editor before converting makes the whole process more efficient.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What's the maximum resolution?</summary>
+      <p>
+        You can set the output width up to <strong>900px</strong>.
+        Generally, 480-640px works well for social media and 640-800px for blogs.
+        Higher resolutions mean bigger files, so pick a size that fits where the GIF is going.
+        Scaling up beyond the original video actually makes it look worse, so I recommend keeping the original size or going smaller.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Privacy and Security</h2>
+
+    <details class="faq-item">
+      <summary>Are my files stored on a server?</summary>
+      <p>
+        <strong>Never.</strong> That's the main thing that sets this tool apart.
+        All conversion happens only in your browser, and neither your video nor the GIF it creates is sent to a server.
+        Files are processed only in your computer's memory and are cleared as soon as you close or refresh the page.
+        If you check with a network monitoring tool, you'll see there's no file upload traffic at all.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Do you collect personal information?</summary>
+      <p>
+        I don't collect any personal information myself. There's no sign-up, so I never get your name, email or phone number,
+        and I don't save conversion history or file details either.
+        That said, the site shows Google AdSense ads to help keep it running, and visit statistics (page views, referral sources, etc.) are measured with Google Analytics.
+        Both services may use cookies.
+        Ads never access the file you're converting. For details, see the <a href="{{ '/en/privacy/' | relative_url }}">Privacy Policy</a>.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is it safe to convert confidential company files?</summary>
+      <p>
+        Yes, it's safe. Your files never leave your device, so you can convert sensitive internal material, personal videos and confidential content with peace of mind.
+        If you're on a public computer or a device you share with others, though, please delete the downloaded GIF yourself after converting.
+        The site also uses a secure HTTPS connection to keep the website itself secure.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Speed and Performance</h2>
+
+    <details class="faq-item">
+      <summary>Conversion is really slow. What can I do?</summary>
+      <p>
+        Conversion speed depends on the video's length, resolution, number of frames and your device's performance. Tips for faster conversion:
+      </p>
+      <ul class="tech-list">
+        <li><strong>Shorten the video:</strong> Clips of 5 seconds or less convert very quickly.</li>
+        <li><strong>Reduce the output size:</strong> Going from 800px → 500px cuts processing time a lot.</li>
+        <li><strong>Increase the frame interval:</strong> Going from 0.1s → 0.3s means fewer frames to process.</li>
+      </ul>
+      <p>
+        FPS only changes playback speed, so it has almost no effect on conversion speed.
+        Short clips finish in a few seconds on most computers; the longer and larger the video, the longer it takes.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I use it on mobile?</summary>
+      <p>
+        Yes, it works in mobile browsers, including Chrome and Samsung Internet on Android and Safari on iOS.
+        But <strong>mobile devices have less memory and processing power than computers</strong>, so I recommend the following:
+      </p>
+      <ul class="check-list">
+        <li>✅ Video length: 5 seconds or less</li>
+        <li>✅ Output size: 400px or less</li>
+        <li>✅ Frame interval: 0.3 seconds or more</li>
+        <li>✅ Quality: 70-80</li>
+      </ul>
+      <p>
+        For long videos or high-resolution conversions, I recommend using a computer.
+        If your browser freezes on mobile, try again with shorter, lighter settings.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Which browser should I use?</summary>
+      <p>
+        It works in any modern browser that supports WebAssembly. Recommended browsers:
+      </p>
+      <ul class="tech-list">
+        <li><strong>Chrome / Edge:</strong> Fastest and most stable (recommended)</li>
+        <li><strong>Firefox:</strong> Great performance</li>
+        <li><strong>Safari:</strong> Works on macOS/iOS</li>
+      </ul>
+      <p>
+        Internet Explorer doesn't support WebAssembly, so it won't work.
+        If your browser is very out of date, please update it to the latest version.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>GIF Quality and Settings</h2>
+
+    <details class="faq-item">
+      <summary>My GIF file is too big. How do I make it smaller?</summary>
+      <p>
+        GIF doesn't compress well, so file sizes grow quickly. Ways to shrink them:
+      </p>
+      <ul class="tech-list">
+        <li><strong>Shorten the video:</strong> Cutting it from 10 seconds → 5 seconds also cuts the file size in half.</li>
+        <li><strong>Reduce the output size:</strong> Going from 720px → 480px makes the file much smaller.</li>
+        <li><strong>Increase the frame interval:</strong> Going from 0.1s → 0.3-0.5s means fewer frames and a smaller file.</li>
+        <li><strong>Still too big? Lower the quality:</strong> With simple-color content like screen recordings, a lower setting is usually hard to notice.</li>
+      </ul>
+      <p>
+        FPS only changes playback speed, and the file size stays about the same. I tried the same 4.5-second clip at 5, 10 and 20 FPS, and all three came out at 14MB.
+        There's a detailed comparison in my <a href="{% post_url 2025-10-30-en-gif-settings-guide %}">settings guide</a>.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>The GIF quality looks worse. Can I improve it?</summary>
+      <p>
+        GIF can only show 256 colors, so it will always look somewhat worse than the original video.
+        To get the best quality possible:
+      </p>
+      <ul class="check-list">
+        <li>✅ <strong>Raise Quality to 90-100</strong> (the file gets bigger)</li>
+        <li>✅ <strong>Keep the output size the same as the original</strong> (don't scale it down)</li>
+        <li>✅ <strong>Use videos with simple backgrounds</strong> (colors tend to bleed in complex scenes)</li>
+        <li>✅ <strong>Use a short frame interval</strong> (0.1-0.2s for smooth animation)</li>
+      </ul>
+      <p>
+        Photos with lots of gradients and live-action footage are better suited to MP4 than GIF.
+        GIF works best for UI demos, simple animations and logos.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What's the difference between frame interval and FPS?</summary>
+      <p>
+        Both affect how smooth your GIF looks, but they work differently:
+      </p>
+      <ul class="tech-list">
+        <li><strong>Frame Interval:</strong> Decides how often a frame is captured from the original video.
+          For example, a 0.3-second interval captures about 33 frames from a 10-second video.</li>
+        <li><strong>FPS (Frames Per Second):</strong> Decides how many frames the finished GIF plays each second.
+          For example, at 10 FPS it plays 10 frames per second, so motion looks smooth.</li>
+      </ul>
+      <p>
+        Multiply the two and you get the playback speed. The defaults (0.3s × 10 FPS) play 3 times faster than the original.
+        To match the original speed, set FPS to 1 ÷ interval. For example: a 0.1s interval with 10 FPS, or a 0.2s interval with 5 FPS.
+        File size follows the number of frames (= video length ÷ interval) and has almost nothing to do with FPS.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I use the text overlay?</summary>
+      <p>
+        Once your GIF is generated, you can use it in the "Text Settings" section:
+      </p>
+      <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+        <li>Type your text in the text field</li>
+        <li>Adjust the text size, text color, background color and opacity</li>
+        <li>Drag the text on the generated GIF to where you want it</li>
+        <li>Click the "Regenerate GIF with Text" button</li>
+      </ol>
+      <p>
+        You can add a watermark, captions or a short description to give your GIF a finished look.
+        High-contrast colors (white text on a black background) are the easiest to read.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Errors and Troubleshooting</h2>
+
+    <details class="faq-item">
+      <summary>I'm getting a "conversion failed" error.</summary>
+      <p>
+        Please check the following:
+      </p>
+      <ul class="check-list">
+        <li>✅ The video file isn't corrupted (does it play in another player?)</li>
+        <li>✅ The file isn't too large (under 100MB recommended)</li>
+        <li>✅ Your browser is up to date (Chrome or Firefox recommended)</li>
+        <li>✅ Try a different video file</li>
+        <li>✅ Refresh the page and try again</li>
+      </ul>
+      <p>
+        If the problem keeps happening, let me know through the <a href="{{ '/en/contact/' | relative_url }}">Contact page</a>
+        along with your setup (browser, OS, file format, etc.) and I'll help you sort it out.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>My browser freezes or slows down.</summary>
+      <p>
+        This is most likely because it's running out of memory. Here's what to try:
+      </p>
+      <ul class="tech-list">
+        <li>Close all other browser tabs and try again</li>
+        <li>Shorten the video to 5 seconds or less</li>
+        <li>Reduce the output size to 400-500px</li>
+        <li>Increase the frame interval to 0.5 seconds or more</li>
+        <li>Restart your computer and try again</li>
+      </ul>
+      <p>
+        If it happens often on a mobile device, try using a computer instead, or use shorter, lighter settings.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>The download button doesn't work.</summary>
+      <p>
+        This can happen with some browsers or security settings. Here's what to try:
+      </p>
+      <ul class="tech-list">
+        <li>Right-click the generated GIF → "Save image as..."</li>
+        <li>Check your browser's pop-up blocker settings</li>
+        <li>Try a different browser (Chrome recommended)</li>
+        <li>Refresh the page and convert again</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>Copyright and Usage</h2>
+
+    <details class="faq-item">
+      <summary>Can I use it for commercial purposes?</summary>
+      <p>
+        Yes, the service is free and you can use it for commercial purposes too.
+        However, <strong>the copyright of a GIF you create follows the copyright of the original video.</strong>
+        Converting someone else's video without permission and using it commercially may infringe their copyright,
+        so please make sure you have the legal right to use the original content.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I make GIFs from YouTube videos?</summary>
+      <p>
+        Technically, you could download a YouTube video and convert it,
+        but <strong>you must check the copyright first</strong>.
+        Only use videos you uploaded yourself, videos the creator has given you permission to use, or clips that fall within fair use.
+        Converting and redistributing other people's content without permission violates copyright law.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I use this service's source code?</summary>
+      <p>
+        The source code is public in the <a href="https://github.com/videotogif/videotogif.github.io" target="_blank" rel="noopener">GitHub repository</a>,
+        so anyone can see exactly how it works. For reuse terms, please check the README in the repository.
+        Open-source libraries (like gifski-wasm) are covered by their own licenses.
+        For details, see the <a href="{{ '/en/terms/' | relative_url }}">Terms of Service</a>.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section">
+    <h2>More Features and Roadmap</h2>
+
+    <details class="faq-item">
+      <summary>Can I make a GIF from just part of a video?</summary>
+      <p>
+        Yes. The converter turns the whole video into a GIF, and then you can open that GIF in <a href="{{ '/en/gif-trim/' | relative_url }}">Trim GIF</a>
+        and drag the timeline handles to keep only the part you need. The original playback speed is kept.
+        If the video is very long, roughly cutting it first in a video editor (e.g. Windows Photos or iMovie) makes conversion faster and uses less memory.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I convert multiple files at once?</summary>
+      <p>
+        Right now you can only convert one file at a time.
+        Batch conversion is one of the most requested features, and it's planned for a future update.
+        For now, please convert your files one by one, uploading the next file after each conversion finishes.
+      </p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I convert a GIF back into a video?</summary>
+      <p>
+        Right now only video → GIF conversion is supported.
+        I'll consider adding GIF → video conversion in the future, depending on demand.
+        If you need to convert a GIF to MP4, you can use a free online tool (like CloudConvert) or software like FFmpeg.
+      </p>
+    </details>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>Still have questions?</h2>
+    <p>If you couldn't find your answer in the FAQ, feel free to reach out anytime.</p>
+    <a href="{{ '/en/contact/' | relative_url }}" class="start-button">Contact Me →</a>
+  </section>
+</div>

@@ -1,8 +1,9 @@
 <!-- _includes/comments.html -->
+{%- assign c_en = false -%}{%- if page.lang contains "en" -%}{%- assign c_en = true -%}{%- endif %}
 <section id="comments" class="comments-section">
     <div class="comments-header">
-        <h2>💬 댓글</h2>
-        <p class="comments-description">자유롭게 의견을 나눠주세요</p>
+        <h2>💬 {% if c_en %}Comments{% else %}댓글{% endif %}</h2>
+        <p class="comments-description">{% if c_en %}Questions or feedback are always welcome. (Sign in with GitHub to comment.){% else %}자유롭게 의견을 나눠주세요{% endif %}</p>
     </div>
 
     <div class="comments-container">
@@ -10,7 +11,7 @@
         <script src="https://giscus.app/client.js" data-repo="videotogif/videotogif.github.io"
             data-repo-id="R_kgDOQHyumg" data-category="Announcements" data-category-id="DIC_kwDOQHyums4CxKIE"
             data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0"
-            data-input-position="top" data-theme="preferred_color_scheme" data-lang="ko" data-loading="lazy"
+            data-input-position="top" data-theme="preferred_color_scheme" data-lang="{% if c_en %}en{% else %}ko{% endif %}" data-loading="lazy"
             crossorigin="anonymous" async>
             </script>
     </div>

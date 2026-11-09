@@ -1,7 +1,26 @@
 <!DOCTYPE html>
+{%- comment -%}
+  다국어 처리: 같은 내용의 한/영 페이지(글)는 front matter에 같은 `ref` 값을 둔다.
+  여기서 짝이 되는 페이지 주소(alt_ko, alt_en)를 찾아 언어 토글과 hreflang에 쓴다.
+{%- endcomment -%}
 {%- assign page_lang = page.lang | default: site.lang | default: "ko" -%}
 {%- assign is_en = false -%}
-{%- if page_lang contains "en" -%}{%- assign is_en = true -%}{%- endif %}
+{%- if page_lang contains "en" -%}{%- assign is_en = true -%}{%- endif -%}
+{%- assign alt_ko = nil -%}
+{%- assign alt_en = nil -%}
+{%- if page.ref -%}
+  {%- for p in site.pages -%}
+    {%- if p.ref == page.ref -%}
+      {%- if p.lang contains "en" -%}{%- assign alt_en = p.url -%}{%- else -%}{%- assign alt_ko = p.url -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for p in site.posts -%}
+    {%- if p.ref == page.ref -%}
+      {%- if p.lang contains "en" -%}{%- assign alt_en = p.url -%}{%- else -%}{%- assign alt_ko = p.url -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if is_en -%}{%- assign lang_base = "/en" -%}{%- else -%}{%- assign lang_base = "" -%}{%- endif %}
 <html lang="{{ page_lang }}">
 
 <head>
@@ -28,7 +47,7 @@
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="{% if is_en %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}">
+                <a href="{{ lang_base | append: '/' | relative_url }}">
                     <span class="logo-text">Video to GIF</span>
                 </a>
             </div>
@@ -42,17 +61,17 @@
 
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{% if is_en %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}">Video to GIF</a></li>
-                    <li><a href="{{ '/gif-trim/' | relative_url }}">GIF Trim</a></li>
-                    <li><a href="{{ '/about/' | relative_url }}">About</a></li>
-                    <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
+                    <li><a href="{{ lang_base | append: '/' | relative_url }}">Video to GIF</a></li>
+                    <li><a href="{{ lang_base | append: '/gif-trim/' | relative_url }}">GIF Trim</a></li>
+                    <li><a href="{{ lang_base | append: '/about/' | relative_url }}">About</a></li>
+                    <li><a href="{{ lang_base | append: '/blog/' | relative_url }}">Blog</a></li>
                 </ul>
             </nav>
 
-            <!-- 언어 전환 (메뉴와 분리된 토글) -->
+            <!-- 언어 전환: 지금 보는 페이지의 다른 언어판으로 이동 (짝이 없으면 각 언어 홈) -->
             <div class="lang-switch" role="group" aria-label="Language / 언어">
-                <a href="{{ '/' | relative_url }}" hreflang="ko" lang="ko" title="한국어"{% unless is_en %} aria-current="true"{% endunless %}>KO</a>
-                <a href="{{ '/en/' | relative_url }}" hreflang="en" lang="en" title="English"{% if is_en %} aria-current="true"{% endif %}>EN</a>
+                <a href="{{ alt_ko | default: '/' | relative_url }}" hreflang="ko" lang="ko" title="한국어"{% unless is_en %} aria-current="true"{% endunless %}>KO</a>
+                <a href="{{ alt_en | default: '/en/' | relative_url }}" hreflang="en" lang="en" title="English"{% if is_en %} aria-current="true"{% endif %}>EN</a>
             </div>
         </div>
     </header>
@@ -67,11 +86,11 @@
             <div class="footer-content">
                 <nav class="footer-links" aria-label="{% if is_en %}Site information{% else %}사이트 정보{% endif %}">
                     {%- if is_en %}
-                    <a href="{{ '/about/' | relative_url }}">About</a>
-                    <a href="{{ '/faq/' | relative_url }}">FAQ</a>
-                    <a href="{{ '/contact/' | relative_url }}">Contact</a>
-                    <a href="{{ '/privacy/' | relative_url }}">Privacy Policy</a>
-                    <a href="{{ '/terms/' | relative_url }}">Terms</a>
+                    <a href="{{ '/en/about/' | relative_url }}">About</a>
+                    <a href="{{ '/en/faq/' | relative_url }}">FAQ</a>
+                    <a href="{{ '/en/contact/' | relative_url }}">Contact</a>
+                    <a href="{{ '/en/privacy/' | relative_url }}">Privacy Policy</a>
+                    <a href="{{ '/en/terms/' | relative_url }}">Terms</a>
                     {%- else %}
                     <a href="{{ '/about/' | relative_url }}">소개</a>
                     <a href="{{ '/faq/' | relative_url }}">자주 묻는 질문</a>

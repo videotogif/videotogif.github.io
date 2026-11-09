@@ -2089,6 +2089,7 @@ html {
 }
 
 .trim-handle {
+  touch-action: none; /* 터치로 끌 때 화면이 스크롤되지 않게 */
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -2362,4 +2363,25 @@ html {
   display: block;
   font-size: 0.9em;
   color: var(--text-muted);
+}
+
+/* 블로그: 태그 필터 안내 */
+.tag-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-section);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tag-filter-clear {
+  font-weight: 500;
+  color: var(--text-secondary);
 }

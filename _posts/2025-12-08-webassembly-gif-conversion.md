@@ -1,5 +1,6 @@
 ---
 layout: post
+ref: how-it-works
 title: "업로드 없이 브라우저에서 GIF가 만들어지는 과정 (직접 확인하는 법 포함)"
 date: 2025-12-08 20:00:00 +0900
 last_modified_at: 2026-11-09 10:00:00 +0900

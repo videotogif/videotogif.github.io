@@ -1,0 +1,213 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: about
+title: "About Video to GIF - A Free Converter With No Uploads"
+description: "Why I built Video to GIF and how it works. A free converter that turns videos into GIFs inside your browser, with no uploads to a server."
+permalink: /en/about/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">About Video to GIF</h1>
+    <p class="page-subtitle">A video to GIF converter that keeps your files on your device</p>
+  </header>
+
+  <section class="content-section">
+    <h2>What this site is</h2>
+    <p>
+      Video to GIF is a free web tool that turns videos into GIFs. Your file isn't uploaded anywhere; the conversion
+      happens inside the browser you're using right now. No sign-up and nothing to install.
+    </p>
+    <p>
+      It's built and run by one developer who uses GIFs all the time in bug reports and blog posts. The converters I used
+      to rely on made me upload files to servers I knew nothing about, and the colors were never quite right, so I made my own.
+      The longer story is in <a href="{% post_url 2025-10-22-en-why-i-built-video-to-gif %}">this post</a>.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>What I paid attention to</h2>
+
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-icon-large">🔒</div>
+        <h3>Your file stays on your computer</h3>
+        <p>
+          Conversion finishes inside your browser. If you want to check for yourself that nothing gets uploaded,
+          I wrote down <a href="{% post_url 2025-12-08-en-how-browser-conversion-works %}">how to verify it with DevTools</a>.
+        </p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon-large">💎</div>
+        <h3>Color quality</h3>
+        <p>
+          I converted the same video with FFmpeg, the Naver Blog app and gifski, compared the results, and picked gifski.
+          The comparison is in <a href="{% post_url 2025-10-20-en-gifski-256-colors %}">the gifski post</a>.
+        </p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon-large">🎛️</div>
+        <h3>Only the settings you need</h3>
+        <p>
+          There are just four: frame interval, width, quality and FPS. The defaults work fine, and
+          <a href="{% post_url 2025-10-30-en-gif-settings-guide %}">the settings guide</a> explains what each one actually changes.
+        </p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon-large">🧩</div>
+        <h3>Getting better bit by bit</h3>
+        <p>
+          It started as a plain converter. Now it can also trim GIFs and add text.
+          If there's something you need, let me know through the <a href="{{ '/en/contact/' | relative_url }}">contact page</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>What it can do today</h2>
+    <ul class="check-list">
+      <li>✅ Convert any video your browser can play (MP4, MOV, WebM and more) to GIF</li>
+      <li>✅ Adjust the frame interval (from 0.1s) and FPS (1–60)</li>
+      <li>✅ Set the output width (up to 900px, <a href="{% post_url 2025-10-28-en-why-900px %}">here's why</a>)</li>
+      <li>✅ Set the quality (1–100, higher is better)</li>
+      <li>✅ Add text to the GIF and drag it into place</li>
+      <li>✅ Keep only the part you want from a GIF (<a href="{{ '/en/gif-trim/' | relative_url }}">Trim GIF</a>)</li>
+      <li>✅ English / <a href="{{ '/' | relative_url }}">Korean</a> pages</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>How it works</h2>
+    <ul class="tech-list">
+      <li><strong>HTML5 Video + Canvas</strong> - The file you pick is opened through a temporary address that only exists inside your browser. At every frame interval, the frame at that moment is drawn onto a canvas at the size you chose and saved.</li>
+      <li><strong>gifski-wasm</strong> - gifski is a GIF encoder written in Rust; this is the version compiled to WebAssembly. It builds a separate palette for each frame, which keeps colors looking good despite GIF's 256-color limit.</li>
+      <li><strong>WebAssembly</strong> - Lets the browser run code at close to native speed. That's what makes encoding possible without a server.</li>
+      <li><strong>Jekyll + GitHub Pages</strong> - The site is a set of static pages hosted on GitHub Pages. Since nothing is converted on a server, there's no server to run.</li>
+    </ul>
+    <p>
+      The step-by-step version: <a href="{% post_url 2025-12-08-en-how-browser-conversion-works %}">How a GIF gets made in your browser without uploading anything</a>
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Compared with other options</h2>
+    <div class="comparison-table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Video to GIF</th>
+            <th>Typical online converter</th>
+            <th>Desktop software</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Privacy</td>
+            <td>✅ Processed locally</td>
+            <td>⚠️ Requires uploading</td>
+            <td>✅ Processed locally</td>
+          </tr>
+          <tr>
+            <td>Speed</td>
+            <td>✅ No upload wait (depends on your device)</td>
+            <td>⚠️ Slow (depends on network)</td>
+            <td>✅ Fast</td>
+          </tr>
+          <tr>
+            <td>Installation</td>
+            <td>✅ Not needed (just a browser)</td>
+            <td>✅ Not needed</td>
+            <td>❌ Required</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>✅ Free</td>
+            <td>⚠️ Limited free tier / paid</td>
+            <td>⚠️ Mostly paid</td>
+          </tr>
+          <tr>
+            <td>Quality control</td>
+            <td>✅ Fine-grained settings</td>
+            <td>⚠️ Limited</td>
+            <td>✅ Professional controls</td>
+          </tr>
+          <tr>
+            <td>Mobile</td>
+            <td>✅ Works (short clips recommended)</td>
+            <td>✅ Works</td>
+            <td>❌ No</td>
+          </tr>
+          <tr>
+            <td>File size limit</td>
+            <td>⚠️ Depends on device memory</td>
+            <td>❌ Strict limits</td>
+            <td>✅ None</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Privacy</h2>
+    <p>
+      Protecting your data comes first:
+    </p>
+    <div class="privacy-points">
+      <div class="privacy-point">
+        <span class="point-icon">🚫</span>
+        <div class="point-content">
+          <h4>No server uploads</h4>
+          <p>Your video is never sent to a server.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">💾</span>
+        <div class="point-content">
+          <h4>Local processing</h4>
+          <p>All conversion happens in your browser.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">🗑️</span>
+        <div class="point-content">
+          <h4>Gone when you close it</h4>
+          <p>Closing the page clears everything automatically.</p>
+        </div>
+      </div>
+      <div class="privacy-point">
+        <span class="point-icon">📝</span>
+        <div class="point-content">
+          <h4>No conversion logs</h4>
+          <p>Conversion history and file details are never stored.</p>
+        </div>
+      </div>
+    </div>
+    <p class="privacy-note">
+      For details, see the <a href="{{ '/en/privacy/' | relative_url }}">privacy policy</a>.
+    </p>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>Give it a try</h2>
+    <p>No installation, no sign-up.</p>
+    <a href="{{ '/en/' | relative_url }}" class="start-button">Start converting →</a>
+  </section>
+</div>

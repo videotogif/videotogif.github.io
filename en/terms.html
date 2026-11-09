@@ -1,0 +1,190 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: terms
+title: "Terms of Service"
+description: "Terms of Service for Video to GIF converter, the free tool that converts videos to GIFs right in your browser."
+permalink: /en/terms/
+---
+
+<script>
+  (function () {
+    const theme = localStorage.getItem('zif-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (!theme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    }
+  })();
+</script>
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Terms of Service</h1>
+    <p class="page-subtitle">These terms apply when you use the Video to GIF converter service</p>
+  </header>
+
+  <section class="content-section">
+    <h2>Article 1 (Purpose)</h2>
+    <p>
+      These Terms set out the rights, obligations and responsibilities of the service provider and users, and other necessary matters,
+      in connection with the use of the video-to-GIF conversion service provided by Video to GIF converter (the "Service").
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 2 (Definitions)</h2>
+    <ul class="tech-list">
+      <li><strong>"Service"</strong> means the feature that lets users convert video files to GIF format through their browser.</li>
+      <li><strong>"User"</strong> means anyone who accesses the Service and uses it in accordance with these Terms.</li>
+      <li><strong>"Content"</strong> means the video files uploaded by users and the GIF files generated from them.</li>
+      <li><strong>"Local Processing"</strong> means a method in which all conversion work is performed only within the user's browser, with no transmission to a server.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 3 (Provision of the Service)</h2>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li>The Service provides a feature that lets users convert video files to GIFs directly in their browser.</li>
+      <li>Anyone can use the Service for free, without any sign-up or login.</li>
+      <li>In principle, the Service is provided 24 hours a day, 365 days a year. However, it may be temporarily suspended when operationally necessary, such as for system inspections, maintenance or upgrades.</li>
+      <li>Some features of the Service may be limited depending on the user's browser environment, and the Service may not be available in older browsers that do not support WebAssembly.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 4 (Characteristics and Limitations of the Service)</h2>
+    <h3>1. Local Processing</h3>
+    <p>
+      The Service performs all conversion work only within the user's browser.
+      Video files uploaded by the user and generated GIF files are not sent to a server,
+      and all data is automatically deleted when the user closes the browser or refreshes the page after the conversion is complete.
+    </p>
+
+    <h3>2. File Size and Performance Limitations</h3>
+    <p>
+      Due to browser memory limits, processing very large video files (generally 100MB or more)
+      may cause the browser to slow down or freeze. This varies depending on the user's device specifications and browser performance.
+      For the best experience, video files of 30 seconds or less and 100MB or less are recommended.
+    </p>
+
+    <h3>3. Supported Formats</h3>
+    <p>
+      Because the Service uses the HTML5 Video API, only video formats supported by the user's browser can be converted.
+      MP4 (H.264), WebM and MOV formats are generally supported in most browsers.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 5 (User Obligations)</h2>
+    <p>Users must not engage in any of the following:</p>
+    <ul class="check-list">
+      <li>❌ Converting content that infringes the copyrights, image rights, intellectual property rights or other rights of others</li>
+      <li>❌ Converting content that violates the law or is contrary to public order and morals, such as obscene or violent material</li>
+      <li>❌ Interfering with the stable operation of the Service (e.g., excessive requests, automation using scripts)</li>
+      <li>❌ Copying, distributing or selling the Service's source code without authorization</li>
+      <li>❌ Reverse engineering the Service or attempting to extract its source code</li>
+    </ul>
+    <p>
+      Users bear all legal responsibility arising from any violation of the above obligations,
+      and if such a violation causes damage to the Service, the user is liable to compensate for that damage.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 6 (Copyright and Intellectual Property)</h2>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li>All intellectual property rights in the Service, including its source code, design, logo and trademarks, belong to the service provider.</li>
+      <li>Copyright in GIF files created by users belongs to the users. Because the Service operates by local processing, it has no right to access, store or use files created by users.</li>
+      <li>Users must hold the legal right to use the original video and are responsible for not infringing the copyrights of others.</li>
+      <li>The Service uses open-source libraries (such as gifski-wasm) and complies with the license of each library.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 7 (Privacy)</h2>
+    <p>
+      The Service does not collect users' personal information.
+      Because all conversion work is processed locally in the browser, video files and generated GIFs are not sent to a server.
+      For details, please see the <a href="{{ '/en/privacy/' | relative_url }}">Privacy Policy</a>.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 8 (Suspension and Changes to the Service)</h2>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li>The service provider may temporarily suspend the Service in the following cases:
+        <ul style="margin-top: 10px; padding-left: 20px;">
+          <li>Technical needs such as system inspections, maintenance or upgrades</li>
+          <li>Force majeure events such as natural disasters, national emergencies or power outages</li>
+          <li>When normal service cannot be provided, for example due to a surge in usage</li>
+        </ul>
+      </li>
+      <li>The service provider may change the content, features, design and other aspects of the Service, and will announce significant changes in advance.</li>
+      <li>The service provider is not liable for damages resulting from the suspension or change of the Service, unless caused by intent or gross negligence.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 9 (Disclaimer)</h2>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li>The Service is provided "AS IS," and the service provider makes no express or implied warranties regarding:
+        <ul style="margin-top: 10px; padding-left: 20px;">
+          <li>The accuracy, reliability or fitness for a particular purpose of the Service</li>
+          <li>The uninterrupted provision of the Service</li>
+          <li>The quality or compatibility of generated GIF files</li>
+        </ul>
+      </li>
+      <li>The service provider is not responsible for the Service being unavailable or for reduced quality caused by the user's browser environment, device specifications, network conditions or similar factors.</li>
+      <li>Users bear full responsibility for copyright infringement, legal issues and other matters related to the content they upload.</li>
+      <li>Because the Service operates by local processing, it does not provide backup or recovery for files created by users.</li>
+      <li>The service provider is not responsible for the content of externally linked third-party websites.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 10 (Damages)</h2>
+    <p>
+      The service provider is not liable for damages suffered by users in connection with the use of the Service,
+      unless caused by intent or gross negligence.
+      However, where consumer protection laws provide otherwise, those laws will apply.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 11 (Dispute Resolution)</h2>
+    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
+      <li>These Terms and any disputes relating to the use of the Service are governed by the laws of the Republic of Korea.</li>
+      <li>If a lawsuit is filed regarding a dispute between the service provider and a user, the court with jurisdiction over the location of the service provider's principal office shall have exclusive jurisdiction.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Article 12 (Changes to These Terms)</h2>
+    <p>
+      The service provider may change these Terms when necessary, to the extent that doing so does not violate applicable laws.
+      If these Terms are changed, the changes and their effective date will be announced on this page.
+      The revised Terms take effect on the announced effective date.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>Supplementary Provisions</h2>
+    <p><strong>Effective date:</strong> These Terms take effect on January 15, 2025.</p>
+    <p><strong>Last updated:</strong> January 15, 2025</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Contact</h2>
+    <p>
+      If you have any questions about these Terms, please contact:<br>
+      Email: <a href="mailto:ghdalswl162@gmail.com">ghdalswl162@gmail.com</a>
+    </p>
+  </section>
+
+  <section class="content-section cta-section">
+    <h2>Do You Agree to These Terms?</h2>
+    <p>By using the Service, you are deemed to have agreed to these Terms.</p>
+    <a href="{{ '/en/' | relative_url }}" class="start-button">Use the Service →</a>
+  </section>
+</div>

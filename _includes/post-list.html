@@ -1,0 +1,73 @@
+{%- comment -%}
+  블로그 글 목록. 사용법: {% include post-list.html lang="ko-KR" %} / {% include post-list.html lang="en-US" %}
+  ?tag=태그 로 들어오면 해당 태그 글만 보여 준다.
+{%- endcomment -%}
+{%- assign list_posts = site.posts | where: "lang", include.lang -%}
+{%- assign l_en = false -%}{%- if include.lang contains "en" -%}{%- assign l_en = true -%}{%- endif -%}
+{%- if l_en -%}{%- assign l_date_fmt = "%B %-d, %Y" -%}{%- else -%}{%- assign l_date_fmt = "%Y년 %m월 %d일" -%}{%- endif %}
+
+<div class="tag-filter-bar" id="tagFilterBar" hidden>
+  <span id="tagFilterLabel"></span>
+  <a href="?" class="tag-filter-clear">{% if l_en %}Show all posts{% else %}전체 글 보기{% endif %}</a>
+</div>
+
+<div class="posts-grid">
+  {% for post in list_posts %}
+  <article class="post-card" data-tags="{{ post.tags | join: '|' | escape }}">
+    {% if post.image %}
+    <div class="post-thumbnail">
+      <img src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}" loading="lazy">
+    </div>
+    {% endif %}
+
+    <div class="post-content">
+      <div class="post-meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: l_date_fmt }}</time>
+        {% if post.category %}
+        <span class="post-category">{{ post.category }}</span>
+        {% endif %}
+      </div>
+
+      <h2 class="post-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h2>
+
+      {% if post.excerpt %}
+      <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 150 }}</p>
+      {% endif %}
+
+      <a href="{{ post.url | relative_url }}" class="read-more">{% if l_en %}Read more{% else %}더 읽기{% endif %}</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+{% if list_posts.size == 0 %}
+<div class="no-posts">
+  <p>{% if l_en %}No posts yet.{% else %}아직 작성된 글이 없어요.{% endif %}</p>
+</div>
+{% endif %}
+
+<div class="no-posts" id="noTagPosts" hidden>
+  <p>{% if l_en %}There are no posts with this tag.{% else %}이 태그가 붙은 글이 없어요.{% endif %}</p>
+</div>
+
+<script>
+  (function () {
+    var tag = new URLSearchParams(window.location.search).get('tag');
+    if (!tag) return;
+    var cards = document.querySelectorAll('.post-card[data-tags]');
+    var shown = 0;
+    cards.forEach(function (card) {
+      var tags = (card.getAttribute('data-tags') || '').split('|');
+      var match = tags.indexOf(tag) !== -1;
+      card.hidden = !match;
+      if (match) shown++;
+    });
+    var bar = document.getElementById('tagFilterBar');
+    var label = document.getElementById('tagFilterLabel');
+    label.textContent = {% if l_en %}'Posts tagged #' + tag{% else %}'#' + tag + ' 태그 글'{% endif %} + ' (' + shown + ')';
+    bar.hidden = false;
+    if (shown === 0) document.getElementById('noTagPosts').hidden = false;
+  })();
+</script>
