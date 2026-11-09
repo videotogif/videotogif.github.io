@@ -35,19 +35,13 @@ layout: default
                 <time datetime="{{ page.date | date_to_xmlschema }}">
                     {{ page.date | date: date_fmt }}
                 </time>
-                {% if page.last_modified_at %}
-                <span class="post-updated">{% if is_en %}Updated{% else %}수정{% endif %} <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{{ page.last_modified_at | date: date_fmt }}</time></span>
-                {% endif %}
                 {%- comment -%} 읽는 시간: 한국어는 글자 수 600자/분, 영어는 230단어/분 {%- endcomment -%}
                 {%- if is_en -%}
                   {%- assign read_min = content | strip_html | number_of_words | divided_by: 230 | plus: 1 -%}
                 {%- else -%}
                   {%- assign read_min = content | strip_html | strip_newlines | size | divided_by: 600 | plus: 1 -%}
                 {%- endif %}
-                <span class="post-reading-time">{% if is_en %}{{ read_min }} min read{% else %}{{ read_min }}분 읽기{% endif %}</span>
-                {% if page.category %}
-                <span class="post-category">{{ page.category }}</span>
-                {% endif %}
+                <span class="post-reading-time" title="{% if is_en %}{{ read_min }} min read{% else %}{{ read_min }}분 읽기{% endif %}"><span aria-hidden="true">🕒</span> {{ read_min }}m</span>
             </div>
         </header>
         <section class="post-article-body">
