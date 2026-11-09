@@ -10,11 +10,13 @@ excerpt: "GIF 설정의 네 가지 값(프레임 간격, FPS, 크기, 품질)이
 description: "GIF 설정(프레임 간격, FPS, 출력 크기, 품질)이 재생 속도와 용량에 주는 영향. 같은 영상으로 만든 GIF 8개의 장수·길이·용량 비교."
 image: /assets/img/post1.jpg
 redirect_from:
+  - /튜토리얼/2025/10/30/gif-settings-guide/
   - /튜토리얼/2025/10/30/7/
   - /튜토리얼/2025/01/16/2/
   - /gif 제작 가이드/2025/01/12/gif-best-practices/
   - /gif 제작 가이드/2025/11/25/gif-optimization-guide/
   - /gif 제작 가이드/2025/01/15/gif-sns-guide/
+permalink: /blog/gif-settings-guide/
 ---
 
 > 그동안 설정 관련 글을 여러 편 올렸는데, 다시 읽어보니 내용이 겹치고 틀린 곳도 있었습니다. 품질 숫자가 낮을수록 고화질이라고 적은 글도 있었는데, 반대입니다. 헷갈리게 해서 죄송해요. 그래서 실제 코드가 어떻게 동작하는지를 기준으로 이 글 하나에 다시 정리했습니다.

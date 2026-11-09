@@ -38,6 +38,13 @@ layout: default
                 {% if page.last_modified_at %}
                 <span class="post-updated">{% if is_en %}Updated{% else %}수정{% endif %} <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{{ page.last_modified_at | date: date_fmt }}</time></span>
                 {% endif %}
+                {%- comment -%} 읽는 시간: 한국어는 글자 수 600자/분, 영어는 230단어/분 {%- endcomment -%}
+                {%- if is_en -%}
+                  {%- assign read_min = content | strip_html | number_of_words | divided_by: 230 | plus: 1 -%}
+                {%- else -%}
+                  {%- assign read_min = content | strip_html | strip_newlines | size | divided_by: 600 | plus: 1 -%}
+                {%- endif %}
+                <span class="post-reading-time">{% if is_en %}{{ read_min }} min read{% else %}{{ read_min }}분 읽기{% endif %}</span>
                 {% if page.category %}
                 <span class="post-category">{{ page.category }}</span>
                 {% endif %}
@@ -54,6 +61,42 @@ layout: default
         <section class="post-article-body">
             {{ content }}
         </section>
+
+        <!-- 글을 다 읽은 사람이 바로 써 볼 수 있게 -->
+        <aside class="post-cta" aria-label="{% if is_en %}Try the converter{% else %}변환기 써 보기{% endif %}">
+            {%- if is_en %}
+            <p class="post-cta-title">Want to try it on your own video?</p>
+            <p class="post-cta-text">Pick a video and it turns into a GIF right in your browser. Nothing gets uploaded, and there's no sign-up.</p>
+            <div class="post-cta-actions">
+                <a class="post-cta-button" href="{{ '/en/' | relative_url }}">Convert a video to GIF →</a>
+                <a class="post-cta-link" href="{{ '/en/gif-trim/' | relative_url }}">Trim a GIF</a>
+            </div>
+            {%- else %}
+            <p class="post-cta-title">내 영상으로 바로 해 보세요</p>
+            <p class="post-cta-text">동영상을 고르면 브라우저 안에서 바로 GIF로 바뀌어요. 파일은 어디에도 올라가지 않고, 가입도 필요 없어요.</p>
+            <div class="post-cta-actions">
+                <a class="post-cta-button" href="{{ '/' | relative_url }}">동영상 GIF로 바꾸기 →</a>
+                <a class="post-cta-link" href="{{ '/gif-trim/' | relative_url }}">GIF 자르기</a>
+            </div>
+            {%- endif %}
+        </aside>
+
+        <!-- 글쓴이 -->
+        <aside class="post-author" aria-label="{% if is_en %}About the author{% else %}글쓴이{% endif %}">
+            <img class="post-author-avatar" src="{{ '/assets/img/author-avatar-pixel.png' | relative_url }}" alt="" width="144" height="144" loading="lazy">
+            <div class="post-author-body">
+                {%- if is_en %}
+                <p class="post-author-name">Written by the developer of Video to GIF</p>
+                <p class="post-author-text">I use GIFs all the time in bug reports and blog posts, and ended up building my own converter. If something's inconvenient or missing, I'd love to hear about it.</p>
+                <p class="post-author-links">{% unless page.ref == "why-i-made" %}<a href="{% post_url 2025-10-22-en-why-i-built-video-to-gif %}">Why I built it</a> · {% endunless %}<a href="{{ '/en/contact/' | relative_url }}">Contact</a></p>
+                {%- else %}
+                <p class="post-author-name">Video to GIF 개발자가 썼어요</p>
+                <p class="post-author-text">버그 리포트나 블로그에 GIF를 자주 쓰다가 변환기를 직접 만들었어요. 써 보고 불편한 점이나 아쉬운 기능이 있으면 편하게 알려 주세요.</p>
+                <p class="post-author-links">{% unless page.ref == "why-i-made" %}<a href="{% post_url 2025-10-22-why-i-made-videotogif %}">만든 이야기</a> · {% endunless %}<a href="{{ '/contact/' | relative_url }}">문의하기</a></p>
+                {%- endif %}
+            </div>
+        </aside>
+
         {% include share.html %}
     </article>
 

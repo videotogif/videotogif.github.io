@@ -10,7 +10,9 @@ excerpt: "파일을 올리지 않는데 어떻게 GIF가 나오는지, 이 사�
 description: "Video to GIF가 서버 업로드 없이 브라우저 안에서 동영상을 GIF로 바꾸는 과정과, 개발자 도구로 업로드가 없는지 직접 확인하는 방법"
 image: /assets/img/og-default.jpg
 redirect_from:
+  - /기술 설명/2025/12/08/webassembly-gif-conversion/
   - /기술 설명/2025/01/14/webassembly-gif-conversion/
+permalink: /blog/how-browser-conversion-works/
 ---
 
 가장 많이 받는 질문이 이거예요.

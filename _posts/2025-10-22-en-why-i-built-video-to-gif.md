@@ -17,7 +17,9 @@ permalink: /en/blog/why-i-built-video-to-gif/
 
 ## It started with a few annoyances
 
-Hi, I'm the developer who made this site.
+Hi, I'm the developer who made this site. The little guy in glasses on the home page is saying hello for me.
+
+![Pixel art of a guinea pig wearing glasses, holding up one finger](/assets/img/why-i-made-pixel.png){: .post-figure-small width="960" height="600"}
 
 Between work and side projects, I end up turning videos into GIFs pretty often. Writing a bug report, putting together a tutorial, writing a blog post... there are more moments that call for a GIF than you'd think.
 
@@ -51,7 +53,7 @@ So here's how I built this site:
 
 - **Your files are never uploaded to a server.** All the conversion happens inside the browser you're using right now. Work files or personal videos, nothing leaves your computer.
 - **No waiting on uploads or downloads.** Pick a file and conversion starts right away. The trade-off is that it runs on your own device, so it can be slow on older hardware.
-- **Settings that pick themselves.** At first you had to enter the frame interval, size, quality, and FPS yourself. Now they're chosen automatically for each video's length and resolution, and you only pick a level on one slider, from Low-spec to High-spec.
+- **Settings that pick themselves.** At first you had to enter the frame interval, size, quality, and FPS yourself, and it turned out that juggling four numbers was a chore in itself. Now they're chosen automatically for each video's length and resolution, and you only move one slider, from Low-spec to High-spec. How each level is decided is in [the settings guide]({% post_url 2025-10-30-en-gif-settings-guide %}).
 - **It's free.** Since there's no server-side conversion, it costs almost nothing to run. There are ads to help keep the site going, but I won't be locking any features away.
 
 ## How does it work under the hood?
@@ -72,10 +74,10 @@ When I first wrote this post I listed a few plans, and two of them are done.
 - Converting multiple files at once
 - Merging GIFs
 
-Try the rest of the site too, and if there's a feature you feel is missing, let me know. I'll work through them one at a time, starting with whatever gets asked for most.
+If you find yourself thinking "I wish it could do this," let me know. I'll work through requests one at a time, starting with whatever gets asked for most.
 
 ## Wrapping up
 
 In the end, this project started with wanting to build **"a tool I'd actually want to use."** I figured other people probably had the same frustrations, so I made it public. It would honestly make me really happy if a lot of people found it useful.
 
-If something's inconvenient or there's a feature you'd like added, feel free to tell me anytime through the [contact page](/en/contact/).
+If something's inconvenient or there's a feature you'd like added, feel free to tell me anytime through the [contact page](/en/contact/) or in the comments below.

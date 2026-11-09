@@ -2342,6 +2342,11 @@ html {
   color: var(--text-muted);
 }
 
+/* display:block이 hidden 속성을 덮어써서 복사 전에도 '복사했어요'가 보이던 문제 */
+.post-share-msg[hidden] {
+  display: none;
+}
+
 /* 블로그: 태그 필터 안내 */
 .tag-filter-bar {
   display: flex;
@@ -2687,4 +2692,131 @@ img[src$="-pixel.png"] {
   font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 600;
+}
+
+/* ==========================
+   블로그 글: 읽는 시간, 작은 그림, 써 보기 상자, 글쓴이
+========================== */
+.post-reading-time {
+  margin-left: 8px;
+  opacity: 0.8;
+}
+
+.post-article-body img.post-figure-small {
+  width: 280px;
+  max-width: 70%;
+  margin: 1.5rem auto 2rem;
+  box-shadow: none;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.post-cta {
+  margin: 3rem 0 0;
+  padding: 24px 26px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-section);
+}
+
+.post-cta-title {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.post-cta-text {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.post-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+
+.post-cta-button {
+  display: inline-block;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: #4b7a28;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px var(--shadow-sm);
+  color: #ffffff;
+}
+
+.dark-mode .post-cta-button {
+  background: var(--primary-green);
+  color: #1a202c;
+}
+
+.post-cta-link {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.post-author-avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+}
+
+.post-author-body p {
+  margin: 0;
+}
+
+.post-author-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.post-author-text {
+  margin-top: 4px !important;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.post-author-links {
+  margin-top: 6px !important;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .post-author {
+    align-items: flex-start;
+  }
+  .post-author-avatar {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-cta-button { transition: none; }
+  .post-cta-button:hover { transform: none; }
 }

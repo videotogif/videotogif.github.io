@@ -113,12 +113,18 @@
     <!-- 푸터 아래 한 번만 로드 -->
     <script src="{{ '/assets/js/darkmode-toggle.js' | relative_url }}"></script>
 
-    <!-- 언어 국기: 누르는 순간 다음 국기로 바꾸고, 뒤로 가기로 돌아오면 원래 국기로 -->
+    <!-- 언어 국기: 누르면 고른 언어를 기억하고(다음 방문도 그 언어로), 다음 국기로 바꾼다.
+         뒤로 가기로 돌아오면 원래 국기로 -->
     <script>
         (function () {
             var sw = document.querySelector('.lang-switch[data-next-flag]');
             if (!sw) return;
+            function remember() {
+                try { localStorage.setItem('vtg-lang', sw.getAttribute('hreflang')); } catch (e) { }
+            }
+            sw.addEventListener('auxclick', remember); // 가운데 버튼으로 새 탭 열기
             sw.addEventListener('click', function (e) {
+                remember();
                 if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 sw.textContent = sw.dataset.nextFlag;
             });

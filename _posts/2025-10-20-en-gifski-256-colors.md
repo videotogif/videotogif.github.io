@@ -3,7 +3,7 @@ layout: post
 lang: en-US
 locale: en_US
 ref: gifski
-title: "gifski: Getting Past GIF's 256-Color Limit"
+title: "3. gifski: Getting Past GIF's 256-Color Limit"
 date: 2025-10-20 10:00:00 +0900
 last_modified_at: 2026-11-09 10:00:00 +0900
 category: "Dev log"

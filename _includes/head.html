@@ -2,6 +2,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+{%- if alt_ko and alt_en %}
+<!-- 첫 화면 언어: 직접 고른 언어가 있으면 그 언어로, 없으면 브라우저 언어(한국어가 아니면 영어)로 옮긴다.
+     검색·광고 로봇은 옮기지 않는다(각 언어판은 hreflang으로 따로 알려 줌). -->
+<script>
+    (function () {
+        var cur = '{% if is_en %}en{% else %}ko{% endif %}';
+        var twin = '{% if is_en %}{{ alt_ko | relative_url }}{% else %}{{ alt_en | relative_url }}{% endif %}';
+        if (/bot|crawl|spider|slurp|mediapartners|google-inspectiontool|lighthouse|headless|facebookexternalhit|kakaotalk-scrap|yeti|daumoa|preview/i.test(navigator.userAgent || '')) return;
+        var want = null;
+        try { want = localStorage.getItem('vtg-lang'); } catch (e) { }
+        if (want !== 'ko' && want !== 'en') {
+            var first = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+            want = /^ko\b/i.test(first) ? 'ko' : 'en';
+        }
+        if (want !== cur) location.replace(twin + location.search + location.hash);
+    })();
+</script>
+{%- endif %}
 
 <!-- Google 태그 (Google 애널리틱스 방문 통계): 프로덕션 빌드에서만 로드 -->
 {%- if jekyll.environment == "production" and site.google_tag_id and site.google_tag_id != "" %}
