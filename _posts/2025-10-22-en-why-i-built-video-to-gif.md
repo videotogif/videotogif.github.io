@@ -51,7 +51,7 @@ So here's how I built this site:
 
 - **Your files are never uploaded to a server.** All the conversion happens inside the browser you're using right now. Work files or personal videos, nothing leaves your computer.
 - **No waiting on uploads or downloads.** Pick a file and conversion starts right away. The trade-off is that it runs on your own device, so it can be slow on older hardware.
-- **Only the settings you actually need.** There are four: frame interval, size, quality, and FPS. The defaults work fine on their own, and you can adjust them yourself if you want.
+- **Settings that pick themselves.** At first you had to enter the frame interval, size, quality, and FPS yourself. Now they're chosen automatically for each video's length and resolution, and you only pick a level on one slider, from Low-spec to High-spec.
 - **It's free.** Since there's no server-side conversion, it costs almost nothing to run. There are ads to help keep the site going, but I won't be locking any features away.
 
 ## How does it work under the hood?

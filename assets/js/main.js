@@ -15,44 +15,43 @@ const translations = {
   ko: {
     uploadText: "비디오 파일을 선택하세요",
     uploadSubtext: "클릭하거나 드래그 & 드롭으로 업로드하면 GIF가 생성됩니다.",
-    previewTitle: "프레임 미리보기",
     outputTitle: "생성된 GIF",
     downloadText: "GIF 다운로드",
-    advancedSettingsTitle: "고급 설정",
-    intervalLabel: "프레임 간격 (초)",
-    outputWidthLabel: "출력 가로 크기 (px)",
-    qualityLabel: "품질 (1~100)",
-    fpsLabel: "FPS (프레임/초)",
-    reconvertText: "🔄 새 설정으로 GIF 재생성",
-    loadingVideo: "비디오를 로딩 중...",
+    advancedSettingsTitle: "화질 조절",
     extractingFrames: "프레임을 추출 중...",
     generatingGif: "GIF 생성 중...",
-    completed: "GIF 생성 완료!",
-    completedSubtext: "아래 고급 설정에서 다른 옵션으로 재생성할 수 있습니다",
     regeneratingGif: "GIF 재생성 중...",
     processingVideo: "비디오 처리 중...",
+    levelNames: ["저사양", "조금 가볍게", "균형", "조금 선명하게", "고사양"],
+    source: (m) => `원본 ${m.duration.toFixed(1)}초 · ${m.width}×${m.height}`,
+    summary: (s, name) =>
+      `${name}: 가로 ${s.width}px · 초당 ${s.fps}장 · 품질 ${s.quality} · 총 ${s.frames}장`,
+    realtime: "원본과 같은 속도로 재생돼요.",
+    reduced: "기기에 무리가 가지 않도록 이 영상 길이에 맞춰 크기나 장수를 줄였어요.",
+    spedUp: (x) =>
+      `영상이 길어서 ${x}배속으로 만들어요. 원본 속도가 필요하면 필요한 부분만 잘라서 올려 주세요.`,
+    noDuration: "영상 길이를 읽을 수 없어요. MP4로 바꿔서 다시 올려 주세요.",
   },
   en: {
     uploadText: "Select Video File",
     uploadSubtext:
       "Click or drag & drop to upload and automatically generate GIF.",
-    previewTitle: "Frame Preview",
     outputTitle: "Generated GIF",
     downloadText: "Download GIF",
-    advancedSettingsTitle: "Advanced Settings",
-    intervalLabel: "Frame Interval (seconds)",
-    outputWidthLabel: "Output Width (px)",
-    qualityLabel: "Quality (1~100)",
-    fpsLabel: "FPS (frames/second)",
-    reconvertText: "🔄 Regenerate GIF with New Settings",
-    loadingVideo: "Loading video...",
+    advancedSettingsTitle: "Quality",
     extractingFrames: "Extracting frames...",
     generatingGif: "Generating GIF...",
-    completed: "GIF Generation Complete!",
-    completedSubtext:
-      "You can regenerate with different options in advanced settings below",
     regeneratingGif: "Regenerating GIF...",
     processingVideo: "Processing video...",
+    levelNames: ["Low-spec", "Lighter", "Balanced", "Sharper", "High-spec"],
+    source: (m) => `Original ${m.duration.toFixed(1)}s · ${m.width}×${m.height}`,
+    summary: (s, name) =>
+      `${name}: ${s.width}px wide · ${s.fps} frames/sec · quality ${s.quality} · ${s.frames} frames`,
+    realtime: "Plays at the same speed as the original.",
+    reduced: "Size or frame count was lowered for this video's length so your device doesn't struggle.",
+    spedUp: (x) =>
+      `This video is long, so the GIF plays at ${x}x speed. For original speed, trim the video to the part you need first.`,
+    noDuration: "Couldn't read this video's length. Please convert it to MP4 and try again.",
   },
 };
 
@@ -75,15 +74,9 @@ function updateAllTexts() {
   // 필요한 텍스트만 업데이트
   setText("uploadText", t.uploadText);
   setText("uploadSubtext", t.uploadSubtext);
-  setText("previewTitle", t.previewTitle);
   setText("outputTitle", t.outputTitle);
   setText("downloadText", t.downloadText);
   setText("advancedSettingsTitle", t.advancedSettingsTitle);
-  setText("intervalLabel", t.intervalLabel);
-  setText("outputWidthLabel", t.outputWidthLabel);
-  setText("qualityLabel", t.qualityLabel);
-  setText("fpsLabel", t.fpsLabel);
-  setText("reconvertText", t.reconvertText);
 }
 
 // -----------------------------
@@ -123,30 +116,106 @@ ready(() => {
     });
   }
 
-  // 기본값
-  let defaultInterval = 0.3;
-  let defaultWidth = 420;
-  let defaultQuality = 90;
-  let defaultFps = 10;
+  // -----------------------------
+  // 자동 설정: 영상 길이·해상도와 기기 사양을 보고 단계(1 저사양 ~ 5 고사양)별 설정을 계산
+  // - 항상 원본 속도로 재생되도록 프레임 간격 = 1 / FPS
+  // - 단계마다 메모리 예산(압축 전 픽셀 크기)을 넘지 않게 FPS → 가로 크기 순으로 낮춤
+  // - 그래도 넘으면(아주 긴 영상) 장수를 제한하고 그만큼 빨리 재생
+  // -----------------------------
+  // maxSide: 긴 쪽 최대 길이(세로 영상이 지나치게 커지지 않게), minFps: 긴 영상에서도 먼저 지키는 부드러움
+  const LEVELS = [
+    { fps: 5, minFps: 5, maxSide: 320, quality: 70, budgetMB: 40 },
+    { fps: 10, minFps: 5, maxSide: 400, quality: 80, budgetMB: 80 },
+    { fps: 10, minFps: 10, maxSide: 540, quality: 90, budgetMB: 160 },
+    { fps: 20, minFps: 10, maxSide: 720, quality: 90, budgetMB: 260 },
+    { fps: 25, minFps: 10, maxSide: 900, quality: 100, budgetMB: 400 },
+  ];
+  const FPS_STEPS = [25, 20, 10, 5]; // GIF 지연 단위(10ms)로 정확히 떨어지는 값만 사용
+  const lowEndDevice = (() => {
+    try {
+      const mem = navigator.deviceMemory;
+      const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+      return (typeof mem === "number" && mem <= 4) || coarse;
+    } catch (e) {
+      return false;
+    }
+  })();
+  const DEFAULT_LEVEL = lowEndDevice ? 2 : 3;
+
+  function computeAutoSettings(level, meta) {
+    const L = LEVELS[level - 1];
+    const budget = L.budgetMB * (lowEndDevice ? 0.5 : 1) * 1024 * 1024;
+    const aspect = meta.height / meta.width;
+    const even = (n) => Math.max(2, Math.round(n / 2) * 2);
+    const heightOf = (w) => even(w * aspect);
+    const bytesFor = (w, f) => Math.ceil(meta.duration * f) * w * heightOf(w) * 4;
+
+    // 긴 쪽이 maxSide를 넘지 않게, 원본보다 키우지 않게
+    const maxWidth = Math.min(meta.width, L.maxSide, L.maxSide / aspect);
+    let width = even(maxWidth);
+    let fps = L.fps;
+    let reduced = false;
+    const minWidth = even(Math.min(240, meta.width, 240 / aspect));
+    const lowerFpsTo = (floor) => {
+      let i = FPS_STEPS.indexOf(fps);
+      while (bytesFor(width, fps) > budget && i < FPS_STEPS.length - 1 && FPS_STEPS[i + 1] >= floor) {
+        i += 1;
+        fps = FPS_STEPS[i];
+        reduced = true;
+      }
+    };
+    const shrinkTo = (floorWidth) => {
+      const target = Math.max(minWidth, even(floorWidth));
+      while (bytesFor(width, fps) > budget && width > target) {
+        width = Math.max(target, even(width * 0.9));
+        reduced = true;
+      }
+    };
+
+    // 1) 이 단계가 지키는 부드러움(minFps)까지 FPS를 낮춤
+    lowerFpsTo(L.minFps);
+    // 2) 가로 크기를 원래의 60%까지 줄임
+    shrinkTo(maxWidth * 0.6);
+    // 3) FPS를 최저(5)까지 낮춤
+    lowerFpsTo(5);
+    // 4) 가로 크기를 최소(긴 쪽 240px 수준)까지 줄임
+    shrinkTo(minWidth);
+    // 5) 그래도 넘으면 장수를 제한 (빨리 재생)
+    let interval = 1 / fps;
+    const frameBytes = width * heightOf(width) * 4;
+    const maxFrames = Math.max(2, Math.floor(budget / frameBytes));
+    if (Math.ceil(meta.duration * fps) > maxFrames) {
+      interval = meta.duration / maxFrames;
+    }
+    // gifski는 최소 2장이 필요
+    if (meta.duration / interval < 2) interval = meta.duration / 2;
+
+    const frames = Math.max(2, Math.ceil(meta.duration / interval - 1e-9));
+    const speed = Math.round(interval * fps * 10) / 10;
+    return { level, fps, interval, width, height: heightOf(width), quality: L.quality, frames, speed, reduced };
+  }
 
   let frames = [];
   let outputWidth = 420;
   let outputHeight = 0;
   let currentVideoFile = null;
+  let videoMeta = null; // { duration, width, height }
+  let currentSettings = null;
+  let lastExtract = null; // { interval, width } — 같으면 프레임을 다시 뽑지 않음
+  let converting = false;
+  let pendingLevel = null;
   let textPositionX = 0.5; // 0-1 normalized
   let textPositionY = 0.9; // 0-1 normalized
 
   // DOM refs
   const videoInput = document.getElementById("videoInput");
-  const reconvertBtn = document.getElementById("reconvertBtn");
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
   const output = document.getElementById("output");
   const downloadLink = document.getElementById("downloadLink");
-  const intervalInput = document.getElementById("interval");
-  const qualityInput = document.getElementById("quality");
-  const fpsInput = document.getElementById("fps");
-  const outputWidthInput = document.getElementById("outputWidth");
+  const qualityLevelInput = document.getElementById("qualityLevel");
+  const autoSummary = document.getElementById("autoSummary");
+  const levelTickButtons = document.querySelectorAll(".spec-tick[data-level]");
   const overlayTextInput = document.getElementById("overlayText");
   const textPositionInput = document.getElementById("textPosition");
   const textSizeInput = document.getElementById("textSize");
@@ -181,13 +250,13 @@ ready(() => {
     const initExpanded = textContent.classList.contains("expanded");
     textToggle.setAttribute("aria-expanded", String(initExpanded));
     textToggleIcon.classList.toggle("rotated", initExpanded);
-    textToggleIcon.textContent = initExpanded ? "▲" : "▼";
+    textToggleIcon.textContent = "▼"; // 방향은 .rotated 회전으로만 표시
 
     textToggle.addEventListener("click", () => {
       const isExpanded = textContent.classList.toggle("expanded");
       textToggle.setAttribute("aria-expanded", String(isExpanded));
       textToggleIcon.classList.toggle("rotated", isExpanded);
-      textToggleIcon.textContent = isExpanded ? "▲" : "▼";
+      textToggleIcon.textContent = "▼"; // 방향은 .rotated 회전으로만 표시
     });
 
     textToggle.addEventListener("keydown", (e) => {
@@ -212,7 +281,7 @@ ready(() => {
     const initExpanded = advancedContent.classList.contains("expanded");
     advancedToggle.setAttribute("aria-expanded", String(initExpanded));
     toggleIcon.classList.toggle("rotated", initExpanded);
-    toggleIcon.textContent = initExpanded ? "▲" : "▼";
+    toggleIcon.textContent = "▼"; // 방향은 .rotated 회전으로만 표시
 
     advancedToggle.addEventListener("click", () => {
       const isExpanded = advancedContent.classList.toggle("expanded");
@@ -221,7 +290,7 @@ ready(() => {
 
       // 아이콘 회전 + 모양 변경
       toggleIcon.classList.toggle("rotated", isExpanded);
-      toggleIcon.textContent = isExpanded ? "▲" : "▼";
+      toggleIcon.textContent = "▼"; // 방향은 .rotated 회전으로만 표시
     });
 
     // (선택) 키보드 접근성: Enter/Space로도 토글
@@ -265,60 +334,135 @@ ready(() => {
     if (file) handleVideoFile(file);
   });
 
-  // 재생성 버튼 (고급 설정)
-  reconvertBtn?.addEventListener("click", async () => {
-    if (!currentVideoFile) return;
+  // 화질 눈금 (1 저사양 ~ 5 고사양)
+  if (qualityLevelInput) {
+    qualityLevelInput.value = String(DEFAULT_LEVEL);
+    markActiveTick(DEFAULT_LEVEL);
+
+    // 끄는 동안에는 요약만 바꾸고, 놓으면 다시 만든다
+    qualityLevelInput.addEventListener("input", () => {
+      const level = Number(qualityLevelInput.value);
+      markActiveTick(level);
+      if (videoMeta) renderSummary(computeAutoSettings(level, videoMeta));
+    });
+    qualityLevelInput.addEventListener("change", () => {
+      requestConvert(Number(qualityLevelInput.value));
+    });
+  }
+  levelTickButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!qualityLevelInput) return;
+      qualityLevelInput.value = btn.dataset.level;
+      qualityLevelInput.dispatchEvent(new Event("input"));
+      qualityLevelInput.dispatchEvent(new Event("change"));
+    });
+  });
+
+  function markActiveTick(level) {
+    levelTickButtons.forEach((btn) => {
+      btn.classList.toggle("active", Number(btn.dataset.level) === level);
+    });
+  }
+
+  function renderSummary(settings) {
+    if (!autoSummary || !videoMeta) return;
+    const t = translations[currentLanguage];
+    const name = t.levelNames[settings.level - 1];
+    autoSummary.innerHTML = "";
+    const lines = [
+      ["auto-source", t.source(videoMeta)],
+      ["auto-main", t.summary(settings, name)],
+      ["auto-note", settings.speed > 1.05 ? t.spedUp(settings.speed) : t.realtime],
+    ];
+    if (settings.reduced && settings.speed <= 1.05) lines.push(["auto-note", t.reduced]);
+    lines.forEach(([cls, text]) => {
+      const span = document.createElement("span");
+      span.className = cls;
+      span.textContent = text;
+      autoSummary.appendChild(span);
+    });
+  }
+
+  function getTextOptions() {
+    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
+    return {
+      overlayText: overlayTextInput?.value || "",
+      textPosition: textPositionInput?.value || "bottom",
+      textSize: parseInt(textSizeInput?.value, 10) || 30,
+      textColor: textColorInput?.value || "#ffffff",
+      textBgColor: textBgColorInput?.value || "#000000",
+      textBgOpacity: isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue,
+    };
+  }
+
+  // 변환 중에 눈금을 또 옮기면, 끝난 뒤 마지막 단계로 한 번 더 만든다
+  async function requestConvert(level) {
+    if (!videoMeta) return;
+    if (converting) {
+      pendingLevel = level;
+      return;
+    }
+    converting = true;
+    try {
+      await convertAt(level);
+    } finally {
+      converting = false;
+    }
+    if (pendingLevel !== null && pendingLevel !== level) {
+      const next = pendingLevel;
+      pendingLevel = null;
+      requestConvert(next);
+    } else {
+      pendingLevel = null;
+    }
+  }
+
+  async function convertAt(level) {
+    const settings = computeAutoSettings(level, videoMeta);
+    currentSettings = settings;
+    renderSummary(settings);
+
     if (output) output.innerHTML = "";
     if (downloadLink) downloadLink.style.display = "none";
+    if (outputSection) outputSection.style.display = "block";
 
-    setProgressMessage(
-      translations[currentLanguage].generatingGif || "GIF 생성 중..."
-    );
-
-    const original = reconvertBtn.innerHTML;
-    reconvertBtn.innerHTML = `<span class="loading-spinner"></span> ${
-      translations[currentLanguage].regeneratingGif || "GIF 재생성 중..."
-    }`;
-    reconvertBtn.disabled = true;
-
-    const newInterval = parseFloat(intervalInput?.value) || 0.3;
-    const newWidth = parseInt(outputWidthInput?.value, 10) || 420;
-    const newQuality = parseInt(qualityInput?.value, 10) || 90;
-    const newFps = parseInt(fpsInput?.value, 10) || 10;
-    const overlayText = overlayTextInput?.value || "";
-    const textPosition = textPositionInput?.value || "bottom";
-    const textSize = parseInt(textSizeInput?.value, 10) || 30;
-    const textColor = textColorInput?.value || "#ffffff";
-    const textBgColor = textBgColorInput?.value || "#000000";
-    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
-    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
-
-    if (newWidth !== defaultWidth || newInterval !== defaultInterval) {
-      defaultWidth = newWidth;
-      defaultInterval = newInterval;
-      outputWidth = newWidth;
-      const aspect = (video.videoHeight || 1) / (video.videoWidth || 1);
-      outputHeight = Math.round(outputWidth * aspect);
-
-      setProgressMessage(
-        translations[currentLanguage].extractingFrames || "프레임을 추출 중..."
-      );
-      frames = await extractFrames(video, newInterval);
-
+    if (!lastExtract || lastExtract.interval !== settings.interval || lastExtract.width !== settings.width) {
+      outputWidth = settings.width;
+      outputHeight = settings.height;
+      setProgressMessage(translations[currentLanguage].extractingFrames);
+      frames = await extractFrames(video, settings.interval);
+      lastExtract = { interval: settings.interval, width: settings.width };
     }
 
-    await generateGIF(frames, newWidth, newQuality, newFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
+    setProgressMessage(translations[currentLanguage].generatingGif);
+    const o = getTextOptions();
+    await generateGIF(frames, settings.width, settings.quality, settings.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+  }
 
-    reconvertBtn.innerHTML = original;
-    reconvertBtn.disabled = false;
-
-    clearProgressMessage();
-  });
+  // 길이 정보가 없는 영상(일부 WebM)은 끝으로 이동시켜 길이를 알아낸다
+  function probeDuration(videoEl) {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = (d) => {
+        if (done) return;
+        done = true;
+        videoEl.removeEventListener("durationchange", onChange);
+        videoEl.currentTime = 0;
+        resolve(d);
+      };
+      const onChange = () => {
+        if (isFinite(videoEl.duration) && videoEl.duration > 0) finish(videoEl.duration);
+      };
+      videoEl.addEventListener("durationchange", onChange);
+      videoEl.currentTime = 1e101;
+      setTimeout(() => finish(isFinite(videoEl.duration) ? videoEl.duration : 0), 4000);
+    });
+  }
 
   // 텍스트 재생성 버튼 (텍스트 설정)
   const textReconvertBtn = document.getElementById("textReconvertBtn");
   textReconvertBtn?.addEventListener("click", async () => {
-    if (!currentVideoFile || !frames || frames.length === 0) return;
+    if (!currentVideoFile || !currentSettings || !frames || frames.length === 0) return;
     if (output) output.innerHTML = "";
     if (downloadLink) downloadLink.style.display = "none";
 
@@ -332,21 +476,10 @@ ready(() => {
     }`;
     textReconvertBtn.disabled = true;
 
-    // 텍스트 설정만 가져오고, 기존 프레임과 고급 설정 유지
-    const overlayText = overlayTextInput?.value || "";
-    const textPosition = textPositionInput?.value || "bottom";
-    const textSize = parseInt(textSizeInput?.value, 10) || 30;
-    const textColor = textColorInput?.value || "#ffffff";
-    const textBgColor = textBgColorInput?.value || "#000000";
-    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
-    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
-
-    // 현재 고급 설정 값 사용
-    const currentWidth = parseInt(outputWidthInput?.value, 10) || 420;
-    const currentQuality = parseInt(qualityInput?.value, 10) || 90;
-    const currentFps = parseInt(fpsInput?.value, 10) || 10;
-
-    await generateGIF(frames, currentWidth, currentQuality, currentFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
+    // 텍스트 설정만 바꾸고, 기존 프레임과 현재 화질 단계 설정은 그대로 사용
+    const o = getTextOptions();
+    const s = currentSettings;
+    await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
 
     textReconvertBtn.innerHTML = original;
     textReconvertBtn.disabled = false;
@@ -419,56 +552,33 @@ ready(() => {
 
   async function handleVideoFile(file) {
     currentVideoFile = file;
+    lastExtract = null;
 
-    // ✅ 개선: 즉시 로딩 표시
-    showUploadLoading(
-      translations[currentLanguage].processingVideo || "비디오 처리 중..."
-    );
+    showUploadLoading(translations[currentLanguage].processingVideo);
 
-    // 비디오 지정
     video.src = URL.createObjectURL(file);
-
-    // 메타데이터 대기
     await new Promise((resolve) => {
       if (video.readyState >= 1) return resolve();
       video.addEventListener("loadedmetadata", resolve, { once: true });
     });
 
-    // 출력 폭/높이 결정
-    defaultWidth = Math.min(video.videoWidth || 420, 900);
-    outputWidth = defaultWidth;
-    if (outputWidthInput) outputWidthInput.value = defaultWidth;
+    let duration = video.duration;
+    if (!isFinite(duration) || duration <= 0) duration = await probeDuration(video);
+    if (!duration) {
+      hideUploadLoading();
+      if (outputSection) outputSection.style.display = "block";
+      if (output) output.textContent = translations[currentLanguage].noDuration;
+      return;
+    }
+    videoMeta = {
+      duration,
+      width: video.videoWidth || 420,
+      height: video.videoHeight || 236,
+    };
 
-    const aspect = (video.videoHeight || 1) / (video.videoWidth || 1);
-    outputHeight = Math.round(outputWidth * aspect);
+    const level = Number(qualityLevelInput?.value) || DEFAULT_LEVEL;
+    await requestConvert(level);
 
-    // ✅ 개선: 프레임 추출 시작 알림
-    showUploadLoading(
-      translations[currentLanguage].extractingFrames || "프레임을 추출 중..."
-    );
-
-    // 프레임 추출
-    frames = await extractFrames(video, defaultInterval);
-
-    // ✅ 개선: GIF 생성 진행 표시
-    setProgressMessage(
-      translations[currentLanguage].generatingGif || "GIF 생성 중..."
-    );
-
-    // 결과 섹션 표시
-    if (outputSection) outputSection.style.display = "block";
-
-    // GIF 생성
-    const overlayText = overlayTextInput?.value || "";
-    const textPosition = textPositionInput?.value || "bottom";
-    const textSize = parseInt(textSizeInput?.value, 10) || 30;
-    const textColor = textColorInput?.value || "#ffffff";
-    const textBgColor = textBgColorInput?.value || "#000000";
-    const textBgOpacityValue = parseFloat(textBgOpacityInput?.value);
-    const textBgOpacity = isNaN(textBgOpacityValue) ? 0.6 : textBgOpacityValue;
-    await generateGIF(frames, defaultWidth, defaultQuality, defaultFps, overlayText, textPosition, textSize, textColor, textBgColor, textBgOpacity);
-
-    // 완료 후 스크롤
     setTimeout(() => {
       outputSection?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 100);
@@ -678,7 +788,7 @@ ready(() => {
     canvas.width = w;
 
     const ctx = canvas.getContext("2d");
-    const duration = video.duration || 0;
+    const duration = (videoMeta && videoMeta.duration) || video.duration || 0;
     const frameList = [];
 
     canvas.width = outputWidth;

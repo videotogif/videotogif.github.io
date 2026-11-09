@@ -28,7 +28,7 @@ When you pick a file, the browser creates a temporary URL that points to it (one
 
 ### 2. Grabbing frames
 
-The video is jumped forward by the frame interval each time (0.3 seconds by default), the frame at that point is drawn onto a `<canvas>`, and then it's saved as a PNG image. For example, a 4.5-second video with a 0.3-second interval gives you 15 frames. Width scaling happens here too. Each frame is just drawn onto the canvas at the size you want, so there's no separate resize step.
+The video is jumped forward by the frame interval each time (0.04 to 0.2 seconds, depending on the quality level), the frame at that point is drawn onto a `<canvas>`, and then it's saved as a PNG image. For example, a 4.5-second video at the Balanced level (a 0.1-second interval) gives you 45 frames. The interval and width are picked automatically from the video's length and resolution and the level you chose, and width scaling happens here too. Each frame is just drawn onto the canvas at the size you want, so there's no separate resize step.
 
 ### 3. Adding text (only if you entered some)
 

@@ -23,7 +23,7 @@ ref: home
   },
   "description": "Free online video to GIF converter that runs 100% in your browser. No upload, no sign-up, no watermark.",
   "url": "https://videotogif.github.io/en/",
-  "featureList": "Video upload, frame extraction, resolution control, FPS control, text overlay, GIF trimming, local processing",
+  "featureList": "Video upload, automatic settings per video, low-spec to high-spec quality levels, original-speed playback, text overlay, GIF trimming, local processing",
   "screenshot": "https://videotogif.github.io/assets/img/og-default.jpg"
 }
 </script>
@@ -90,40 +90,34 @@ ref: home
           </button>
         </div>
 
-        <!-- Advanced settings -->
+        <!-- Quality (shown after the GIF is made): picked automatically for the video, slider from low-spec to high-spec -->
         <div class="advanced-settings" id="advancedSettings">
-          <h2 class="sr-only">Advanced GIF settings</h2>
+          <h2 class="sr-only">GIF quality</h2>
           <div class="advanced-settings-header" id="advancedToggle">
             <div class="advanced-settings-title">
               <span>⚙️</span>
-              <span id="advancedSettingsTitle">Advanced Settings</span>
+              <span id="advancedSettingsTitle">Quality</span>
             </div>
             <div class="toggle-icon" id="toggleIcon">▼</div>
           </div>
-          <div class="advanced-content" id="advancedContent">
-            <div class="settings-grid">
-              <div class="setting-group">
-                <label for="interval" id="intervalLabel">Frame Interval (seconds)</label>
-                <input type="number" id="interval" value="0.3" min="0.1" step="0.1">
+          <div class="advanced-content expanded" id="advancedContent">
+            <p class="auto-intro">Settings were picked automatically for this video's length and resolution. Move the slider and the GIF is remade for that level right away.</p>
+            <div class="spec-slider">
+              <label for="qualityLevel" class="sr-only">Quality level (1 low-spec to 5 high-spec)</label>
+              <input type="range" id="qualityLevel" min="1" max="5" step="1" value="3" aria-describedby="autoSummary">
+              <div class="spec-ticks">
+                <button type="button" class="spec-tick" data-level="1" style="--i:0">Low-spec</button>
+                <button type="button" class="spec-tick" data-level="2" style="--i:1" aria-label="Lighter"></button>
+                <button type="button" class="spec-tick" data-level="3" style="--i:2">Balanced</button>
+                <button type="button" class="spec-tick" data-level="4" style="--i:3" aria-label="Sharper"></button>
+                <button type="button" class="spec-tick" data-level="5" style="--i:4">High-spec</button>
               </div>
-              <div class="setting-group tooltip">
-                <label for="outputWidth" id="outputWidthLabel">Output Width (px)</label>
-                <input type="number" id="outputWidth" value="420" min="1" max="900" title="Up to 900px is supported.">
-                <span class="tooltip-text" id="outputWidthTip">Up to 900px is supported.</span>
-              </div>
-              <div class="setting-group">
-                <label for="quality" id="qualityLabel">Quality (1~100)</label>
-                <input type="number" id="quality" value="90" min="1" max="100">
-              </div>
-              <div class="setting-group">
-                <label for="fps" id="fpsLabel">FPS (frames/second)</label>
-                <input type="number" id="fps" value="10" min="1" max="60">
+              <div class="spec-ends" aria-hidden="true">
+                <span>Light &amp; fast</span>
+                <span>Sharp &amp; smooth</span>
               </div>
             </div>
-
-            <button id="reconvertBtn" class="convert-btn">
-              <span id="reconvertText">🔄 Regenerate GIF with New Settings</span>
-            </button>
+            <p class="auto-summary" id="autoSummary" aria-live="polite"></p>
           </div>
         </div>
 
@@ -195,12 +189,12 @@ ref: home
             <p>Drag &amp; drop a video file or click to choose one. MP4, MOV, WebM, MKV and most formats your browser can play are supported. The file is read locally – it is never sent to a server.</p>
           </li>
           <li>
-            <strong>Check the frames</strong>
-            <p>Frames are extracted automatically and the GIF is generated right away, so you can preview exactly what the animation will look like.</p>
+            <strong>Check the GIF</strong>
+            <p>The GIF is made right away with settings picked for this video's length and resolution. Short clips take just a few seconds.</p>
           </li>
           <li>
-            <strong>Fine-tune (optional)</strong>
-            <p>Open Advanced Settings to change the frame interval, output width (up to 900px), quality and FPS, then regenerate. Smaller widths and lower FPS make lighter files.</p>
+            <strong>Adjust the quality (optional)</strong>
+            <p>Want it lighter or sharper? Move the quality slider between Low-spec and High-spec. The GIF is remade for that level as soon as you let go.</p>
             <p>Use Text Settings to add a caption or watermark, then drag it anywhere on the GIF.</p>
           </li>
           <li>
@@ -231,15 +225,15 @@ ref: home
           </details>
           <details class="faq-item">
             <summary>How do I make my GIF smaller?</summary>
-            <p>Shorten the clip first, then reduce the output width, then increase the frame interval (e.g. 0.1s → 0.2s halves the number of frames). Changing FPS does not shrink the file: it only changes playback speed. In our test with the same 4.5-second clip, FPS 5, 10 and 20 all produced a 14MB GIF, while going from a 0.1s to a 0.2s interval cut it to 7.5MB.</p>
+            <p>Move the quality slider toward Low-spec. If it's still too big, cutting the length is the most reliable fix: open the GIF in <a href="{{ '/en/gif-trim/' | relative_url }}">Trim GIF</a> and keep only the part you need. Why file size works this way is in <a href="{% post_url 2025-10-30-en-gif-settings-guide %}">the settings guide</a>, with 8 GIFs made from the same clip.</p>
           </details>
           <details class="faq-item">
-            <summary>Why does my GIF look sped up?</summary>
-            <p>Playback speed equals frame interval × FPS. The defaults (0.3s × 10 FPS) play three times faster than the original. For real-time playback, set FPS to 1 ÷ interval, for example a 0.1s interval with 10 FPS.</p>
+            <summary>What does the quality slider change?</summary>
+            <p>Toward Low-spec, the width and frames per second go down, so the file is lighter and faster to make. Toward High-spec, the GIF gets bigger and smoother but heavier. Every level plays at the original speed, and long videos are scaled down automatically so your device doesn't struggle.</p>
           </details>
           <details class="faq-item">
             <summary>Does it work on iPhone and Android?</summary>
-            <p>Yes, it works in modern mobile browsers. Phones have less memory than computers, so keep clips short and the output width moderate for the best results.</p>
+            <p>Yes, it works in modern mobile browsers. Phones have less memory than computers, so the converter starts one level lower there. Short clips (under 10 seconds) work best.</p>
           </details>
         </div>
       </section>
@@ -283,18 +277,19 @@ ref: home
           short GIFs. Starting and ending on similar frames makes the loop look seamless.
         </p>
 
-        <h3>Pick the right width</h3>
+        <h3>Pick the right level</h3>
         <p>
-          480–640px works well for social media and chat, 640–800px for blogs and docs, and 800–900px for portfolios and
-          presentations. If most viewers are on phones, staying under 500px gives fast loading and crisp results.
-          Avoid upscaling a low-resolution source.
+          Low-spec or Lighter for chat and quick memes, Balanced for blogs and docs, and Sharper or High-spec for screen
+          recordings with small text, portfolios and presentations. On a phone, start low and only go up if you need to.
         </p>
 
-        <h3>Understand frame interval vs. FPS</h3>
+        <h3>How the levels are decided</h3>
         <p>
-          The frame interval decides how often a frame is captured from your video, so it controls how many frames the GIF
-          contains and therefore its file size. FPS only decides how fast those frames are played back. For real-time
-          playback use a 0.1s interval with 10 FPS (smoothest) or 0.2s with 5 FPS for lighter screen recordings.
+          It used to be that you typed in the frame interval, width, quality and FPS yourself, which was easy to get wrong,
+          so the converter now picks them for each video. The longer side is capped at 320 / 400 / 540 / 720 / 900px and
+          frames per second at 5 / 10 / 10 / 20 / 25 from Low-spec to High-spec, and nothing is upscaled past the original.
+          The capture interval always matches the playback rate, so every GIF plays at the original speed. Long videos have
+          their frame rate lowered first, then their width, so the browser doesn't run out of memory.
         </p>
 
         <h3>Make captions readable</h3>

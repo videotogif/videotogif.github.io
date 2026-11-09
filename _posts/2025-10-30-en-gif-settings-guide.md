@@ -15,13 +15,15 @@ permalink: /en/blog/gif-settings-guide/
 ---
 
 > I've written several posts about settings over time, but when I reread them, they overlapped and some of them were wrong. One even said a lower quality number means higher quality. It's the other way around. Sorry for the confusion. So I rewrote everything into this one post, based on how the code actually works.
+>
+> **Update, November 2026:** You no longer type these values into the converter. It now picks them automatically for each video's length and resolution, and you just choose a level on one slider (Low-spec to High-spec). Read this post as an explanation of what each value changes behind the scenes. The comparison GIFs and the screenshot below were made with the older version, where you entered the values yourself.
 
 ## Results first
 
 <div class="gif-compare">
   <figure>
-    <img src="/assets/img/post7_1.gif" alt="GIF made with the default settings" loading="lazy">
-    <figcaption>Defaults, untouched (15 frames, 1.5s, 4.5MB)</figcaption>
+    <img src="/assets/img/post7_1.gif" alt="GIF made with the old default settings" loading="lazy">
+    <figcaption>Old defaults, untouched (15 frames, 1.5s, 4.5MB)</figcaption>
   </figure>
   <figure>
     <img src="/assets/img/post7_2.gif" alt="GIF made after changing the settings" loading="lazy">
@@ -29,9 +31,9 @@ permalink: /en/blog/gif-settings-guide/
   </figure>
 </div>
 
-Both come from the same 4.5-second video. The left one is what you get if you upload and don't touch anything. The right one is what you get after changing just two values in Advanced Settings.
+Both come from the same 4.5-second video. The left one is what the older version gave you if you didn't touch anything. The right one is what you got after changing just two values in Advanced Settings.
 
-![Advanced Settings panel](/assets/img/post7_3.png)
+![The old Advanced Settings panel](/assets/img/post7_3.png)
 
 The two changes were Frame Interval (0.3 → 0.1 seconds) and Quality (90 → 100). Why the left one looks weirdly fast-forwarded is the whole point of this post, so let me go through the settings one at a time.
 
@@ -73,11 +75,11 @@ Frame interval multiplied by FPS gives you the playback speed. This is where peo
 Playback speed = frame interval × FPS
 
 0.1s × 10fps = 1x (original speed)
-0.3s × 10fps = 3x (default)
+0.3s × 10fps = 3x (old default)
 0.2s × 5fps  = 1x (original speed, but choppier)
 ```
 
-The defaults play three times faster than the original. For short meme clips that can actually be kind of fun, but when speed matters, like in a screen recording, it's better to match it. To get the original speed, set FPS to `1 ÷ interval`. A 0.1s interval means FPS 10, 0.2s means 5, and 0.5s means 2.
+The old defaults played three times faster than the original. For short meme clips that can actually be kind of fun, but not when speed matters, like in a screen recording. So the automatic settings now always set FPS to `1 ÷ interval`, and every level plays at the original speed. A 0.1s interval means FPS 10, 0.2s means 5, and so on.
 
 ## Comparison table
 
@@ -116,35 +118,33 @@ Here's what happens if you keep the original speed and only stretch the interval
 
 This is the setting that affects file size the most. When you reduce the width, the height shrinks proportionally too, so the pixel count drops with the square. Going from 800px to 400px leaves you with a quarter of the pixels.
 
-When you upload, the width is set to the original video's width automatically, and the maximum is 900px. I wrote [a separate post]({% post_url 2025-10-28-en-why-900px %}) about why it stops at 900px. Making it bigger than the original doesn't really do anything, since it can't add detail that wasn't there.
+Now the longer side is set by the quality level, from 320px (Low-spec) up to 900px (High-spec). I wrote [a separate post]({% post_url 2025-10-28-en-why-900px %}) about why it stops at 900px. Making it bigger than the original doesn't really do anything, since it can't add detail that wasn't there.
 
 ## Quality (1~100)
 
-Higher means better quality, and the default is 90. This value is passed straight to the GIF encoder (gifski). Lowering it makes the encoder cut colors more aggressively and use more noise, and in exchange the file gets smaller.
+Higher means better quality, and it's now set by the level, from 70 (Low-spec) to 100 (High-spec). This value is passed straight to the GIF encoder (gifski). Lowering it makes the encoder cut colors more aggressively and use more noise, and in exchange the file gets smaller.
 
-Screen recordings with simple colors usually don't show much difference when you lower the quality, but videos with lots of gradients, like sunsets or skin, show it right away. That's why quality is best left for last.
+Screen recordings with simple colors usually don't show much difference when you lower the quality, but videos with lots of gradients, like sunsets or skin, show it right away. That's why the automatic settings adjust size and frame count before quality.
 
 ## What to cut first when the file is too big
 
 1. **Shorten it first.** The frame count goes up with the length, so this works the most reliably. You can also put the finished GIF into [Trim GIF](/en/gif-trim/) and keep only the part you need.
-2. **Reduce the width.** The effect is squared.
-3. **Increase the frame interval.** Changing 0.1s to 0.2s halves the frame count. If you want to keep the same speed, cut FPS in half too.
-4. **If it's still too big, lower the quality.**
+2. **Move the quality slider toward Low-spec.** Each step down lowers both the width and the frames per second. Width counts twice because the effect is squared, and halving the frame count roughly halves the file.
 
-FPS doesn't help with file size, so only use it to adjust the speed.
+As shown above, changing FPS alone doesn't shrink the file, so the automatic settings always move the capture interval and FPS together.
 
-## Starting values for different uses
+## Which level to pick
 
-There isn't one right answer, so here are just some values that work well as a starting point.
+There isn't one right answer, so here are levels that work well as a starting point.
 
-| Use | Frame Interval | FPS | Width |
-| --- | :---: | :---: | :---: |
-| Bug reports, screen recordings | 0.2s | 5 | Original (the text has to be readable) |
-| Memes, reactions | 0.1s | 10 | 400~480px |
-| As smooth as possible | 0.1s | 10 | Trim the video short and reduce the width |
-| Fast, timelapse-style | 0.5s | 10 | Whatever you like |
+| Use | Level | Why |
+| --- | :---: | --- |
+| Quick memes for chat | Low-spec to Lighter | Small and fast to make |
+| Screens for blogs and docs | Balanced | Reasonable size and weight |
+| Screen recordings with small text, bug reports | Sharper | The text has to be readable |
+| Portfolios, presentations | High-spec | Best after trimming the clip short |
 
-At original speed, 0.1s + FPS 10 is the smoothest setting this converter can do. I'm hoping to add a way to capture frames more densely later on.
+When I first wrote this, 10 frames per second was the most this converter could do at original speed, and I said I'd add denser capture "later on". High-spec now captures up to 25 frames per second at original speed.
 
 Upload limits are different for every social network and messaging app, and they change often, so I didn't list numbers here. Check the service's help page once before you upload.
 
@@ -155,8 +155,8 @@ If you type something into Text Settings and generate the GIF again, you can dra
 ## In short
 
 - Frames = length ÷ interval, playback speed = interval × FPS
-- To shrink the file: length → width → interval, in that order
-- Higher quality is better; touch it last
+- To shrink the file: trim the length first, then move the slider toward Low-spec
+- The converter now picks these values for each video automatically
 
 I covered why GIF colors come out duller than the original, and why this converter uses gifski, in my dev log series.
 

@@ -94,10 +94,9 @@ permalink: /en/faq/
     <details class="faq-item">
       <summary>What's the maximum resolution?</summary>
       <p>
-        You can set the output width up to <strong>900px</strong>.
-        Generally, 480-640px works well for social media and 640-800px for blogs.
-        Higher resolutions mean bigger files, so pick a size that fits where the GIF is going.
-        Scaling up beyond the original video actually makes it look worse, so I recommend keeping the original size or going smaller.
+        At High-spec, the longer side goes up to <strong>900px</strong>. Lower levels are smaller: 320px at Low-spec and 540px at Balanced.
+        Nothing is upscaled past the original, since that only adds file size without adding detail.
+        Why the cap is 900px is explained in <a href="{% post_url 2025-10-28-en-why-900px %}">this post</a>.
       </p>
     </details>
   </section>
@@ -142,34 +141,29 @@ permalink: /en/faq/
     <details class="faq-item">
       <summary>Conversion is really slow. What can I do?</summary>
       <p>
-        Conversion speed depends on the video's length, resolution, number of frames and your device's performance. Tips for faster conversion:
+        Speed depends on the video's length, the size and frame count of the GIF, and your device. To make it faster:
       </p>
       <ul class="tech-list">
-        <li><strong>Shorten the video:</strong> Clips of 5 seconds or less convert very quickly.</li>
-        <li><strong>Reduce the output size:</strong> Going from 800px → 500px cuts processing time a lot.</li>
-        <li><strong>Increase the frame interval:</strong> Going from 0.1s → 0.3s means fewer frames to process.</li>
+        <li><strong>Move the quality slider toward Low-spec:</strong> width and frames per second both go down, so there's much less to process.</li>
+        <li><strong>Shorten the video:</strong> uploading only the part you need is the fastest option.</li>
       </ul>
       <p>
-        FPS only changes playback speed, so it has almost no effect on conversion speed.
-        Short clips finish in a few seconds on most computers; the longer and larger the video, the longer it takes.
+        Short clips usually finish in a few seconds on a computer. A video over 30 seconds at High-spec can take more than a minute.
       </p>
     </details>
 
     <details class="faq-item">
       <summary>Can I use it on mobile?</summary>
       <p>
-        Yes, it works in mobile browsers, including Chrome and Samsung Internet on Android and Safari on iOS.
-        But <strong>mobile devices have less memory and processing power than computers</strong>, so I recommend the following:
+        Yes, it works in mobile browsers such as Chrome on Android, Samsung Internet and Safari on iOS.
+        Phones have <strong>less memory and processing power than computers</strong>, so on a phone the quality slider starts one level lower, at "Lighter".
       </p>
       <ul class="check-list">
-        <li>✅ Video length: 5 seconds or less</li>
-        <li>✅ Output size: 400px or less</li>
-        <li>✅ Frame interval: 0.3 seconds or more</li>
-        <li>✅ Quality: 70-80</li>
+        <li>✅ Keep videos short (under 10 seconds)</li>
+        <li>✅ If it struggles, move the slider to Low-spec</li>
       </ul>
       <p>
-        For long videos or high-resolution conversions, I recommend using a computer.
-        If your browser freezes on mobile, try again with shorter, lighter settings.
+        For long videos or High-spec GIFs, a computer works better.
       </p>
     </details>
 
@@ -196,53 +190,47 @@ permalink: /en/faq/
     <details class="faq-item">
       <summary>My GIF file is too big. How do I make it smaller?</summary>
       <p>
-        GIF doesn't compress well, so file sizes grow quickly. Ways to shrink them:
+        GIF doesn't compress well, so files grow quickly. To make one smaller:
       </p>
       <ul class="tech-list">
-        <li><strong>Shorten the video:</strong> Cutting it from 10 seconds → 5 seconds also cuts the file size in half.</li>
-        <li><strong>Reduce the output size:</strong> Going from 720px → 480px makes the file much smaller.</li>
-        <li><strong>Increase the frame interval:</strong> Going from 0.1s → 0.3-0.5s means fewer frames and a smaller file.</li>
-        <li><strong>Still too big? Lower the quality:</strong> With simple-color content like screen recordings, a lower setting is usually hard to notice.</li>
+        <li><strong>Move the quality slider toward Low-spec:</strong> width and frames per second go down, and so does the file size.</li>
+        <li><strong>Make it shorter:</strong> frame count follows length, so this is the most reliable fix. Open the GIF in <a href="{{ '/en/gif-trim/' | relative_url }}">Trim GIF</a> and keep only the part you need.</li>
       </ul>
       <p>
-        FPS only changes playback speed, and the file size stays about the same. I tried the same 4.5-second clip at 5, 10 and 20 FPS, and all three came out at 14MB.
-        There's a detailed comparison in my <a href="{% post_url 2025-10-30-en-gif-settings-guide %}">settings guide</a>.
+        File size is mostly decided by frame count and dimensions. There's a comparison made from one video in <a href="{% post_url 2025-10-30-en-gif-settings-guide %}">the settings guide</a>.
       </p>
     </details>
 
     <details class="faq-item">
       <summary>The GIF quality looks worse. Can I improve it?</summary>
       <p>
-        GIF can only show 256 colors, so it will always look somewhat worse than the original video.
-        To get the best quality possible:
+        GIF can only show 256 colors, so it will always look a bit worse than the original video.
+        To get the best quality:
       </p>
       <ul class="check-list">
-        <li>✅ <strong>Raise Quality to 90-100</strong> (the file gets bigger)</li>
-        <li>✅ <strong>Keep the output size the same as the original</strong> (don't scale it down)</li>
-        <li>✅ <strong>Use videos with simple backgrounds</strong> (colors tend to bleed in complex scenes)</li>
-        <li>✅ <strong>Use a short frame interval</strong> (0.1-0.2s for smooth animation)</li>
+        <li>✅ <strong>Move the quality slider toward High-spec</strong> (width, frame rate and quality all go up, and so does file size)</li>
+        <li>✅ <strong>Trim the video short</strong> (shorter clips can stay at higher levels)</li>
+        <li>✅ <strong>Use videos with simple backgrounds</strong> (busy scenes show color banding)</li>
       </ul>
       <p>
-        Photos with lots of gradients and live-action footage are better suited to MP4 than GIF.
+        Photos with lots of gradients and live-action footage are better as MP4.
         GIF works best for UI demos, simple animations and logos.
       </p>
     </details>
 
     <details class="faq-item">
-      <summary>What's the difference between frame interval and FPS?</summary>
+      <summary>What does the quality slider change?</summary>
       <p>
-        Both affect how smooth your GIF looks, but they work differently:
+        When you upload a video, settings are picked automatically for its length and resolution, and the slider lets you choose a level.
       </p>
       <ul class="tech-list">
-        <li><strong>Frame Interval:</strong> Decides how often a frame is captured from the original video.
-          For example, a 0.3-second interval captures about 33 frames from a 10-second video.</li>
-        <li><strong>FPS (Frames Per Second):</strong> Decides how many frames the finished GIF plays each second.
-          For example, at 10 FPS it plays 10 frames per second, so motion looks smooth.</li>
+        <li><strong>Toward Low-spec:</strong> smaller width and fewer frames per second, so the file is lighter and faster to make.</li>
+        <li><strong>Toward High-spec:</strong> bigger and smoother, but heavier and slower to make.</li>
       </ul>
       <p>
-        Multiply the two and you get the playback speed. The defaults (0.3s × 10 FPS) play 3 times faster than the original.
-        To match the original speed, set FPS to 1 ÷ interval. For example: a 0.1s interval with 10 FPS, or a 0.2s interval with 5 FPS.
-        File size follows the number of frames (= video length ÷ interval) and has almost nothing to do with FPS.
+        At every level, the capture interval matches the playback rate, so the GIF plays at the original speed.
+        For long videos, frame rate and size are lowered automatically so the browser doesn't run out of memory, and the page tells you when that happens.
+        The numbers for each level are in the table near the bottom of the <a href="{{ '/en/' | relative_url }}">home page</a>.
       </p>
     </details>
 
@@ -288,17 +276,16 @@ permalink: /en/faq/
     <details class="faq-item">
       <summary>My browser freezes or slows down.</summary>
       <p>
-        This is most likely because it's running out of memory. Here's what to try:
+        This is most likely a memory issue. Try:
       </p>
       <ul class="tech-list">
-        <li>Close all other browser tabs and try again</li>
-        <li>Shorten the video to 5 seconds or less</li>
-        <li>Reduce the output size to 400-500px</li>
-        <li>Increase the frame interval to 0.5 seconds or more</li>
-        <li>Restart your computer and try again</li>
+        <li>Closing other browser tabs and trying again</li>
+        <li>Moving the quality slider to Low-spec</li>
+        <li>Shortening the video to under 10 seconds</li>
+        <li>Restarting your computer and trying again</li>
       </ul>
       <p>
-        If it happens often on a mobile device, try using a computer instead, or use shorter, lighter settings.
+        While a GIF is being encoded, the page can look frozen for a moment because of the heavy computation. If it keeps happening on mobile, try a computer.
       </p>
     </details>
 
@@ -366,9 +353,8 @@ permalink: /en/faq/
     <details class="faq-item">
       <summary>Can I convert multiple files at once?</summary>
       <p>
-        Right now you can only convert one file at a time.
-        Batch conversion is one of the most requested features, and it's planned for a future update.
-        For now, please convert your files one by one, uploading the next file after each conversion finishes.
+        Not yet. You can convert one file at a time, and converting several at once is on my list of features to add.
+        For now, upload the next file once the current one is done.
       </p>
     </details>
 
