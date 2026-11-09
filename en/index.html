@@ -269,7 +269,11 @@ hreflang:
           </details>
           <details class="faq-item">
             <summary>How do I make my GIF smaller?</summary>
-            <p>Increase the frame interval (e.g. 0.1s → 0.3s), reduce the output width (e.g. 720px → 480px) or lower the FPS. Trimming the clip to the essential 3–5 seconds is often the biggest win.</p>
+            <p>Shorten the clip first, then reduce the output width, then increase the frame interval (e.g. 0.1s → 0.2s halves the number of frames). Changing FPS does not shrink the file: it only changes playback speed. In our test with the same 4.5-second clip, FPS 5, 10 and 20 all produced a 14MB GIF, while going from a 0.1s to a 0.2s interval cut it to 7.5MB.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Why does my GIF look sped up?</summary>
+            <p>Playback speed equals frame interval × FPS. The defaults (0.3s × 10 FPS) play three times faster than the original. For real-time playback, set FPS to 1 ÷ interval, for example a 0.1s interval with 10 FPS.</p>
           </details>
           <details class="faq-item">
             <summary>Does it work on iPhone and Android?</summary>
@@ -324,11 +328,11 @@ hreflang:
           Avoid upscaling a low-resolution source.
         </p>
 
-        <h3>Balance FPS and file size</h3>
+        <h3>Understand frame interval vs. FPS</h3>
         <p>
-          Smooth motion needs a 0.1–0.2s frame interval (about 20–30 FPS), but files grow quickly. For tutorials and
-          screen recordings, 0.3–0.5s (about 10–15 FPS) is easier to follow and much lighter. Fast action and sports
-          clips benefit from shorter intervals.
+          The frame interval decides how often a frame is captured from your video, so it controls how many frames the GIF
+          contains and therefore its file size. FPS only decides how fast those frames are played back. For real-time
+          playback use a 0.1s interval with 10 FPS (smoothest) or 0.2s with 5 FPS for lighter screen recordings.
         </p>
 
         <h3>Make captions readable</h3>

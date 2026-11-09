@@ -10,6 +10,9 @@ layout: default
                 <time datetime="{{ page.date | date_to_xmlschema }}">
                     {{ page.date | date: "%Y년 %m월 %d일" }}
                 </time>
+                {% if page.last_modified_at %}
+                <span class="post-updated">수정 <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{{ page.last_modified_at | date: "%Y년 %m월 %d일" }}</time></span>
+                {% endif %}
                 {% if page.category %}
                 <span class="post-category">{{ page.category }}</span>
                 {% endif %}
@@ -26,6 +29,7 @@ layout: default
         <section class="post-article-body">
             {{ content }}
         </section>
+        {% include share.html %}
     </article>
 
     {% include ad-unit.html slot="post" %}

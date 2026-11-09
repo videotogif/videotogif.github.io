@@ -2231,3 +2231,63 @@ html {
 .trim-button-group #trimDownloadLink:hover {
   background: var(--primary-green-dark);
 }
+
+/* 블로그: GIF 나란히 비교 */
+.gif-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+
+.gif-compare figure {
+  margin: 0;
+  text-align: center;
+}
+
+.gif-compare img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.gif-compare figcaption {
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+/* 블로그: 수정일, 공유 */
+.post-updated {
+  margin-left: 8px;
+  opacity: 0.8;
+}
+
+.post-share {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.post-share-btn {
+  margin: 8px 0;
+  padding: 8px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-section);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.post-share-btn:hover {
+  background: var(--bg-section-hover);
+}
+
+.post-share-msg {
+  display: block;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}

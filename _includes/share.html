@@ -1,0 +1,24 @@
+<div class="post-share">
+    <p>글이 도움이 됐다면 링크를 한 번 공유해 주세요. 혼자 운영하는 사이트라 큰 힘이 됩니다.</p>
+    <button type="button" class="post-share-btn" id="postShareBtn">링크 복사</button>
+    <span class="post-share-msg" id="postShareMsg" hidden>링크를 복사했어요. 고마워요!</span>
+</div>
+<script>
+    (function () {
+        var btn = document.getElementById('postShareBtn');
+        var msg = document.getElementById('postShareMsg');
+        if (!btn || !msg) return;
+        function done() {
+            msg.hidden = false;
+            setTimeout(function () { msg.hidden = true; }, 2000);
+        }
+        btn.addEventListener('click', function () {
+            var url = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(done).catch(function () { window.prompt('이 링크를 복사하세요', url); });
+            } else {
+                window.prompt('이 링크를 복사하세요', url);
+            }
+        });
+    })();
+</script>

@@ -3,7 +3,7 @@ layout: default
 title: "Video to GIF 소개 - 업로드 없는 무료 GIF 변환기"
 subtitle: "무료 gif 만들기 프로그램, Video to GIF에 대하여"
 tagline: "100% 사생활 보장되는 GIF 변환기"
-description: "gif 만들기 사이트 Video to GIF converter 사용 설명서. ZIF는 무료 gif 만들기 프로그램 입니다. 동영상을 고화질 gif로 변환하는 방법을 안내합니다."
+description: "Video to GIF를 만든 이유와 동작 방식. 서버 업로드 없이 브라우저 안에서 동영상을 GIF로 바꾸는 무료 변환기입니다."
 permalink: /about/
 ---
 
@@ -24,95 +24,83 @@ permalink: /about/
   </header>
 
   <section class="content-section">
-    <h2>서비스 소개</h2>
+    <h2>이 사이트는요</h2>
     <p>
-      Video to GIF converter는 브라우저에서 100% 로컬로 동작하는 프리미엄 동영상 GIF 변환 도구입니다.
-      별도의 설치나 회원가입 없이 바로 사용할 수 있으며, 사용자의 개인정보를 완벽하게 보호합니다.
+      Video to GIF는 동영상을 GIF로 바꿔 주는 무료 웹 도구예요. 파일을 서버에 올리지 않고, 지금 쓰고 계신 브라우저 안에서 변환합니다.
+      회원가입이나 설치도 필요 없어요.
+    </p>
+    <p>
+      버그 리포트나 블로그 글에 GIF를 자주 쓰는 개발자 한 명이 만들고 운영하고 있습니다. 쓰던 변환 사이트들이 파일을 외국 서버에 올려야 했고
+      색감도 아쉬워서 직접 만들게 됐어요. 자세한 이야기는 <a href="{% post_url 2025-10-22-why-i-made-videotogif %}">이 글</a>에 적어 두었습니다.
     </p>
   </section>
 
   <section class="content-section">
-    <h2>왜 Video to GIF converter인가?</h2>
+    <h2>신경 써서 만든 부분</h2>
 
     <div class="features-list">
       <div class="feature-item">
         <div class="feature-icon-large">🔒</div>
-        <h3>완벽한 프라이버시</h3>
+        <h3>파일이 내 컴퓨터를 떠나지 않아요</h3>
         <p>
-          모든 변환 작업은 사용자의 브라우저에서 이루어집니다.
-          비디오 파일이 서버로 업로드되지 않으므로 개인정보 유출 걱정이 전혀 없습니다.
-        </p>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-icon-large">⚡</div>
-        <h3>빠른 처리 속도</h3>
-        <p>
-          WebAssembly 기술을 활용하여 고품질 GIF를 빠르게 생성합니다.
-          서버 업로드 시간이 없어 더욱 신속한 변환이 가능합니다.
-        </p>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-icon-large">🎨</div>
-        <h3>세밀한 제어</h3>
-        <p>
-          프레임 간격, 출력 크기, 품질, FPS 등을 자유롭게 조정하여
-          원하는 스타일의 GIF를 만들 수 있습니다.
+          변환은 브라우저 안에서 끝납니다. 정말 업로드가 안 되는지 개발자 도구로 직접 확인하는 방법도
+          <a href="{% post_url 2025-12-08-webassembly-gif-conversion %}">따로 정리해 뒀어요</a>.
         </p>
       </div>
 
       <div class="feature-item">
         <div class="feature-icon-large">💎</div>
-        <h3>고품질 결과물</h3>
+        <h3>색감</h3>
         <p>
-          최신 GIF 인코딩 라이브러리를 사용하여 선명하고
-          자연스러운 애니메이션 GIF를 생성합니다.
+          FFmpeg, 네이버 블로그 앱과 같은 영상으로 직접 비교해 보고 gifski 인코더를 골랐습니다.
+          비교 과정은 <a href="{% post_url 2025-10-25-5 %}">gifski 글</a>에 있어요.
+        </p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon-large">🎛️</div>
+        <h3>꼭 필요한 설정만</h3>
+        <p>
+          프레임 간격, 가로 크기, 품질, FPS 네 가지만 넣었어요. 기본값으로도 쓸 만하고,
+          각 값이 뭘 바꾸는지는 <a href="{% post_url 2025-10-30-gif-settings-guide %}">설정 정리 글</a>에서 볼 수 있습니다.
+        </p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon-large">🧩</div>
+        <h3>조금씩 고치는 중</h3>
+        <p>
+          처음엔 변환만 됐는데, 지금은 GIF 자르기와 글자 넣기도 됩니다.
+          필요한 기능이 있으면 <a href="{{ '/contact/' | relative_url }}">문의하기</a>로 알려 주세요.
         </p>
       </div>
     </div>
   </section>
 
   <section class="content-section">
-    <h2>사용 가능한 기능</h2>
+    <h2>지금 할 수 있는 것</h2>
     <ul class="check-list">
-      <li>✅ MP4, MOV, AVI 등 다양한 비디오 포맷 지원</li>
-      <li>✅ 드래그 & 드롭으로 간편한 파일 업로드</li>
-      <li>✅ 실시간 프레임 미리보기</li>
-      <li>✅ 프레임 간격 조정 (0.1초 ~ 5초)</li>
-      <li>✅ 출력 크기 조정 (최대 1920px)</li>
-      <li>✅ 품질 설정 (1~100)</li>
-      <li>✅ FPS 조정 (1~60)</li>
-      <li>✅ 설정 변경 후 즉시 재생성</li>
-      <li>✅ 원클릭 다운로드</li>
+      <li>✅ MP4, MOV, WebM 등 브라우저에서 재생되는 동영상을 GIF로 변환</li>
+      <li>✅ 프레임 간격(0.1초부터), FPS(1~60) 조절</li>
+      <li>✅ 출력 가로 크기 조절 (최대 900px, <a href="{% post_url 2025-10-25-6 %}">이유</a>)</li>
+      <li>✅ 품질 설정 (1~100, 클수록 고화질)</li>
+      <li>✅ GIF에 글자 넣기, 끌어서 위치 옮기기</li>
+      <li>✅ 만든 GIF에서 원하는 구간만 남기기 (<a href="{{ '/gif-trim/' | relative_url }}">GIF 자르기</a>)</li>
+      <li>✅ 한국어 / <a href="{{ '/en/' | relative_url }}">English</a> 페이지</li>
     </ul>
   </section>
 
   <section class="content-section">
-    <h2>기술 스택 및 작동 원리</h2>
-    <p>
-      Video to GIF converter는 최신 웹 기술을 활용하여 브라우저에서 네이티브 앱 수준의 성능을 제공합니다. 다음은 주요 기술 스택과 각각의 역할입니다:
-    </p>
+    <h2>어떻게 동작하나요</h2>
     <ul class="tech-list">
-      <li><strong>WebAssembly (WASM)</strong> - C/Rust로 작성된 고성능 코드를 브라우저에서 실행. 네이티브에 가까운 속도로 GIF 인코딩을 수행하며, JavaScript보다
-        10-20배 빠른 처리 속도를 제공합니다.</li>
-      <li><strong>gifski-wasm</strong> - Rust로 작성된 최고 품질의 GIF 생성 라이브러리를 WebAssembly로 컴파일. 팔레트 최적화 알고리즘을 통해 선명하고 자연스러운 색상
-        표현이 가능합니다.</li>
-      <li><strong>Canvas API</strong> - 동영상에서 프레임을 추출하고 크기를 조정. 각 프레임을 이미지 데이터로 변환하여 GIF 인코더에 전달합니다.</li>
-      <li><strong>HTML5 Video API</strong> - 동영상 재생을 제어하고 특정 시간대의 프레임을 정확히 추출. seekTime()과 currentTime 속성을 활용합니다.</li>
-      <li><strong>Service Worker</strong> - Cross-Origin Isolation 환경을 제공하여 SharedArrayBuffer 사용 가능. 멀티스레드 처리로 변환 성능을
-        향상시킵니다.</li>
-      <li><strong>Jekyll</strong> - 정적 사이트 생성 프레임워크. GitHub Pages에서 무료 호스팅이 가능하며 빠른 로딩 속도를 제공합니다.</li>
+      <li><strong>HTML5 Video + Canvas</strong> - 고른 파일을 브라우저 안에서만 통하는 임시 주소로 열고, 프레임 간격마다 그 시점의 장면을 캔버스에 원하는 크기로 그려서 떠 둡니다.</li>
+      <li><strong>gifski-wasm</strong> - Rust로 만든 GIF 인코더 gifski를 WebAssembly로 컴파일한 버전이에요. 장면마다 팔레트를 따로 잡아서 256색 한계 안에서도 색을 잘 살립니다.</li>
+      <li><strong>WebAssembly</strong> - 브라우저에서 기계어에 가까운 속도로 코드를 돌리는 기술이에요. 덕분에 서버 없이도 인코딩을 할 수 있습니다.</li>
+      <li><strong>Jekyll + GitHub Pages</strong> - 사이트는 정적 페이지로 만들어 GitHub Pages에 올려 두었어요. 변환을 서버에서 하지 않으니 따로 서버가 필요 없습니다.</li>
     </ul>
-
-    <h3 style="margin-top: 40px; color: var(--text-primary); font-size: 1.5rem;">변환 프로세스</h3>
-    <ol class="tech-list" style="list-style: decimal; padding-left: 40px;">
-      <li><strong>동영상 로드</strong> - 사용자가 선택한 파일을 FileReader API로 읽어 Video 엘리먼트에 로드합니다.</li>
-      <li><strong>프레임 추출</strong> - 설정된 간격(예: 0.3초)마다 Canvas에 프레임을 그리고 이미지 데이터로 변환합니다.</li>
-      <li><strong>크기 조정</strong> - 각 프레임을 사용자가 지정한 출력 크기로 리샘플링합니다. Lanczos 알고리즘을 사용하여 고품질 스케일링을 수행합니다.</li>
-      <li><strong>GIF 인코딩</strong> - gifski 라이브러리가 프레임들을 최적의 팔레트로 양자화하고 GIF 포맷으로 인코딩합니다.</li>
-      <li><strong>다운로드</strong> - 생성된 GIF를 Blob으로 변환하고 다운로드 링크를 생성합니다.</li>
-    </ol>
+    <p>
+      순서대로 자세히 적은 글: <a href="{% post_url 2025-12-08-webassembly-gif-conversion %}">업로드 없이 브라우저에서 GIF가 만들어지는 과정</a>
+    </p>
   </section>
 
   <section class="content-section">
@@ -130,13 +118,13 @@ permalink: /about/
         <tbody>
           <tr>
             <td>프라이버시</td>
-            <td>✅ 완벽 (로컬 처리)</td>
+            <td>✅ 로컬 처리</td>
             <td>⚠️ 서버 업로드 필요</td>
             <td>✅ 로컬 처리</td>
           </tr>
           <tr>
             <td>변환 속도</td>
-            <td>✅ 매우 빠름 (업로드 불필요)</td>
+            <td>✅ 업로드 대기 없음 (기기 성능에 따라 다름)</td>
             <td>⚠️ 느림 (네트워크 의존)</td>
             <td>✅ 빠름</td>
           </tr>
@@ -160,7 +148,7 @@ permalink: /about/
           </tr>
           <tr>
             <td>모바일 지원</td>
-            <td>✅ 완벽 지원</td>
+            <td>✅ 지원 (짧은 영상 권장)</td>
             <td>✅ 지원</td>
             <td>❌ 미지원</td>
           </tr>
