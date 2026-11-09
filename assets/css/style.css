@@ -1224,7 +1224,9 @@ video {
 .blog-description {
   font-size: 1.2rem;
   color: var(--text-muted);
-  margin: 0;
+  margin: 0 auto; /* blog.css의 max-width 600px 상자를 가운데로 (margin: 0이면 왼쪽에 붙음) */
+  text-wrap: balance;
+  word-break: keep-all; /* 한국어를 낱말 중간에서 끊지 않게 */
   transition: color 0.3s ease;
 }
 
@@ -2361,6 +2363,11 @@ html {
   background: var(--bg-section);
   color: var(--text-primary);
   font-weight: 600;
+}
+
+/* display:flex가 hidden 속성을 덮어써서 태그를 고르지 않았는데도 빈 막대가 보이던 문제 */
+.tag-filter-bar[hidden] {
+  display: none;
 }
 
 .tag-filter-clear {
