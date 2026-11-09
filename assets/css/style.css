@@ -2425,7 +2425,10 @@ html {
   height: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
+  object-fit: contain;
+  /* 그림을 칸의 70% 크기로: 좌우 15%, 위아래 9.375%(=높이의 15%) 여백 */
+  box-sizing: border-box;
+  padding: 9.375% 15%;
 }
 
 .story-card-body {
