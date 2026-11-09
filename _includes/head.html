@@ -3,6 +3,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 
+<!-- Google 태그 (Google 애널리틱스 방문 통계): 프로덕션 빌드에서만 로드 -->
+{%- if jekyll.environment == "production" and site.google_tag_id and site.google_tag_id != "" %}
+<script async src="https://www.googletagmanager.com/gtm.js?id={{ site.google_tag_id }}"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+</script>
+{%- endif %}
+
 <!-- SEO 자동 메타: title / description / canonical / OG / Twitter / JSON-LD -->
 {% seo %}
 

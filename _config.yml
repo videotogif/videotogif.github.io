@@ -44,6 +44,9 @@ google_site_verification: lDRyRzphsuydZUsLl0VDnAcf1qpxkQ7R9yvMWRSdCnk
 naver_site_verification: 5bc446ed2588d2bddf6cac7b09788dc0e87bc67f
 adsense_client: ca-pub-1404060643961114
 
+# Google 애널리틱스 (방문 통계). Google 태그 ID
+google_tag_id: "GTM-54RLQSK8"
+
 # 수동 광고 단위 (선택). AdSense > 광고 > 광고 단위 기준 > 디스플레이 광고 생성 후
 # 나오는 data-ad-slot 숫자를 따옴표로 넣으세요. 비워두면 자동 광고만 동작합니다.
 adsense_slots:
