@@ -46,8 +46,8 @@ adsense_client: ca-pub-1404060643961114
 # 수동 광고 단위 (선택). AdSense > 광고 > 광고 단위 기준 > 디스플레이 광고 생성 후
 # 나오는 data-ad-slot 숫자를 따옴표로 넣으세요. 비워두면 자동 광고만 동작합니다.
 adsense_slots:
-  home: ""   # 메인(한/영) 변환기 아래
-  post: ""   # 블로그 글 본문 아래
+  home: "3682159820"   # videotogif-home: 메인(한/영) 변환기 아래
+  post: "4775749642"   # videotogif-post: 블로그 글 본문 아래
 
 # 로고/소셜 (가능하면 절대경로로)
 logo: https://videotogif.github.io/favicon.png
