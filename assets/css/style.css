@@ -2695,21 +2695,13 @@ img[src$="-pixel.png"] {
 }
 
 /* ==========================
-   블로그 글: 읽는 시간, 작은 그림, 써 보기 상자, 글쓴이
+   블로그 글: 읽는 시간, 써 보기 상자
 ========================== */
 .post-reading-time {
   margin-left: 8px;
   opacity: 0.8;
 }
 
-.post-article-body img.post-figure-small {
-  width: 150px;
-  max-width: 50%;
-  margin: 1.5rem auto 2rem;
-  box-shadow: none;
-  border-radius: 0;
-  background: none;
-}
 
 .post-cta {
   margin: 3rem 0 0;
@@ -2764,53 +2756,6 @@ img[src$="-pixel.png"] {
 .post-cta-link {
   font-weight: 600;
   color: var(--text-secondary);
-}
-
-.post-author {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 20px 0 0;
-  padding: 18px 20px;
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-}
-
-.post-author-avatar {
-  flex-shrink: 0;
-  width: 64px;
-  height: 64px;
-}
-
-.post-author-body p {
-  margin: 0;
-}
-
-.post-author-name {
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.post-author-text {
-  margin-top: 4px !important;
-  font-size: 0.93rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-
-.post-author-links {
-  margin-top: 6px !important;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 480px) {
-  .post-author {
-    align-items: flex-start;
-  }
-  .post-author-avatar {
-    width: 52px;
-    height: 52px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

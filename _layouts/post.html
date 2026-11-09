@@ -73,22 +73,6 @@ layout: default
             {%- endif %}
         </aside>
 
-        <!-- 글쓴이 -->
-        <aside class="post-author" aria-label="{% if is_en %}About the author{% else %}글쓴이{% endif %}">
-            <img class="post-author-avatar" src="{{ '/assets/img/author-avatar-pixel.png' | relative_url }}" alt="" width="144" height="144" loading="lazy">
-            <div class="post-author-body">
-                {%- if is_en %}
-                <p class="post-author-name">Written by the developer of Video to GIF</p>
-                <p class="post-author-text">I use GIFs all the time in bug reports and blog posts, and ended up building my own converter. If something's inconvenient or missing, I'd love to hear about it.</p>
-                <p class="post-author-links">{% unless page.ref == "why-i-made" %}<a href="{% post_url 2025-10-22-en-why-i-built-video-to-gif %}">Why I built it</a> · {% endunless %}<a href="{{ '/en/contact/' | relative_url }}">Contact</a></p>
-                {%- else %}
-                <p class="post-author-name">Video to GIF 개발자가 썼어요</p>
-                <p class="post-author-text">버그 리포트나 블로그에 GIF를 자주 쓰다가 변환기를 직접 만들었어요. 써 보고 불편한 점이나 아쉬운 기능이 있으면 편하게 알려 주세요.</p>
-                <p class="post-author-links">{% unless page.ref == "why-i-made" %}<a href="{% post_url 2025-10-22-why-i-made-videotogif %}">만든 이야기</a> · {% endunless %}<a href="{{ '/contact/' | relative_url }}">문의하기</a></p>
-                {%- endif %}
-            </div>
-        </aside>
-
         {% include share.html %}
     </article>
 

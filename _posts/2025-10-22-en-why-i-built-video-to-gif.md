@@ -18,9 +18,7 @@ permalink: /en/blog/why-i-built-video-to-gif/
 
 ## It started with a few annoyances
 
-Hi, I'm the developer who made this site. The little guy in glasses on the home page is saying hello for me.
-
-![Pixel art of a guinea pig wearing glasses, holding up one finger](/assets/img/why-i-made-cutout-pixel.png){: .post-figure-small width="368" height="312"}
+Hi, I'm the developer who made this site.
 
 Between work and side projects, I end up turning videos into GIFs pretty often. Writing a bug report, putting together a tutorial, writing a blog post... there are more moments that call for a GIF than you'd think.
 
