@@ -10,7 +10,8 @@ category: "About"
 tags: [GIFConverter, DevStory, BrowserBased, VideoToGIF, SideProject]
 excerpt: "\"I could make a better one.\" How the hassles I ran into every time I turned a video into a GIF led me to build a converter that runs in the browser."
 description: "Why I built Video to GIF, a browser-based converter, after getting fed up with the hassles of turning videos into GIFs."
-image: /assets/img/post1.jpg
+image: /assets/img/why-i-made-pixel.png
+image_alt: "Pixel art of a guinea pig wearing glasses, holding up one finger"
 permalink: /en/blog/why-i-built-video-to-gif/
 ---
 

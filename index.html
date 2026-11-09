@@ -328,17 +328,9 @@ ref: home
         <p><a href="{% post_url 2025-10-30-gif-settings-guide %}">같은 영상으로 만든 GIF 8개 비교 보기 →</a></p>
       </section>
 
-      <section class="zif-how-to">
-        <h2>이 변환기를 만든 이유</h2>
-        <p>
-          동영상을 GIF로 바꿀 일이 자주 있었는데, 쓰던 사이트들은 파일을 외국 서버에 올려야 했고, 한참 기다려야 했고, 결과물 색감도 아쉬웠어요.
-          그래서 브라우저 안에서 끝나는 변환기를 직접 만들었습니다. FFmpeg, 네이버 블로그 앱, gifski로 같은 영상을 바꿔 보면서 비교한 과정은 개발기에 정리해 두었어요.
-        </p>
-        <ul>
-          <li><a href="{% post_url 2025-10-22-why-i-made-videotogif %}">내가 GIF 변환 도구를 만든 이유</a></li>
-          <li><a href="{% post_url 2025-10-25-4 %}">FFmpeg로 동영상을 고화질 GIF로 만드는 법</a></li>
-          <li><a href="{% post_url 2025-10-25-5 %}">GIF의 혁신 gifski: 256색 한계를 뛰어넘다</a></li>
-        </ul>
+      <section class="zif-how-to why-made">
+        <h2>세상 많은 변환기를 두고도<br>이 사이트를 만든 이유</h2>
+        {% include story-card.html ref="why-i-made" lang="ko-KR" %}
       </section>
   </div>
 </div>

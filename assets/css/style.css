@@ -2385,3 +2385,101 @@ html {
   font-weight: 500;
   color: var(--text-secondary);
 }
+
+/* 메인: '이 사이트를 만든 이유' 글 카드 */
+.why-made h2 {
+  text-wrap: balance;
+  line-height: 1.35;
+}
+
+.story-card {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-container);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.story-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px var(--shadow-sm);
+}
+
+.story-card:focus-visible {
+  outline: 3px solid var(--primary-green);
+  outline-offset: 3px;
+}
+
+.story-card-thumb {
+  background: #ffffff; /* 그림 배경이 흰색이라 다크 모드에서도 흰 바탕 유지 */
+  min-width: 0;
+}
+
+.story-card-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.story-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 26px;
+  min-width: 0;
+}
+
+.story-card-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.story-card h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.story-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.story-card-more {
+  margin-top: 4px;
+  font-weight: 700;
+  color: #4b7a28;
+}
+
+.dark-mode .story-card-more {
+  color: var(--primary-green);
+}
+
+@media (max-width: 640px) {
+  .story-card {
+    grid-template-columns: 1fr;
+  }
+  .story-card-body {
+    padding: 18px 20px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-card { transition: none; }
+  .story-card:hover { transform: none; }
+}
+
+/* 픽셀 그림은 확대·축소해도 또렷하게 */
+img[src$="-pixel.png"] {
+  image-rendering: pixelated;
+}

@@ -8,7 +8,8 @@ category: "소개"
 tags: [GIF변환기, 개발스토리, 브라우저기반, videotogif]
 excerpt: "내가 더 잘 만들겠는데? 동영상을 GIF로 바꿀 때마다 느꼈던 불편함을 해결하려고 브라우저에서 돌아가는 변환기를 만들게 된 이야기입니다."
 description: "동영상을 GIF로 바꿀 때마다 느꼈던 불편함을 해결하려고 브라우저 기반 Video to GIF 변환기를 만들게 된 이야기"
-image: /assets/img/post1.jpg
+image: /assets/img/why-i-made-pixel.png
+image_alt: "안경을 쓰고 손가락 하나를 든 기니피그 픽셀 그림"
 redirect_from:
   - /소개/2025/01/10/1/
 ---
