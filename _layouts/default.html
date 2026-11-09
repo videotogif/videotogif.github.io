@@ -68,11 +68,12 @@
                 </ul>
             </nav>
 
-            <!-- 언어 전환: 지금 보는 페이지의 다른 언어판으로 이동 (짝이 없으면 각 언어 홈) -->
-            <div class="lang-switch" role="group" aria-label="Language / 언어">
-                <a href="{{ alt_ko | default: '/' | relative_url }}" hreflang="ko" lang="ko" title="한국어"{% unless is_en %} aria-current="true"{% endunless %}>KO</a>
-                <a href="{{ alt_en | default: '/en/' | relative_url }}" hreflang="en" lang="en" title="English"{% if is_en %} aria-current="true"{% endif %}>EN</a>
-            </div>
+            <!-- 언어 전환: 지금 언어의 국기를 보여 주고, 누르면 다른 나라 국기로 바뀌며 그 언어판으로 이동 (짝이 없으면 각 언어 홈) -->
+            {%- if is_en %}
+            <a class="lang-switch" href="{{ alt_ko | default: '/' | relative_url }}" hreflang="ko" lang="ko" title="한국어로 보기" aria-label="한국어로 보기 (Currently English)" data-flag="🇺🇸" data-next-flag="🇰🇷">🇺🇸</a>
+            {%- else %}
+            <a class="lang-switch" href="{{ alt_en | default: '/en/' | relative_url }}" hreflang="en" lang="en" title="View in English" aria-label="View in English (현재 한국어)" data-flag="🇰🇷" data-next-flag="🇺🇸">🇰🇷</a>
+            {%- endif %}
         </div>
     </header>
 
@@ -111,6 +112,21 @@
 
     <!-- 푸터 아래 한 번만 로드 -->
     <script src="{{ '/assets/js/darkmode-toggle.js' | relative_url }}"></script>
+
+    <!-- 언어 국기: 누르는 순간 다음 국기로 바꾸고, 뒤로 가기로 돌아오면 원래 국기로 -->
+    <script>
+        (function () {
+            var sw = document.querySelector('.lang-switch[data-next-flag]');
+            if (!sw) return;
+            sw.addEventListener('click', function (e) {
+                if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                sw.textContent = sw.dataset.nextFlag;
+            });
+            window.addEventListener('pageshow', function () {
+                sw.textContent = sw.dataset.flag;
+            });
+        })();
+    </script>
 
     <!-- 예전에 설치된 COOP/COEP 서비스 워커 제거 (광고·댓글 iframe 차단 원인) -->
     <script>

@@ -13,7 +13,7 @@
     <span class="story-card-meta">{{ sc_post.category }} · {% if sc_en %}{{ sc_post.date | date: "%B %-d, %Y" }}{% else %}{{ sc_post.date | date: "%Y년 %m월 %d일" }}{% endif %}</span>
     <h3>{{ sc_post.title }}</h3>
     <p>{{ sc_post.excerpt | strip_html | truncate: 120 }}</p>
-    <span class="story-card-more">{% if sc_en %}Read the story →{% else %}이야기 읽어 보기 →{% endif %}</span>
+    <span class="story-card-more">{% if sc_en %}Read the developer's story →{% else %}개발자의 이야기 읽어보기 →{% endif %}</span>
   </div>
 </a>
 {%- endif -%}
