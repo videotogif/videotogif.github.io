@@ -359,6 +359,8 @@ ready(() => {
   });
 
   function markActiveTick(level) {
+    const slider = qualityLevelInput?.closest(".spec-slider");
+    if (slider) slider.dataset.level = String(level);
     levelTickButtons.forEach((btn) => {
       btn.classList.toggle("active", Number(btn.dataset.level) === level);
     });

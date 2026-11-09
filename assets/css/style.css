@@ -2493,11 +2493,32 @@ img[src$="-pixel.png"] {
   line-height: 1.6;
 }
 
+/* 단계 색: 저사양 회색, 균형 초록, 고사양 빨강 (2, 4단계는 그 사이) */
 .spec-slider {
   --thumb: 24px;
+  --spec-1: #8b939c;
+  --spec-2: #8aa77a;
+  --spec-3: #5d9e3a;
+  --spec-4: #e0784f;
+  --spec-5: #d9443f;
+  --level-color: var(--spec-3);
   position: relative;
   padding: 4px 0 0;
 }
+
+.dark-mode .spec-slider {
+  --spec-1: #b4bcc6;
+  --spec-2: #a9c49a;
+  --spec-3: #a0c878;
+  --spec-4: #f29a72;
+  --spec-5: #ff7a72;
+}
+
+.spec-slider[data-level="1"] { --level-color: var(--spec-1); }
+.spec-slider[data-level="2"] { --level-color: var(--spec-2); }
+.spec-slider[data-level="3"] { --level-color: var(--spec-3); }
+.spec-slider[data-level="4"] { --level-color: var(--spec-4); }
+.spec-slider[data-level="5"] { --level-color: var(--spec-5); }
 
 .spec-slider input[type="range"] {
   -webkit-appearance: none;
@@ -2512,13 +2533,13 @@ img[src$="-pixel.png"] {
 .spec-slider input[type="range"]::-webkit-slider-runnable-track {
   height: 8px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--border-color), var(--primary-green));
+  background: linear-gradient(90deg, var(--spec-1), var(--spec-3) 50%, var(--spec-5));
 }
 
 .spec-slider input[type="range"]::-moz-range-track {
   height: 8px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--border-color), var(--primary-green));
+  background: linear-gradient(90deg, var(--spec-1), var(--spec-3) 50%, var(--spec-5));
 }
 
 .spec-slider input[type="range"]::-webkit-slider-thumb {
@@ -2527,7 +2548,7 @@ img[src$="-pixel.png"] {
   height: var(--thumb);
   margin-top: calc((8px - var(--thumb)) / 2);
   border-radius: 50%;
-  background: var(--primary-green);
+  background: var(--level-color);
   border: 3px solid var(--bg-container);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
@@ -2536,13 +2557,13 @@ img[src$="-pixel.png"] {
   width: var(--thumb);
   height: var(--thumb);
   border-radius: 50%;
-  background: var(--primary-green);
+  background: var(--level-color);
   border: 3px solid var(--bg-container);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .spec-slider input[type="range"]:focus-visible {
-  outline: 2px solid var(--primary-green);
+  outline: 2px solid var(--level-color);
   outline-offset: 4px;
   border-radius: 999px;
 }
@@ -2588,18 +2609,33 @@ img[src$="-pixel.png"] {
 .spec-tick:last-child { transform: translateX(calc(-100% + 12px)); text-align: right; }
 .spec-tick:last-child::before { left: auto; right: 12px; transform: translateX(50%); }
 
-.spec-tick:hover,
+/* 이름표는 늘 제 색으로, 지금 단계는 굵은 글씨와 밑줄로 표시 */
+.spec-tick[data-level="1"] { color: var(--spec-1); }
+.spec-tick[data-level="3"] { color: var(--spec-3); }
+.spec-tick[data-level="5"] { color: var(--spec-5); }
+
+.spec-tick:hover {
+  filter: brightness(0.85);
+}
+
+.dark-mode .spec-tick:hover {
+  filter: brightness(1.15);
+}
+
 .spec-tick.active {
-  color: var(--text-primary);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .spec-tick.active::before {
-  background: var(--primary-green);
+  background: var(--level-color);
   height: 10px;
 }
 
 .spec-tick:focus-visible {
-  outline: 2px solid var(--primary-green);
+  outline: 2px solid var(--level-color);
   outline-offset: 2px;
   border-radius: 4px;
 }
