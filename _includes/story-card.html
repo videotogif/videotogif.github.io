@@ -1,19 +1,16 @@
 {%- comment -%}
-  글 하나를 카드로 보여 준다. 사용법: {% include story-card.html ref="why-i-made" lang="ko-KR" %}
-  제목·날짜·요약·썸네일은 해당 글의 front matter에서 가져온다.
+  글 하나로 이어지는 '이야기 읽어 보기' 카드. 그림(art)은 카드 밖에 따로 둔다.
+  사용법: {% include story-card.html ref="why-i-made" lang="ko-KR" art="/assets/img/why-i-made-hamster-pixel.png" %}
+  링크와 그림 설명은 해당 글의 front matter에서 가져온다.
 {%- endcomment -%}
 {%- assign sc_post = site.posts | where: "ref", include.ref | where: "lang", include.lang | first -%}
 {%- if sc_post -%}
 {%- assign sc_en = false -%}{%- if include.lang contains "en" -%}{%- assign sc_en = true -%}{%- endif -%}
-<a class="story-card" href="{{ sc_post.url | relative_url }}">
-  <div class="story-card-thumb">
-    <img src="{{ sc_post.image | relative_url }}" alt="{{ sc_post.image_alt | default: sc_post.title | escape }}" width="960" height="600" loading="lazy">
-  </div>
-  <div class="story-card-body">
-    <span class="story-card-meta">{{ sc_post.category }} · {% if sc_en %}{{ sc_post.date | date: "%B %-d, %Y" }}{% else %}{{ sc_post.date | date: "%Y년 %m월 %d일" }}{% endif %}</span>
-    <h3>{{ sc_post.title }}</h3>
-    <p>{{ sc_post.excerpt | strip_html | truncate: 120 }}</p>
-    <span class="story-card-more">{% if sc_en %}Read the story →{% else %}이야기 읽어 보기 →{% endif %}</span>
-  </div>
-</a>
+{%- if sc_en -%}{%- assign sc_more = "Read the story" -%}{%- else -%}{%- assign sc_more = "이야기 읽어 보기" -%}{%- endif -%}
+<div class="story-teaser">
+  {%- if include.art %}
+  <img class="story-teaser-art" src="{{ include.art | relative_url }}" alt="{{ sc_post.image_alt | default: sc_post.title | escape }}" width="322" height="273" loading="lazy">
+  {%- endif %}
+  <a class="story-card" href="{{ sc_post.url | relative_url }}" aria-label="{{ sc_more }}: {{ sc_post.title | escape }}">{{ sc_more }} →</a>
+</div>
 {%- endif -%}

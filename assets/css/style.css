@@ -2392,16 +2392,38 @@ html {
   line-height: 1.35;
 }
 
+/* 그림은 카드 밖에, 카드에는 '이야기 읽어 보기'만 */
+.story-teaser {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+
+.story-teaser-art {
+  display: block;
+  width: 161px; /* 그림 한 칸 = 3.5px */
+  height: auto;
+  max-width: 100%;
+}
+
 .story-card {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  display: inline-flex;
+  align-items: center;
+  padding: 18px 28px;
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  overflow: hidden;
   background: var(--bg-container);
-  color: inherit;
+  color: #4b7a28;
+  font-size: 1.05rem;
+  font-weight: 700;
   text-decoration: none;
+  white-space: nowrap;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark-mode .story-card {
+  color: var(--primary-green);
 }
 
 .story-card:hover {
@@ -2412,66 +2434,6 @@ html {
 .story-card:focus-visible {
   outline: 3px solid var(--primary-green);
   outline-offset: 3px;
-}
-
-.story-card-thumb {
-  background: #ffffff; /* 그림 배경이 흰색이라 다크 모드에서도 흰 바탕 유지 */
-  min-width: 0;
-}
-
-.story-card-thumb img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-}
-
-.story-card-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  padding: 22px 26px;
-  min-width: 0;
-}
-
-.story-card-meta {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.story-card h3 {
-  margin: 0;
-  font-size: 1.3rem;
-  line-height: 1.4;
-  color: var(--text-primary);
-}
-
-.story-card p {
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.65;
-}
-
-.story-card-more {
-  margin-top: 4px;
-  font-weight: 700;
-  color: #4b7a28;
-}
-
-.dark-mode .story-card-more {
-  color: var(--primary-green);
-}
-
-@media (max-width: 640px) {
-  .story-card {
-    grid-template-columns: 1fr;
-  }
-  .story-card-body {
-    padding: 18px 20px 22px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
