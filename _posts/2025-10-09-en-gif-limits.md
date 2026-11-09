@@ -19,7 +19,7 @@ permalink: /en/blog/gif-limits/
 
 If you blog at all, you probably reach for a video-to-GIF converter now and then. I use them a lot myself, but I never found one I was really happy with.
 
-ezgif and covertgif fall short on color and image quality.
+Sites like ezgif fall short on color and image quality.
 The GIF maker in Naver Blog (Naver is Korea's biggest portal) has nice colors, but it limits you to 3 seconds and the image quality is really poor.
 
 Why is that? And so began my short journey into GIFs.
