@@ -2394,7 +2394,8 @@ html {
 
 .story-card {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  /* 그림 칸 28%: 햄스터를 70%로 줄인 만큼 예전 40%에서 줄임 */
+  grid-template-columns: minmax(0, 7fr) minmax(0, 18fr);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
@@ -2415,6 +2416,8 @@ html {
 }
 
 .story-card-thumb {
+  display: flex;
+  align-items: center;
   background: #ffffff; /* 그림 배경이 흰색이라 다크 모드에서도 흰 바탕 유지 */
   min-width: 0;
 }
@@ -2422,13 +2425,9 @@ html {
 .story-card-thumb img {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   max-width: 100%;
   aspect-ratio: 16 / 10;
-  object-fit: contain;
-  /* 그림을 칸의 70% 크기로: 좌우 15%, 위아래 9.375%(=높이의 15%) 여백 */
-  box-sizing: border-box;
-  padding: 9.375% 15%;
 }
 
 .story-card-body {
@@ -2471,6 +2470,10 @@ html {
 @media (max-width: 640px) {
   .story-card {
     grid-template-columns: 1fr;
+  }
+  .story-card-thumb img {
+    width: 70%;
+    margin: 0 auto;
   }
   .story-card-body {
     padding: 18px 20px 22px;
