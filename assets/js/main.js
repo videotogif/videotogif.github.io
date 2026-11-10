@@ -22,18 +22,13 @@ const translations = {
     generatingGif: "GIF 생성 중...",
     regeneratingGif: "GIF 재생성 중...",
     processingVideo: "비디오 처리 중...",
-    levelNames: ["저사양", "조금 가볍게", "균형", "조금 선명하게", "고사양"],
-    source: (m) => `원본 ${m.duration.toFixed(1)}초 · ${m.width}×${m.height}`,
-    summary: (s, name) =>
-      `${name}: 가로 ${s.width}px · 초당 ${s.fps}장 · 품질 ${s.quality} · 총 ${s.frames}장`,
-    customName: "직접 설정",
-    customSpeed: (x) => (x > 1 ? `${x}배속으로 빠르게 재생돼요.` : `${x}배속으로 느리게 재생돼요.`),
+    status: (s, size) =>
+      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}초`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}배속` : ""]
+        .filter(Boolean)
+        .join(" · "),
     estimate: (e) => `총 ${e.frames}장 · 재생 ${e.play}초 · 작업 메모리 약 ${e.mb}MB`,
     heavy: "메모리를 많이 써서 기기에 따라 느리거나 멈출 수 있어요. 크기나 초당 장수를 낮추거나 영상을 짧게 잘라 보세요.",
     tooHeavy: "브라우저가 버티기 어려운 크기예요. 크기나 초당 장수를 낮추거나 재생 속도를 올려 주세요.",
-    reduced: "기기에 무리가 가지 않도록 이 영상 길이에 맞춰 크기나 장수를 줄였어요.",
-    spedUp: (x) =>
-      `영상이 길어서 ${x}배속으로 만들어요. 원본 속도가 필요하면 필요한 부분만 잘라서 올려 주세요.`,
     noDuration: "영상 길이를 읽을 수 없어요. MP4로 바꿔서 다시 올려 주세요.",
     dlgTitle: "이 브라우저에서는 열 수 없는 영상이에요",
     dlgMac: "사파리로 이 페이지를 열고 다시 올려 주세요.",
@@ -54,18 +49,13 @@ const translations = {
     generatingGif: "Generating GIF...",
     regeneratingGif: "Regenerating GIF...",
     processingVideo: "Processing video...",
-    levelNames: ["Low-spec", "Lighter", "Balanced", "Sharper", "High-spec"],
-    source: (m) => `Original ${m.duration.toFixed(1)}s · ${m.width}×${m.height}`,
-    summary: (s, name) =>
-      `${name}: ${s.width}px wide · ${s.fps} frames/sec · quality ${s.quality} · ${s.frames} frames`,
-    customName: "Custom",
-    customSpeed: (x) => (x > 1 ? `Plays ${x}x faster.` : `Plays at ${x}x (slow motion).`),
+    status: (s, size) =>
+      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}s`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}x speed` : ""]
+        .filter(Boolean)
+        .join(" · "),
     estimate: (e) => `${e.frames} frames · ${e.play}s long · about ${e.mb}MB of working memory`,
     heavy: "This uses a lot of memory and may be slow or freeze on some devices. Try a smaller size, fewer frames per second, or a shorter clip.",
     tooHeavy: "This is too big for the browser to handle. Lower the size or frames per second, or speed it up.",
-    reduced: "Size or frame count was lowered for this video's length so your device doesn't struggle.",
-    spedUp: (x) =>
-      `This video is long, so the GIF plays at ${x}x speed. For original speed, trim the video to the part you need first.`,
     noDuration: "Couldn't read this video's length. Please convert it to MP4 and try again.",
     dlgTitle: "This browser can't open this video",
     dlgMac: "Open this page in Safari and upload it again.",
@@ -548,28 +538,25 @@ ready(() => {
     });
   }
 
-  function renderSummary(settings) {
+  // 지금 GIF 상태 한 줄: 크기 · 재생 길이 · 용량(만든 뒤) · 배속(1배가 아닐 때)
+  function renderSummary(settings, bytes) {
     if (!autoSummary || !videoMeta) return;
-    const t = translations[currentLanguage];
-    const name = settings.custom ? t.customName : t.levelNames[settings.level - 1];
+    const size = !bytes ? "" : bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)}MB` : `${Math.max(1, Math.round(bytes / 1024))}KB`;
     autoSummary.innerHTML = "";
-    const lines = [
-      ["auto-source", t.source(videoMeta)],
-      ["auto-main", t.summary(settings, name)],
-    ];
-    if (settings.custom) {
-      if (Math.abs(settings.speed - 1) > 0.05) lines.push(["auto-note", t.customSpeed(settings.speed)]);
-    } else if (settings.speed > 1.05) {
-      lines.push(["auto-note", t.spedUp(settings.speed)]);
-    } else if (settings.reduced) {
-      lines.push(["auto-note", t.reduced]);
+    const span = document.createElement("span");
+    span.className = "auto-main";
+    span.textContent = translations[currentLanguage].status(settings, size);
+    autoSummary.appendChild(span);
+  }
+
+  // 방금 만든 GIF 파일 크기 (다운로드 링크의 blob에서 읽음)
+  async function currentGifBytes() {
+    try {
+      if (!downloadLink?.href?.startsWith("blob:")) return 0;
+      return (await fetch(downloadLink.href).then((r) => r.blob())).size;
+    } catch (e) {
+      return 0;
     }
-    lines.forEach(([cls, text]) => {
-      const span = document.createElement("span");
-      span.className = cls;
-      span.textContent = text;
-      autoSummary.appendChild(span);
-    });
   }
 
   function getTextOptions() {
@@ -628,6 +615,7 @@ ready(() => {
     setProgressMessage(translations[currentLanguage].generatingGif);
     const o = getTextOptions();
     await generateGIF(frames, settings.width, settings.quality, settings.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+    if (currentSettings === settings) renderSummary(settings, await currentGifBytes());
   }
 
   // 길이 정보가 없는 영상(일부 WebM)은 끝으로 이동시켜 길이를 알아낸다
@@ -671,6 +659,7 @@ ready(() => {
     const o = getTextOptions();
     const s = currentSettings;
     await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+    renderSummary(s, await currentGifBytes());
 
     textReconvertBtn.innerHTML = original;
     textReconvertBtn.disabled = false;
