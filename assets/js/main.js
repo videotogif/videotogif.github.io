@@ -1,6 +1,6 @@
 // Video to GIF Converter - Main JavaScript
 import encode from "../wasm/gifski-wasm/dist/encode.js";
-import { rabbitStart, rabbitStop } from "./rabbit.js";
+import { rabbitStart, rabbitStop, rabbitDuck, rabbitResume } from "./rabbit.js";
 
 // -----------------------------
 // i18n (번역 리소스)
@@ -1107,6 +1107,8 @@ ready(() => {
       imageDatas.push(imageData);
     }
 
+    // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가, 다 구우면 다시 나옴
+    await rabbitDuck();
     const gifBuffer = await encode({
       frames: imageDatas,
       width: width,
@@ -1114,6 +1116,7 @@ ready(() => {
       quality: quality,
       fps: fps,
     });
+    rabbitResume();
 
     const gifBlob = new Blob([gifBuffer], { type: "image/gif" });
     const gifUrl = URL.createObjectURL(gifBlob);

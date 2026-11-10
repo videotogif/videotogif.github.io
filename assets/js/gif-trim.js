@@ -1,6 +1,6 @@
 // GIF Trim - Standalone GIF trimming functionality
 import encode from "/assets/wasm/gifski-wasm/dist/encode.js";
-import { rabbitStart, rabbitStop } from "./rabbit.js";
+import { rabbitStart, rabbitStop, rabbitDuck, rabbitResume } from "./rabbit.js";
 
 // 페이지 언어(<html lang>)에 맞춰 문구 선택
 const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
@@ -431,6 +431,8 @@ ready(() => {
       imageDatas.push(imageData);
     }
 
+    // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가, 다 구우면 다시 나옴
+    await rabbitDuck();
     const gifBuffer = await encode({
       frames: imageDatas,
       width: trimCanvas.width,
@@ -439,6 +441,7 @@ ready(() => {
       // 원본 GIF의 프레임별 재생 시간을 그대로 사용 (예전에는 10fps로 고정돼 속도가 바뀌었음)
       frameDurations: durationList,
     });
+    rabbitResume();
 
     const gifBlob = new Blob([gifBuffer], { type: "image/gif" });
     const gifUrl = URL.createObjectURL(gifBlob);

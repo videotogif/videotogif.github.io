@@ -3491,46 +3491,18 @@ img[src$="-pixel.png"] {
   transform: scaleX(-1);
 }
 
-.pr-fr {
+/* 한 장짜리 그림: 어느 장면을 보일지는 JS가 이동과 같은 박자로 정함 */
+.pr-sprite {
   position: absolute;
   inset: 0;
-  background: url("/assets/img/rabbit-hop-pixel.png") no-repeat;
+  background: url("/assets/img/rabbit-hop-pixel.png") no-repeat 0 0;
   background-size: 360px 78px;
-  background-position: calc(var(--i) * -60px) 0;
   image-rendering: pixelated;
-  opacity: 0;
-  /* 장마다 1/6박자씩 늦게 시작해서, 한 번에 한 장만 보임 */
-  animation: pr-frame 0.5s steps(1, end) infinite;
-  animation-delay: calc((var(--i) - 6) * 0.5s / 6);
 }
 
-@keyframes pr-frame {
-  0% { opacity: 1; }
-  16.667% { opacity: 0; }
-  100% { opacity: 0; }
-}
-
-/* 굴로 들어갈 때: 웅크린 첫 장으로 멈추고, 칸 단위로 아래로 내려가며 굴 속으로 사라짐 */
-.pixel-rabbit.diving {
+/* 굴에 들어가고 나올 때 굴 가운데 줄 아래는 안 보이게 */
+.pixel-rabbit.clip {
   overflow: hidden;
-}
-
-.pixel-rabbit.diving .pr-fr {
-  animation: none;
-  opacity: 0;
-}
-
-.pixel-rabbit.diving .pr-fr:first-child {
-  opacity: 1;
-}
-
-.pixel-rabbit.diving .pr-sink {
-  animation: pr-dive 0.42s steps(7, end) forwards;
-}
-
-@keyframes pr-dive {
-  from { transform: translateY(0); }
-  to { transform: translateY(63px); }
 }
 
 .pixel-hole {
@@ -3583,6 +3555,6 @@ img[src$="-pixel.png"] {
   transition: opacity 0.2s ease;
 }
 
-.pixel-rabbit.taunt .pr-bubble {
+.pixel-rabbit.talk .pr-bubble {
   opacity: 1;
 }
