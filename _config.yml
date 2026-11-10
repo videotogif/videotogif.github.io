@@ -59,7 +59,6 @@ keywords: "동영상 gif 변환, 영상 gif 만들기, mp4 gif 변환, 온라인
 social:
   name: "Video to GIF"
   links:
-    - https://github.com/videotogif
     - https://videotogif.github.io
 
 # 빌드 제외
@@ -72,6 +71,9 @@ exclude:
   - package-lock.json
   - vite.config.js
   - PROJECT_SPECIFICATION.md
+  # 저장소 안내 문서는 사이트에 올리지 않음
+  - README.md
+  - LICENSE
   # gifski 라이브러리 문서가 페이지로 렌더링되어 sitemap에 노출되는 것 방지
   - assets/wasm/gifski-wasm/README.md
   - assets/wasm/gifski-wasm/CHANGELOG.md

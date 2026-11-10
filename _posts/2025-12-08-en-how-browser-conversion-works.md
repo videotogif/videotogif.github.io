@@ -65,8 +65,6 @@ The first time you convert, you'll see it download one file called `gifski_wasm_
 
 The conversion still finishes with no internet. If it worked by sending your file to a server, it would have stopped right there. The one exception: if you cut the internet as soon as you first open the page, the encoder hasn't been downloaded yet, so the conversion can fail.
 
-By the way, this site's code is public on [GitHub](https://github.com/videotogif/videotogif.github.io), so feel free to look through it yourself.
-
 ## The downsides
 
 It's not all upside, so I want to be upfront about these.
