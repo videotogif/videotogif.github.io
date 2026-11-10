@@ -10,6 +10,10 @@ const T = IS_EN
       unsupported:
         "This browser can't extract GIF frames (ImageDecoder is not supported). Please use the latest Chrome or Edge.",
       sec: "s",
+      keepBtn: "✂️ Keep only the selection",
+      cutBtn: "✂️ Cut out the selection",
+      keepHint: "Only the part between the handles is kept.",
+      cutHint: "The part between the handles is removed, and the parts before and after are joined.",
     }
   : {
       generating: "GIF 생성 중...",
@@ -17,6 +21,10 @@ const T = IS_EN
       unsupported:
         "이 브라우저는 GIF 프레임 추출( ImageDecoder )을 지원하지 않습니다. 최신 Chrome/Edge를 사용해주세요.",
       sec: "초",
+      keepBtn: "✂️ 선택한 구간만 남기기",
+      cutBtn: "✂️ 선택한 구간 잘라 내기",
+      keepHint: "손잡이 사이 구간만 남겨요.",
+      cutHint: "손잡이 사이 구간을 지우고 앞뒤를 이어 붙여요.",
     };
 
 function ready(fn) {
@@ -32,6 +40,8 @@ ready(() => {
   // Trim 관련 변수
   let trimStartIndex = 0;
   let trimEndIndex = 0;
+  // "keep": 손잡이 사이만 남김, "cut": 손잡이 사이를 지우고 앞뒤를 이어 붙임
+  let trimMode = "keep";
   let isDraggingTrimHandle = false;
   let activeTrimHandle = null;
 
@@ -61,6 +71,9 @@ ready(() => {
   const generateTrimmedGifBtn = document.getElementById(
     "generateTrimmedGifBtn"
   );
+  const trimSliderContainer = document.getElementById("trimSliderContainer");
+  const trimModeButtons = document.querySelectorAll(".trim-mode-btn[data-mode]");
+  const trimModeHint = document.getElementById("trimModeHint");
 
   // 필수 요소 없으면 중단
   if (!gifInput || !gifUploadSection || !trimCanvas) return;
@@ -101,8 +114,11 @@ ready(() => {
   generateTrimmedGifBtn?.addEventListener("click", async () => {
     if (!frames || frames.length === 0) return;
 
-    // 선택된 프레임만 추출
-    const trimmedFrames = frames.slice(trimStartIndex, trimEndIndex + 1);
+    // 방식에 맞춰 남길 프레임만 고른다
+    const kept = keptFrameIndices();
+    if (kept.length === 0) return;
+    const trimmedFrames = kept.map((i) => frames[i]);
+    const trimmedDurations = kept.map((i) => frameDurations[i]);
 
     if (trimOutput) trimOutput.innerHTML = "";
     if (trimDownloadLink) trimDownloadLink.style.display = "none";
@@ -113,7 +129,7 @@ ready(() => {
     generateTrimmedGifBtn.innerHTML = `<span class="loading-spinner"></span> ${T.generating}`;
     generateTrimmedGifBtn.disabled = true;
 
-    await generateTrimmedGIF(trimmedFrames);
+    await generateTrimmedGIF(trimmedFrames, trimmedDurations);
 
     generateTrimmedGifBtn.innerHTML = original;
     generateTrimmedGifBtn.disabled = false;
@@ -218,6 +234,43 @@ ready(() => {
     gifDuration = sumDurations(0, frameDurations.length - 1) / 1000;
   }
 
+  // 지금 방식으로 결과 GIF에 남는 프레임 번호들
+  function keptFrameIndices() {
+    const out = [];
+    for (let i = 0; i < frames.length; i++) {
+      const inside = i >= trimStartIndex && i <= trimEndIndex;
+      if (trimMode === "keep" ? inside : !inside) out.push(i);
+    }
+    return out;
+  }
+
+  function setTrimMode(mode) {
+    trimMode = mode === "cut" ? "cut" : "keep";
+    trimModeButtons.forEach((btn) => {
+      const on = btn.dataset.mode === trimMode;
+      btn.classList.toggle("active", on);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+    trimSliderContainer?.classList.toggle("mode-cut", trimMode === "cut");
+    if (trimModeHint) trimModeHint.textContent = trimMode === "cut" ? T.cutHint : T.keepHint;
+    if (generateTrimmedGifBtn && !generateTrimmedGifBtn.disabled) {
+      generateTrimmedGifBtn.innerHTML = `<span>${trimMode === "cut" ? T.cutBtn : T.keepBtn}</span>`;
+    }
+    // 잘라 내기로 바꿨는데 전체가 선택돼 있으면 남는 게 없으니 가운데 1/3쯤을 골라 둔다
+    const n = frames.length;
+    if (trimMode === "cut" && n >= 3 && trimStartIndex === 0 && trimEndIndex === n - 1) {
+      trimStartIndex = Math.floor(n / 3);
+      trimEndIndex = Math.max(trimStartIndex + 1, Math.floor((n * 2) / 3) - 1);
+      showFramePreview(trimStartIndex);
+    }
+    lastTrimmedLength = -1;
+    updateTrimUI(false);
+  }
+
+  trimModeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setTrimMode(btn.dataset.mode));
+  });
+
   // start~end 프레임(포함)의 재생 시간 합계 (ms)
   function sumDurations(start, end) {
     let total = 0;
@@ -238,7 +291,6 @@ ready(() => {
     previewFrameUrls.clear();
 
     // 슬라이더 컨테이너 표시
-    const trimSliderContainer = document.getElementById("trimSliderContainer");
     if (trimSliderContainer) {
       trimSliderContainer.style.display = "block";
     }
@@ -265,8 +317,8 @@ ready(() => {
     // output 영역에 첫 프레임 표시
     showFramePreview(0);
 
-    // UI 업데이트
-    updateTrimUI(false);
+    // 새 GIF는 '남기기' 방식으로 시작
+    setTrimMode("keep");
   }
 
   function showFramePreview(frameIndex) {
@@ -327,8 +379,10 @@ ready(() => {
     trimSelected.style.left = `${startPercent}%`;
     trimSelected.style.width = `${endPercent - startPercent}%`;
 
-    // 잘라낸 구간의 길이 계산
-    const trimmedLength = sumDurations(trimStartIndex, trimEndIndex) / 1000;
+    // 결과 GIF 길이 계산 (잘라 내기면 전체에서 선택 구간을 뺀 길이)
+    const selectedMs = sumDurations(trimStartIndex, trimEndIndex);
+    const trimmedLength =
+      (trimMode === "cut" ? sumDurations(0, frames.length - 1) - selectedMs : selectedMs) / 1000;
 
     // 드래그 중이 아닐 때만 텍스트 업데이트 (성능 최적화)
     if (!isDragging) {
@@ -344,10 +398,13 @@ ready(() => {
         trimmedDuration.textContent = `${trimmedLength.toFixed(1)}${T.sec}`;
         lastTrimmedLength = trimmedLength;
       }
+      if (generateTrimmedGifBtn && !generateTrimmedGifBtn.querySelector(".loading-spinner")) {
+        generateTrimmedGifBtn.disabled = keptFrameIndices().length === 0;
+      }
     }
   }
 
-  async function generateTrimmedGIF(frameList) {
+  async function generateTrimmedGIF(frameList, durationList) {
     const ctx = trimCanvas.getContext("2d");
     const imageDatas = [];
 
@@ -369,7 +426,7 @@ ready(() => {
       height: trimCanvas.height,
       quality: 90,
       // 원본 GIF의 프레임별 재생 시간을 그대로 사용 (예전에는 10fps로 고정돼 속도가 바뀌었음)
-      frameDurations: frameDurations.slice(trimStartIndex, trimEndIndex + 1),
+      frameDurations: durationList,
     });
 
     const gifBlob = new Blob([gifBuffer], { type: "image/gif" });

@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "GIF 자르기 - 원하는 구간만 남기는 무료 도구"
-description: "GIF에서 필요한 구간만 남겨서 저장하세요. 서버 업로드 없이 브라우저에서 바로 자르고, 원본 재생 속도도 그대로 유지돼요."
+title: "GIF 자르기 - 원하는 구간만 남기거나 중간을 잘라 내는 무료 도구"
+description: "GIF에서 필요한 구간만 남기거나 중간 구간을 잘라 내서 저장하세요. 서버 업로드 없이 브라우저에서 바로 자르고, 원본 재생 속도도 그대로 유지돼요."
 permalink: /gif-trim/
 ref: gif-trim
 ---
@@ -9,7 +9,7 @@ ref: gif-trim
 <div class="page-container">
   <header class="page-hero">
     <h1 class="page-title">GIF 자르기</h1>
-    <p class="page-subtitle">GIF 파일을 업로드하여 원하는 구간만 잘라보세요</p>
+    <p class="page-subtitle">원하는 구간만 남기거나, 중간 구간을 잘라 내 보세요</p>
   </header>
 
   <div class="content-section">
@@ -32,6 +32,12 @@ ref: gif-trim
 
       <!-- GIF 자르기 슬라이더 -->
       <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+        <!-- 자르는 방식 -->
+        <div class="trim-mode" role="group" aria-label="자르는 방식">
+          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">구간만 남기기</button>
+          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">중간 잘라 내기</button>
+        </div>
+        <p class="trim-mode-hint" id="trimModeHint" aria-live="polite">손잡이 사이 구간만 남겨요.</p>
         <!-- 타임라인 슬라이더 with 프레임 썸네일 배경 -->
         <div class="trim-timeline">
           <div class="trim-timeline-track" id="trimTrack">
@@ -56,14 +62,14 @@ ref: gif-trim
           </div>
           <div class="trim-info-item trim-separator">→</div>
           <div class="trim-info-item">
-            <label>잘라낸 길이:</label>
+            <label>결과 길이:</label>
             <span id="trimmedDuration" class="duration-value highlight">0.0초</span>
           </div>
         </div>
 
         <!-- GIF 생성 버튼 -->
         <button id="generateTrimmedGifBtn" class="convert-btn">
-          <span>✂️ 선택한 구간으로 GIF 자르기</span>
+          <span>✂️ 선택한 구간만 남기기</span>
         </button>
       </div>
 
@@ -81,12 +87,12 @@ ref: gif-trim
         <p>위 상자에 GIF 파일을 끌어다 놓거나 눌러서 고르세요. 파일은 서버로 올라가지 않고 브라우저 안에서만 처리돼요.</p>
       </li>
       <li>
-        <strong>남길 구간 고르기</strong>
-        <p>아래 타임라인 양 끝의 초록색 손잡이를 끌어서 남길 부분을 정하세요. 끄는 동안 위에 그 지점의 장면이 보여요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
+        <strong>방식과 구간 고르기</strong>
+        <p>"구간만 남기기"는 손잡이 사이만 남기고, "중간 잘라 내기"는 손잡이 사이를 지우고 앞뒤를 이어 붙여요. 타임라인 양 끝의 초록색 손잡이를 끌어서 구간을 정하세요. 끄는 동안 위에 그 지점의 장면이 보여요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
       </li>
       <li>
         <strong>자르고 저장하기</strong>
-        <p>"선택한 구간으로 GIF 자르기"를 누르면 새 GIF가 만들어지고, GIF 다운로드로 저장할 수 있어요.</p>
+        <p>아래 자르기 버튼을 누르면 새 GIF가 만들어지고, GIF 다운로드로 저장할 수 있어요.</p>
       </li>
     </ol>
   </section>

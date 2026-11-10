@@ -3,15 +3,15 @@ layout: default
 lang: en-US
 locale: en_US
 ref: gif-trim
-title: "Trim GIF - Keep Only the Part You Need"
-description: "Cut a GIF down to the part you need, right in your browser. No upload, and the original playback speed is kept."
+title: "Trim GIF - Keep the Part You Need or Cut Out the Middle"
+description: "Keep only the part of a GIF you need, or cut out a section in the middle, right in your browser. No upload, and the original playback speed is kept."
 permalink: /en/gif-trim/
 ---
 
 <div class="page-container">
   <header class="page-hero">
     <h1 class="page-title">Trim GIF</h1>
-    <p class="page-subtitle">Upload a GIF and keep only the part you want</p>
+    <p class="page-subtitle">Keep only the part you want, or cut out a section in the middle</p>
   </header>
 
   <div class="content-section">
@@ -34,6 +34,12 @@ permalink: /en/gif-trim/
 
       <!-- Trim slider -->
       <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+        <!-- Trim mode -->
+        <div class="trim-mode" role="group" aria-label="Trim mode">
+          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">Keep selection</button>
+          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">Cut out middle</button>
+        </div>
+        <p class="trim-mode-hint" id="trimModeHint" aria-live="polite">Only the part between the handles is kept.</p>
         <div class="trim-timeline">
           <div class="trim-timeline-track" id="trimTrack">
             <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
@@ -56,13 +62,13 @@ permalink: /en/gif-trim/
           </div>
           <div class="trim-info-item trim-separator">→</div>
           <div class="trim-info-item">
-            <label>Trimmed:</label>
+            <label>Result:</label>
             <span id="trimmedDuration" class="duration-value highlight">0.0s</span>
           </div>
         </div>
 
         <button id="generateTrimmedGifBtn" class="convert-btn">
-          <span>✂️ Trim GIF to selection</span>
+          <span>✂️ Keep only the selection</span>
         </button>
       </div>
 
@@ -80,12 +86,12 @@ permalink: /en/gif-trim/
         <p>Drag a GIF file onto the box above or click to choose one. Nothing is uploaded; the file is processed inside your browser.</p>
       </li>
       <li>
-        <strong>Pick the part to keep</strong>
-        <p>Drag the green handles at both ends of the timeline. The frame at the handle shows up above while you drag. On a phone, just drag with your finger.</p>
+        <strong>Pick a mode and a range</strong>
+        <p>"Keep selection" keeps only the part between the handles; "Cut out middle" removes that part and joins what comes before and after. Drag the green handles at both ends of the timeline to set the range. The frame at the handle shows up above while you drag. On a phone, just drag with your finger.</p>
       </li>
       <li>
         <strong>Trim and save</strong>
-        <p>Click "Trim GIF to selection" to create the new GIF, then save it with Download GIF.</p>
+        <p>Click the trim button below the timeline to create the new GIF, then save it with Download GIF.</p>
       </li>
     </ol>
   </section>

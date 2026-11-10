@@ -2145,6 +2145,59 @@ html {
   left: calc(50% + 5px);
 }
 
+/* 자르는 방식: 구간만 남기기 / 중간 잘라 내기 */
+.trim-mode {
+  display: flex;
+  justify-content: center;
+}
+
+.trim-mode-btn {
+  padding: 9px 18px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-container);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trim-mode-btn:first-child {
+  border-radius: 999px 0 0 999px;
+}
+
+.trim-mode-btn:last-child {
+  border-left: 0;
+  border-radius: 0 999px 999px 0;
+}
+
+.trim-mode-btn.active {
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #1a202c;
+}
+
+.trim-mode-btn:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.trim-mode-hint {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* 잘라 내기 방식: 지울 구간을 빨간 빗금으로 */
+.mode-cut .trim-timeline-selected {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(229, 62, 62, 0.55) 0 8px,
+    rgba(229, 62, 62, 0.3) 8px 16px
+  );
+}
+
 /* Trim 슬라이더 컨테이너 */
 .trim-slider-container {
   margin-top: 40px;
