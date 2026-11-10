@@ -1,5 +1,6 @@
 // GIF Trim - Standalone GIF trimming functionality
 import encode from "/assets/wasm/gifski-wasm/dist/encode.js";
+import { rabbitStart, rabbitStop } from "./rabbit.js";
 
 // 페이지 언어(<html lang>)에 맞춰 문구 선택
 const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
@@ -129,7 +130,12 @@ ready(() => {
     generateTrimmedGifBtn.innerHTML = `<span class="loading-spinner"></span> ${T.generating}`;
     generateTrimmedGifBtn.disabled = true;
 
-    await generateTrimmedGIF(trimmedFrames, trimmedDurations);
+    rabbitStart();
+    try {
+      await generateTrimmedGIF(trimmedFrames, trimmedDurations);
+    } finally {
+      rabbitStop();
+    }
 
     generateTrimmedGifBtn.innerHTML = original;
     generateTrimmedGifBtn.disabled = false;
@@ -158,7 +164,12 @@ ready(() => {
     setProgressMessage(T.analyzing);
 
     // GIF에서 프레임 추출
-    await extractFramesFromGif(file);
+    rabbitStart();
+    try {
+      await extractFramesFromGif(file);
+    } finally {
+      rabbitStop();
+    }
 
     // 결과 섹션 표시
     if (trimOutputSection) trimOutputSection.style.display = "block";

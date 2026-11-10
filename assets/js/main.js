@@ -1,5 +1,6 @@
 // Video to GIF Converter - Main JavaScript
 import encode from "../wasm/gifski-wasm/dist/encode.js";
+import { rabbitStart, rabbitStop } from "./rabbit.js";
 
 // -----------------------------
 // i18n (번역 리소스)
@@ -580,12 +581,14 @@ ready(() => {
       return;
     }
     converting = true;
+    rabbitStart();
     try {
       await convertAt(
         typeof level === "number" ? computeAutoSettings(level, videoMeta) : computeCustomSettings(level, videoMeta)
       );
     } finally {
       converting = false;
+      rabbitStop();
     }
     if (pendingLevel !== null && pendingLevel !== level) {
       const next = pendingLevel;
@@ -668,7 +671,12 @@ ready(() => {
   async function bakeText() {
     const o = getTextOptions();
     const s = currentSettings;
-    await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+    rabbitStart();
+    try {
+      await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+    } finally {
+      rabbitStop();
+    }
     renderSummary(s, await currentGifBytes());
   }
 
@@ -676,7 +684,7 @@ ready(() => {
   let textRegenTimer = null;
   let textRegenRunning = false;
   let textRegenAgain = false;
-  function scheduleTextRegen() {
+  function scheduleTextRegen(delay = 500) {
     clearTimeout(textRegenTimer);
     textRegenTimer = setTimeout(async () => {
       if (!currentSettings || !frames || frames.length === 0 || !getTextOptions().overlayText.trim()) return;
@@ -694,8 +702,17 @@ ready(() => {
         textRegenAgain = false;
         scheduleTextRegen();
       }
-    }, 500);
+    }, delay);
   }
+
+  // 텍스트 크기: 입력하고 Enter를 치거나 다른 곳을 누르면 바로 적용
+  textSizeInput?.addEventListener("change", () => scheduleTextRegen(50));
+  textSizeInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      textSizeInput.blur(); // blur가 change를 일으킴 (값이 같으면 그대로)
+    }
+  });
 
   // 텍스트 추가 칸의 '완료': 누르면(또는 Enter) 바로 GIF에 글자를 넣음. 비우고 누르면 글자를 뺌
   const textDoneBtn = document.getElementById("textDoneBtn");
@@ -894,7 +911,17 @@ ready(() => {
     return `${t.dlgTitle}. ${body}`;
   }
 
+  // 영상을 여는 단계부터 토끼가 나오도록 감쌈
   async function handleVideoFile(file) {
+    rabbitStart();
+    try {
+      return await openVideoAndConvert(file);
+    } finally {
+      rabbitStop();
+    }
+  }
+
+  async function openVideoAndConvert(file) {
     currentVideoFile = file;
     lastExtract = null;
 
