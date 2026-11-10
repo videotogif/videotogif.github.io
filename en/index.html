@@ -31,10 +31,6 @@ ref: home
 <div class="page-container">
   <header class="page-hero">
     <h1 class="page-title">Video to GIF Converter</h1>
-    <p class="page-subtitle">
-      Turn any video into a high-quality GIF right in your browser.<br>
-      Nothing is uploaded – your files never leave your device.
-    </p>
   </header>
 
   <div class="content-section">
@@ -168,10 +164,15 @@ ref: home
                 <input type="text" id="overlayText" placeholder="Text to show on the GIF">
               </div>
               <div class="setting-group">
-                <label id="textPositionLabel">Text position</label>
-                <div class="text-position-hint">
-                  <span>💡 Drag the text on the generated GIF to move it</span>
+                <span class="pad-label" id="textPositionLabel">Text position</span>
+                <div class="text-pad" id="textPad" role="group" aria-labelledby="textPositionLabel">
+                  <button type="button" class="pad-btn pad-up" data-dir="up" aria-label="Up">▲</button>
+                  <button type="button" class="pad-btn pad-left" data-dir="left" aria-label="Left">◀</button>
+                  <button type="button" class="pad-btn pad-center" data-dir="center" aria-label="Center horizontally">●</button>
+                  <button type="button" class="pad-btn pad-right" data-dir="right" aria-label="Right">▶</button>
+                  <button type="button" class="pad-btn pad-down" data-dir="down" aria-label="Down">▼</button>
                 </div>
+                <p class="pad-hint">Hold a button to keep moving. You can also drag the text on the GIF.</p>
               </div>
               <div class="setting-group">
                 <label for="textSize" id="textSizeLabel">Text size (px)</label>
@@ -224,7 +225,7 @@ ref: home
           <li>
             <strong>Adjust the quality (optional)</strong>
             <p>Want it lighter or sharper? Move the quality slider between Low-spec and High-spec. The GIF is remade for that level as soon as you let go. If you want specific values, switch to Custom to set the size, frames per second, quality, and playback speed yourself.</p>
-            <p>Use Text Settings to add a caption or watermark, then drag it anywhere on the GIF.</p>
+            <p>Use the Text tab to add a caption or watermark, then move it with the arrow buttons (or drag it on the GIF).</p>
           </li>
           <li>
             <strong>Download the GIF</strong>

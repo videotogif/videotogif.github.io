@@ -654,16 +654,104 @@ ready(() => {
     textReconvertBtn.disabled = true;
 
     // 텍스트 설정만 바꾸고, 기존 프레임과 현재 화질 단계 설정은 그대로 사용
-    const o = getTextOptions();
-    const s = currentSettings;
-    await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
-    renderSummary(s, await currentGifBytes());
+    await bakeText();
 
     textReconvertBtn.innerHTML = original;
     textReconvertBtn.disabled = false;
 
     clearProgressMessage();
   });
+
+  // 지금 프레임과 화질 설정 그대로, 텍스트만 다시 굽기
+  async function bakeText() {
+    const o = getTextOptions();
+    const s = currentSettings;
+    await generateGIF(frames, s.width, s.quality, s.fps, o.overlayText, o.textPosition, o.textSize, o.textColor, o.textBgColor, o.textBgOpacity);
+    renderSummary(s, await currentGifBytes());
+  }
+
+  // 위치를 옮기면 잠깐 뒤 자동으로 다시 굽는다 (GIF는 그대로 보이다가 새 GIF로 바뀜)
+  let textRegenTimer = null;
+  let textRegenRunning = false;
+  let textRegenAgain = false;
+  function scheduleTextRegen() {
+    clearTimeout(textRegenTimer);
+    textRegenTimer = setTimeout(async () => {
+      if (!currentSettings || !frames || frames.length === 0 || !getTextOptions().overlayText.trim()) return;
+      if (converting || textRegenRunning) {
+        textRegenAgain = true;
+        return;
+      }
+      textRegenRunning = true;
+      try {
+        await bakeText();
+      } finally {
+        textRegenRunning = false;
+      }
+      if (textRegenAgain) {
+        textRegenAgain = false;
+        scheduleTextRegen();
+      }
+    }, 500);
+  }
+
+  // 텍스트 위치 방향키 (인형뽑기처럼 누르고 있으면 계속 움직임)
+  const TEXT_STEP = 0.02;
+  const textPad = document.getElementById("textPad");
+  function moveText(dir) {
+    const clamp = (v) => Math.max(0, Math.min(1, v));
+    if (dir === "up") textPositionY = clamp(textPositionY - TEXT_STEP);
+    else if (dir === "down") textPositionY = clamp(textPositionY + TEXT_STEP);
+    else if (dir === "left") textPositionX = clamp(textPositionX - TEXT_STEP);
+    else if (dir === "right") textPositionX = clamp(textPositionX + TEXT_STEP);
+    else if (dir === "center") textPositionX = 0.5;
+    placeTextOverlay(true);
+  }
+  if (textPad) {
+    let holdTimer = null;
+    let repeatTimer = null;
+    const stopHold = () => {
+      if (!holdTimer && !repeatTimer) return;
+      clearTimeout(holdTimer);
+      clearInterval(repeatTimer);
+      holdTimer = repeatTimer = null;
+      placeTextOverlay(false);
+      scheduleTextRegen();
+    };
+    textPad.querySelectorAll("[data-dir]").forEach((btn) => {
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        const dir = btn.dataset.dir;
+        moveText(dir);
+        if (dir === "center") {
+          holdTimer = setTimeout(() => {}, 0);
+          return;
+        }
+        holdTimer = setTimeout(() => {
+          repeatTimer = setInterval(() => moveText(dir), 50);
+        }, 300);
+      });
+      btn.addEventListener("pointerup", stopHold);
+      btn.addEventListener("pointerleave", stopHold);
+      btn.addEventListener("pointercancel", stopHold);
+      // 키보드로 버튼을 눌렀을 때 (Enter/Space)
+      btn.addEventListener("click", (e) => {
+        if (e.detail !== 0) return; // 마우스·터치는 pointerdown에서 처리
+        moveText(btn.dataset.dir);
+        placeTextOverlay(false);
+        scheduleTextRegen();
+      });
+    });
+    // 방향키 묶음에 포커스가 있으면 키보드 화살표로도 움직임
+    textPad.addEventListener("keydown", (e) => {
+      const map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+      if (!map[e.key]) return;
+      e.preventDefault();
+      moveText(map[e.key]);
+      placeTextOverlay(false);
+      scheduleTextRegen();
+    });
+  }
 
   // ------------ 내부 함수들 ------------
 
@@ -835,99 +923,73 @@ ready(() => {
     }, 100);
   }
 
-  function createDraggableTextOverlay(container, text, fontSize, textColor, bgColor, bgOpacity) {
-    // 기존 텍스트 오버레이 제거
-    const existingOverlay = container.querySelector('.text-overlay-draggable');
-    if (existingOverlay) {
-      existingOverlay.remove();
-    }
+  // GIF 위 글자 상자: 평소엔 점선 테두리만(구워진 글자가 보임), 옮기는 동안엔 글자를 보여 줌
+  let textOverlay = null;
+  function createDraggableTextOverlay(stage, img, gifWidth, text, fontSize, textColor, bgColor, bgOpacity) {
+    stage.querySelector(".text-overlay-draggable")?.remove();
 
-    // 드래그 가능한 텍스트 박스 생성
-    const textBox = document.createElement('div');
-    textBox.className = 'text-overlay-draggable';
+    const hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(bgColor) || [0, "00", "00", "00"];
+    const textBox = document.createElement("div");
+    textBox.className = "text-overlay-draggable";
     textBox.textContent = text;
+    textBox.style.color = textColor;
+    textBox.style.background = `rgba(${parseInt(hex[1], 16)}, ${parseInt(hex[2], 16)}, ${parseInt(hex[3], 16)}, ${bgOpacity})`;
+    textBox.dataset.fontSize = String(fontSize);
+    textBox.dataset.gifWidth = String(gifWidth);
+    stage.appendChild(textBox);
+    textOverlay = textBox;
 
-    // Hex to RGB 변환
-    function hexToRgb(hex) {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : { r: 0, g: 0, b: 0 };
-    }
+    // 화면에 보이는 GIF 크기에 맞춰 글자 크기를 줄이거나 키움
+    const fit = () => placeTextOverlay(textBox.classList.contains("moving"));
+    if (img.complete) fit();
+    else img.addEventListener("load", fit, { once: true });
 
-    const bgRgb = hexToRgb(bgColor);
-
-    textBox.style.cssText = `
-      position: absolute;
-      left: ${textPositionX * 100}%;
-      top: ${textPositionY * 100}%;
-      transform: translate(-50%, -50%);
-      cursor: move;
-      color: ${textColor};
-      background: rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity});
-      padding: ${fontSize * 0.25}px ${fontSize * 0.5}px;
-      font-size: ${fontSize}px;
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-      border-radius: 4px;
-      user-select: none;
-      z-index: 10;
-      pointer-events: auto;
-    `;
-
-    // 드래그 이벤트 핸들러
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let initialLeft = 0;
-    let initialTop = 0;
-
-    textBox.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-
-      // 현재 위치 저장 (백분율로 변환)
-      const rect = container.getBoundingClientRect();
-      initialLeft = textPositionX * rect.width;
-      initialTop = textPositionY * rect.height;
-
-      textBox.style.cursor = 'grabbing';
+    // 끌어서 옮기기 (마우스·터치 모두)
+    textBox.addEventListener("pointerdown", (e) => {
       e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-
-      const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
-
-      const newLeft = initialLeft + deltaX;
-      const newTop = initialTop + deltaY;
-
-      // 컨테이너 크기 가져오기
-      const rect = container.getBoundingClientRect();
-
-      // 정규화된 좌표 업데이트 (0-1 범위)
-      textPositionX = Math.max(0, Math.min(1, newLeft / rect.width));
-      textPositionY = Math.max(0, Math.min(1, newTop / rect.height));
-
-      // 시각적 위치 업데이트
-      textBox.style.left = `${textPositionX * 100}%`;
-      textBox.style.top = `${textPositionY * 100}%`;
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        textBox.style.cursor = 'move';
+      try {
+        textBox.setPointerCapture(e.pointerId);
+      } catch (err) {
+        /* 일부 환경에서는 포인터 캡처가 안 돼도 끌기는 동작 */
       }
+      const rect = stage.getBoundingClientRect();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const fromX = textPositionX;
+      const fromY = textPositionY;
+      placeTextOverlay(true);
+      const onMove = (ev) => {
+        textPositionX = Math.max(0, Math.min(1, fromX + (ev.clientX - startX) / rect.width));
+        textPositionY = Math.max(0, Math.min(1, fromY + (ev.clientY - startY) / rect.height));
+        placeTextOverlay(true);
+      };
+      const onUp = () => {
+        textBox.removeEventListener("pointermove", onMove);
+        textBox.removeEventListener("pointerup", onUp);
+        textBox.removeEventListener("pointercancel", onUp);
+        placeTextOverlay(false);
+        scheduleTextRegen();
+      };
+      textBox.addEventListener("pointermove", onMove);
+      textBox.addEventListener("pointerup", onUp);
+      textBox.addEventListener("pointercancel", onUp);
     });
-
-    container.appendChild(textBox);
   }
+
+  // 글자 상자 위치·크기 갱신. moving이면 글자를 보여 주고, 아니면 테두리만
+  function placeTextOverlay(moving) {
+    const box = textOverlay;
+    if (!box || !box.isConnected) return;
+    const img = box.parentElement.querySelector("img");
+    const scale = img && img.clientWidth ? img.clientWidth / Number(box.dataset.gifWidth || img.naturalWidth || 1) : 1;
+    const fs = Number(box.dataset.fontSize) * scale;
+    box.style.left = `${textPositionX * 100}%`;
+    box.style.top = `${textPositionY * 100}%`;
+    box.style.fontSize = `${fs}px`;
+    box.style.padding = `${fs * 0.25}px ${fs * 0.5}px`;
+    box.classList.toggle("moving", !!moving);
+  }
+  window.addEventListener("resize", () => placeTextOverlay(false));
 
   async function generateGIF(frameList, width, quality, fps, overlayText = "", textPosition = "bottom", textSize = 30, textColor = "#ffffff", textBgColor = "#000000", textBgOpacity = 0.6) {
     const ctx = canvas.getContext("2d");
@@ -1007,11 +1069,15 @@ ready(() => {
 
     if (output) {
       output.innerHTML = "";
-      output.appendChild(gifImg);
+      // GIF를 감싸는 무대: 글자 상자의 위치(%)가 GIF 이미지 기준이 되도록
+      const stage = document.createElement("div");
+      stage.className = "gif-stage";
+      stage.appendChild(gifImg);
+      output.appendChild(stage);
 
-      // 텍스트 오버레이가 있으면 드래그 가능한 텍스트 박스 생성
+      // 텍스트가 있으면 옮길 수 있는 글자 상자 생성
       if (overlayText && overlayText.trim() !== "") {
-        createDraggableTextOverlay(output, overlayText, textSize, textColor, textBgColor, textBgOpacity);
+        createDraggableTextOverlay(stage, gifImg, width, overlayText, textSize, textColor, textBgColor, textBgOpacity);
       }
     }
     if (downloadLink) {

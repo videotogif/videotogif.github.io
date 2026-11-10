@@ -3264,3 +3264,122 @@ img[src$="-pixel.png"] {
   padding-top: 18px;
   border-top: 1px solid var(--border-color);
 }
+
+/* ==========================
+   GIF 무대 + 글자 상자 + 텍스트 위치 방향키
+========================== */
+/* GIF를 감싸서 글자 상자 위치가 이미지 기준이 되게 (테두리·그림자는 무대가 가짐) */
+.gif-stage {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 14px;
+  line-height: 0;
+  border: 3px solid var(--bg-container);
+  border-radius: 15px;
+  box-shadow: 0 15px 40px var(--shadow-lg);
+  overflow: hidden;
+}
+
+#output .gif-stage img {
+  display: block;
+  max-width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* 평소: 구워진 글자 위에 점선 테두리만 */
+#output .text-overlay-draggable {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+  white-space: nowrap;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  border: 2px dashed rgba(160, 200, 120, 0.8);
+  border-radius: 4px;
+  box-shadow: none;
+  cursor: move;
+  touch-action: none;
+  user-select: none;
+  z-index: 10;
+}
+
+#output .text-overlay-draggable:not(.moving) {
+  color: transparent !important;
+  background: transparent !important;
+}
+
+#output .text-overlay-draggable.moving {
+  border-color: var(--primary-green);
+  cursor: grabbing;
+}
+
+/* 방향키 (십자) */
+.pad-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.text-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  grid-template-areas:
+    ". up ."
+    "left center right"
+    ". down .";
+  gap: 4px;
+  justify-content: center;
+}
+
+.pad-btn {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-container);
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pad-btn:hover {
+  border-color: var(--primary-green);
+}
+
+.pad-btn:active {
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #1a202c;
+}
+
+.pad-btn:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.pad-up { grid-area: up; }
+.pad-left { grid-area: left; }
+.pad-center { grid-area: center; font-size: 0.7rem; color: var(--text-muted); }
+.pad-right { grid-area: right; }
+.pad-down { grid-area: down; }
+
+.pad-hint {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  word-break: keep-all;
+}
+
+.settings-wrap .setting-group:has(.text-pad) {
+  grid-row: span 2;
+}
