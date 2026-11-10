@@ -3386,23 +3386,32 @@ img[src$="-pixel.png"] {
 
 /* 변환기 메인: 제목을 작게, 위아래 여백도 좁게 (바로 업로드 상자가 보이도록) */
 .page-hero--compact {
-  margin: -6px 0 22px;
-  padding-bottom: 14px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+}
+
+/* 위 여백은 바깥 상자(main, page-container)의 윗여백이 대부분이라 이 페이지만 줄임 */
+.site-content:has(.page-hero--compact) {
+  padding-top: 16px;
+}
+
+.page-container:has(> .page-hero--compact) {
+  padding-top: 0;
 }
 
 .page-hero--compact .page-title {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 1.3;
 }
 
 @media (max-width: 768px) {
   .page-hero--compact {
-    margin: -16px 0 18px;
-    padding-bottom: 12px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
   }
 
   .page-hero--compact .page-title {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
 }
