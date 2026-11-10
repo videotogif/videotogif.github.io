@@ -152,7 +152,8 @@ function schedule() {
   tickTimer = setTimeout(tick, 1000 / MODES[mode].fps);
 }
 
-// 정해진 장면들을 차례로 재생 (깜짝 뛰기, 굴에 들어가기·나오기). steps: [{frame, lift, sink, dx}]
+// 정해진 장면들을 차례로 재생 (깜짝 뛰기, 굴에 들어가기·나오기)
+// steps: [{frame, sink(아래로), lift(위로, 음수), dx, face(방향), dirt(흙 튀김), clip(false면 잘라 보이기 끔)}]
 function play(steps, fps, done) {
   clearTimeout(tickTimer);
   clearTimeout(seqTimer);
@@ -160,9 +161,11 @@ function play(steps, fps, done) {
   const step = () => {
     const s = steps[i];
     if (s.frame !== undefined) frame = s.frame;
+    if (s.face) face(s.face);
     if (s.dx) x = snap(clamp(x + s.dx, 0, maxX()));
-    render(s.lift || 0);
-    if (s.sink !== undefined) sink.style.transform = `translateY(${s.sink}px)`;
+    if (s.clip === false) el.classList.remove("clip");
+    if (s.dirt) dirtBurst();
+    render((s.sink || 0) + (s.lift || 0));
     i += 1;
     if (i < steps.length) seqTimer = setTimeout(step, 1000 / fps);
     else if (done) seqTimer = setTimeout(done, 1000 / fps);
@@ -223,7 +226,7 @@ function listen(on) {
 // ---- 굴: 발밑에 열고 닫기
 function openHole() {
   const hx = snap(clamp(x + W / 2 - HOLE_W / 2, 0, window.innerWidth - HOLE_W));
-  const hy = snap(clamp(y + FEET - HOLE_H / 2, 0, window.innerHeight - HOLE_H));
+  const hy = snap(clamp(y + H - HOLE_H / 2, 0, window.innerHeight - HOLE_H));
   hole.style.left = `${hx}px`;
   hole.style.top = `${hy}px`;
   hole.className = "pixel-hole open";
@@ -236,7 +239,45 @@ function closeHole(done) {
   }, 260);
 }
 const diveSteps = () => [0, 1, 2, 3, 4, 5, 6, 7].map((k) => ({ frame: 0, sink: (SINK * k) / 7 }));
-const riseSteps = () => [7, 6, 5, 4, 3, 2, 1, 0].map((k) => ({ frame: k > 3 ? 0 : 1, sink: (SINK * k) / 7 }));
+
+// 흙 부스러기: 굴 입구에서 픽셀 조각 몇 개가 튀어 오름
+function dirtBurst() {
+  const bits = [[-24, -21], [-12, -30], [6, -27], [18, -18], [27, -12]];
+  bits.forEach(([dx, up], k) => {
+    const b = document.createElement("span");
+    b.className = `pixel-dirt${k % 2 ? " dark" : ""}`;
+    b.style.setProperty("--dx", `${dx}px`);
+    b.style.setProperty("--up", `${up}px`);
+    hole.appendChild(b);
+    setTimeout(() => b.remove(), 700);
+  });
+}
+
+// 굴에서 나오기 1: 귀 끝 빼꼼 → 귀 쫑긋 → 눈까지 쏙 → 두리번 (초당 12장)
+function peekSteps(dir) {
+  const at = (v, f = 0) => ({ frame: f, sink: v });
+  return [
+    at(57), at(51), at(45), // 귀 끝이 빼꼼
+    at(42, 1), at(42), at(42, 1), at(42), at(42), // 귀 쫑긋쫑긋
+    at(36), at(30), at(24), at(24), // 눈까지 쏙
+    { frame: 0, sink: 24, face: -dir }, at(24), at(24), at(24), // 한쪽 두리번
+    { frame: 0, sink: 24, face: dir }, at(24), at(24), // 반대쪽 두리번
+  ];
+}
+// 굴에서 나오기 2: 살짝 움츠렸다가 흙을 튀기며 뛰어나옴
+function springSteps(dir) {
+  return [
+    { frame: 1, sink: 27 },
+    { frame: 2, sink: 9, dirt: true },
+    { frame: 3, sink: 0, lift: -12, dx: 9 * dir, clip: false },
+    { frame: 3, lift: -18, dx: 9 * dir },
+    { frame: 4, lift: -9, dx: 9 * dir },
+    { frame: 5, dx: 6 * dir },
+    { frame: 0 },
+  ];
+}
+// 다 끝났을 때: 두리번 후 다시 쏙
+const sinkBackSteps = () => [24, 33, 42, 51, 57, 63].map((v) => ({ frame: 0, sink: v }));
 
 function dive(done) {
   el.classList.add("clip");
@@ -286,25 +327,27 @@ function leave() {
   dive(() => closeHole(hideNow));
 }
 
-// 굴에서 나오기: 쏙 올라온 뒤, 아직 작업 중이면 다시 뛰어다니고, 다 끝났으면 한 번 깡충 하고 다시 들어감
+// 굴에서 나오기: 귀 끝 빼꼼 → 쫑긋 → 눈까지 쏙 → 두리번 → 아직 작업 중이면 흙을 튀기며 뛰어나오고,
+// 다 끝났으면 다시 쏙 들어가고 굴이 닫힘
 function emerge() {
   phase = "emerging";
-  play(riseSteps(), 14, () => {
-    el.classList.remove("clip");
-    sink.style.transform = "";
+  el.classList.add("clip");
+  if (!hole.classList.contains("open")) openHole();
+  const dir = x > maxX() / 2 ? -1 : 1; // 화면 가운데 쪽으로 나옴
+  face(dir);
+  play(peekSteps(dir), 12, () => {
     if (busy > 0) {
-      closeHole();
-      phase = "live";
-      listen(true);
-      hopping = false;
-      rest = 1;
-      schedule();
-    } else {
-      // 고개를 내밀고 제자리에서 한 번 깡충 → 다시 쏙
-      play([1, 2, 3, 4, 5, 0].map((f) => ({ frame: f })), 12, () => {
-        el.classList.add("clip");
-        play(diveSteps(), 14, () => closeHole(hideNow));
+      play(springSteps(dir), 12, () => {
+        sink.style.transform = "";
+        closeHole();
+        phase = "live";
+        listen(true);
+        hopping = false;
+        rest = 1;
+        schedule();
       });
+    } else {
+      play(sinkBackSteps(), 14, () => closeHole(hideNow));
     }
   });
 }

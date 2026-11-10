@@ -3507,7 +3507,7 @@ img[src$="-pixel.png"] {
 
 .pixel-hole {
   position: fixed;
-  z-index: 9001;
+  z-index: 8999; /* 토끼 뒤: 나오는 몸이 굴 입구 위로 보이게 */
   display: none;
   width: 72px;
   height: 30px;
@@ -3557,4 +3557,27 @@ img[src$="-pixel.png"] {
 
 .pixel-rabbit.talk .pr-bubble {
   opacity: 1;
+}
+
+/* 굴에서 나올 때 튀는 흙 부스러기 (픽셀 조각, 6장으로 끊어서) */
+.pixel-dirt {
+  position: absolute;
+  left: 33px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  background: #a8744a;
+  animation: pr-dirt 0.5s steps(6, end) forwards;
+}
+
+.pixel-dirt.dark {
+  width: 3px;
+  height: 3px;
+  background: #5b3a22;
+}
+
+@keyframes pr-dirt {
+  0% { transform: translate(0, 0); opacity: 1; }
+  45% { transform: translate(calc(var(--dx) * 0.6), var(--up)); opacity: 1; }
+  100% { transform: translate(var(--dx), 6px); opacity: 0; }
 }
