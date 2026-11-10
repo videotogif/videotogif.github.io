@@ -3464,7 +3464,8 @@ img[src$="-pixel.png"] {
 }
 
 /* ==========================
-   작업 중 픽셀 토끼 (잡기 놀이)
+   작업 중 픽셀 토끼 (잡기 놀이) — 픽셀 아트 방식
+   6장 그림을 초당 12장으로 끊어서 바꿔 끼움(보간 없음). 투명도 애니메이션이라 화면이 바빠도 계속 움직임
 ========================== */
 .pixel-rabbit {
   position: fixed;
@@ -3473,14 +3474,14 @@ img[src$="-pixel.png"] {
   z-index: 9000;
   display: none;
   width: 60px;
-  height: 54px;
+  height: 78px;
   pointer-events: none; /* 클릭이 닿지 않아 절대 못 잡음 */
-  touch-action: none;
   user-select: none;
   will-change: transform;
 }
 
-.pr-flip {
+.pr-flip,
+.pr-sink {
   position: relative;
   width: 100%;
   height: 100%;
@@ -3490,69 +3491,83 @@ img[src$="-pixel.png"] {
   transform: scaleX(-1);
 }
 
-/* 발밑 그림자 */
-.pr-flip::after {
-  content: "";
-  position: absolute;
-  left: 22%;
-  right: 22%;
-  bottom: -3px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.28);
-  animation: pr-shadow 0.42s ease-in-out infinite;
-}
-
-.pr-hop {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  animation: pr-hop 0.42s ease-in-out infinite;
-}
-
-.pr-hop span {
+.pr-fr {
   position: absolute;
   inset: 0;
-  background: url("/assets/img/rabbit-sprite-pixel.png") no-repeat;
-  background-size: 120px 54px;
+  background: url("/assets/img/rabbit-hop-pixel.png") no-repeat;
+  background-size: 360px 78px;
+  background-position: calc(var(--i) * -60px) 0;
   image-rendering: pixelated;
+  opacity: 0;
+  /* 장마다 1/6박자씩 늦게 시작해서, 한 번에 한 장만 보임 */
+  animation: pr-frame 0.5s steps(1, end) infinite;
+  animation-delay: calc((var(--i) - 6) * 0.5s / 6);
 }
 
-.pr-f1 {
-  background-position: 0 0 !important;
-  animation: pr-f1 0.42s steps(1) infinite;
-}
-
-.pr-f2 {
-  background-position: -60px 0 !important;
-  animation: pr-f2 0.42s steps(1) infinite;
-}
-
-@keyframes pr-hop {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
-}
-
-@keyframes pr-shadow {
-  0%, 100% { transform: scaleX(1); opacity: 1; }
-  50% { transform: scaleX(0.6); opacity: 0.5; }
-}
-
-@keyframes pr-f1 {
+@keyframes pr-frame {
   0% { opacity: 1; }
-  30% { opacity: 0; }
-  80% { opacity: 1; }
+  16.667% { opacity: 0; }
+  100% { opacity: 0; }
 }
 
-@keyframes pr-f2 {
-  0% { opacity: 0; }
-  30% { opacity: 1; }
-  80% { opacity: 0; }
+/* 굴로 들어갈 때: 웅크린 첫 장으로 멈추고, 칸 단위로 아래로 내려가며 굴 속으로 사라짐 */
+.pixel-rabbit.diving {
+  overflow: hidden;
+}
+
+.pixel-rabbit.diving .pr-fr {
+  animation: none;
+  opacity: 0;
+}
+
+.pixel-rabbit.diving .pr-fr:first-child {
+  opacity: 1;
+}
+
+.pixel-rabbit.diving .pr-sink {
+  animation: pr-dive 0.42s steps(7, end) forwards;
+}
+
+@keyframes pr-dive {
+  from { transform: translateY(0); }
+  to { transform: translateY(63px); }
+}
+
+.pixel-hole {
+  position: fixed;
+  z-index: 9001;
+  display: none;
+  width: 72px;
+  height: 30px;
+  background: url("/assets/img/rabbit-hole-pixel.png") no-repeat;
+  background-size: 72px 30px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.pixel-hole.open {
+  display: block;
+  animation: pr-hole-open 0.25s steps(3, end) both;
+}
+
+.pixel-hole.closing {
+  display: block;
+  animation: pr-hole-close 0.25s steps(3, end) both;
+}
+
+@keyframes pr-hole-open {
+  from { transform: scale(0.34, 0.34); }
+  to { transform: scale(1, 1); }
+}
+
+@keyframes pr-hole-close {
+  from { transform: scale(1, 1); }
+  to { transform: scale(0.34, 0); }
 }
 
 .pr-bubble {
   position: absolute;
-  bottom: 100%;
+  bottom: 70%;
   left: 50%;
   transform: translate(-50%, -6px);
   padding: 4px 10px;
