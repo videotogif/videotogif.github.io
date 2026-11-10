@@ -9,13 +9,15 @@
 // - '동작 줄이기' 설정을 켠 사람에게는 나오지 않는다
 
 const PX = 3; // 그림 한 칸 = 3px
-const W = 20 * PX; // 60
-const H = 26 * PX; // 78 (위쪽은 점프 공간)
-const FEET = 24 * PX; // 상자 위에서 발바닥까지 (72)
+const W = 24 * PX; // 72 (쿼터뷰 동글 토끼 한 장 너비)
+const H = 30 * PX; // 90 (위쪽은 점프 공간)
+const FEET = 26 * PX; // 상자 위에서 몸 아래 끝까지 (78)
 const HOLE_W = 24 * PX; // 72
 const HOLE_H = 10 * PX; // 30
-const SINK = 21 * PX; // 굴로 내려가는 깊이 (63)
+const SINK = 24 * PX; // 굴로 내려가는 깊이 (72): 귀 끝까지 모두 숨음
 const AIR = [2, 3, 4]; // 발이 떨어진 장면
+const FRAMES = 8; // 0 쉬기 1 웅크림 2 박차기 3 공중 4 착지 준비 5 착지 6 코 씰룩 7 귀 돌리기
+const SHEET = "/assets/img/rabbit-hop-3x.png"; // 3배로 미리 키운 그림 (사파리에서 흐려지지 않게)
 const MODES = {
   calm: { fps: 7, hop: 6 * PX, restMin: 3, restMax: 12 }, // 느긋하게: 한 번에 18px, 자주 쉼
   flee: { fps: 14, hop: 30 * PX, restMin: 0, restMax: 1 }, // 도망: 한 번에 90px, 거의 안 쉼
@@ -56,8 +58,8 @@ function build() {
   el = document.createElement("div");
   el.className = "pixel-rabbit";
   el.setAttribute("aria-hidden", "true");
-  el.innerHTML = '<div class="pr-flip"><div class="pr-sink"><span class="pr-sprite"></span></div></div><div class="pr-bubble"></div>';
-  sprite = el.querySelector(".pr-sprite");
+  el.innerHTML = `<div class="pr-flip"><div class="pr-sink"><span class="pr-sprite"><img src="${SHEET}" alt="" width="${W * FRAMES}" height="${H}" draggable="false"></span></div></div><div class="pr-bubble"></div>`;
+  sprite = el.querySelector(".pr-sprite img");
   sink = el.querySelector(".pr-sink");
   bubble = el.querySelector(".pr-bubble");
   hole = document.createElement("div");
@@ -68,7 +70,7 @@ function build() {
 }
 
 function render(lift = 0) {
-  sprite.style.backgroundPosition = `${-frame * W}px 0`;
+  sprite.style.transform = `translateX(${-frame * W}px)`;
   el.style.transform = `translate(${x}px, ${y}px)`;
   sink.style.transform = lift ? `translateY(${lift}px)` : "";
 }
@@ -114,7 +116,8 @@ function tick() {
   if (!hopping) {
     if (rest > 0) {
       rest -= 1;
-      frame = 0;
+      const r = Math.random();
+      frame = r < 0.3 ? 6 : r < 0.38 ? 7 : 0;
       render();
       return schedule();
     }
@@ -238,7 +241,7 @@ function closeHole(done) {
     if (done) done();
   }, 260);
 }
-const diveSteps = () => [0, 1, 2, 3, 4, 5, 6, 7].map((k) => ({ frame: 0, sink: (SINK * k) / 7 }));
+const diveSteps = () => [0, 1, 2, 3, 4, 5, 6, 7].map((k) => ({ frame: 0, sink: snap((SINK * k) / 7) }));
 
 // 흙 부스러기: 굴 입구에서 픽셀 조각 몇 개가 튀어 오름
 function dirtBurst() {
@@ -257,18 +260,18 @@ function dirtBurst() {
 function peekSteps(dir) {
   const at = (v, f = 0) => ({ frame: f, sink: v });
   return [
-    at(57), at(51), at(45), // 귀 끝이 빼꼼
-    at(42, 1), at(42), at(42, 1), at(42), at(42), // 귀 쫑긋쫑긋
-    at(36), at(30), at(24), at(24), // 눈까지 쏙
-    { frame: 0, sink: 24, face: -dir }, at(24), at(24), at(24), // 한쪽 두리번
-    { frame: 0, sink: 24, face: dir }, at(24), at(24), // 반대쪽 두리번
+    at(69), at(63), at(57), // 귀 끝이 빼꼼
+    at(54, 7), at(54), at(54, 7), at(54), at(54), // 귀 쫑긋 (한쪽 귀를 돌렸다 세움)
+    at(48), at(42), at(36), at(36, 6), at(36), // 눈까지 쏙, 코 씰룩
+    { frame: 0, sink: 30, face: -dir }, at(30), at(30), at(30), // 한쪽 두리번
+    { frame: 0, sink: 30, face: dir }, at(30), at(30), // 반대쪽 두리번
   ];
 }
 // 굴에서 나오기 2: 살짝 움츠렸다가 흙을 튀기며 뛰어나옴
 function springSteps(dir) {
   return [
-    { frame: 1, sink: 27 },
-    { frame: 2, sink: 9, dirt: true },
+    { frame: 1, sink: 33 },
+    { frame: 2, sink: 12, dirt: true },
     { frame: 3, sink: 0, lift: -12, dx: 9 * dir, clip: false },
     { frame: 3, lift: -18, dx: 9 * dir },
     { frame: 4, lift: -9, dx: 9 * dir },
@@ -277,7 +280,7 @@ function springSteps(dir) {
   ];
 }
 // 다 끝났을 때: 두리번 후 다시 쏙
-const sinkBackSteps = () => [24, 33, 42, 51, 57, 63].map((v) => ({ frame: 0, sink: v }));
+const sinkBackSteps = () => [30, 39, 48, 57, 66, 72].map((v) => ({ frame: 0, sink: v }));
 
 function dive(done) {
   el.classList.add("clip");

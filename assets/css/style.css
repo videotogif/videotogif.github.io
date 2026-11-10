@@ -3473,8 +3473,8 @@ img[src$="-pixel.png"] {
   top: 0;
   z-index: 9000;
   display: none;
-  width: 60px;
-  height: 78px;
+  width: 72px;
+  height: 90px;
   pointer-events: none; /* 클릭이 닿지 않아 절대 못 잡음 */
   user-select: none;
   will-change: transform;
@@ -3491,13 +3491,22 @@ img[src$="-pixel.png"] {
   transform: scaleX(-1);
 }
 
-/* 한 장짜리 그림: 어느 장면을 보일지는 JS가 이동과 같은 박자로 정함 */
+/* 한 장짜리 창: 3배로 미리 키운 그림 띠를 옮겨서 장면을 바꿈 (JS가 이동과 같은 박자로) */
 .pr-sprite {
   position: absolute;
   inset: 0;
-  background: url("/assets/img/rabbit-hop-pixel.png") no-repeat 0 0;
-  background-size: 360px 78px;
+  overflow: hidden;
+}
+
+.pr-sprite img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 576px; /* 72px × 8장 */
+  max-width: none;
+  height: 90px;
   image-rendering: pixelated;
+  pointer-events: none;
 }
 
 /* 굴에 들어가고 나올 때 굴 가운데 줄 아래는 안 보이게 */
@@ -3511,8 +3520,7 @@ img[src$="-pixel.png"] {
   display: none;
   width: 72px;
   height: 30px;
-  background: url("/assets/img/rabbit-hole-pixel.png") no-repeat;
-  background-size: 72px 30px;
+  background: url("/assets/img/rabbit-hole-3x.png") no-repeat 0 0;
   image-rendering: pixelated;
   pointer-events: none;
 }
