@@ -2899,3 +2899,115 @@ img[src$="-pixel.png"] {
 .vtg-dialog [hidden] {
   display: none;
 }
+
+/* ==========================
+   변환기 설정 탭: 화질 조절 / 텍스트 / 자르기
+========================== */
+.settings-wrap {
+  text-align: left;
+}
+
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 6px 11px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.settings-tab:hover {
+  color: var(--text-primary);
+}
+
+.settings-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--primary-green);
+}
+
+.settings-tab:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+/* 탭 안에서는 접기 머리글과 구분선이 필요 없음 */
+.settings-wrap .advanced-settings,
+.settings-wrap .advanced-settings:last-child {
+  border: 0;
+}
+
+.settings-wrap .advanced-settings-header {
+  display: none;
+}
+
+.settings-wrap .advanced-content,
+.settings-wrap .advanced-content.expanded {
+  max-height: none;
+  overflow: visible;
+  padding: 18px 4px 8px;
+}
+
+.trim-tab-intro {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+@media (max-width: 420px) {
+  .settings-tab {
+    font-size: 0.92rem;
+  }
+}
+
+/* 텍스트 탭: 입력칸마다 있던 카드 배경을 없애고 촘촘하게 */
+.settings-wrap .settings-grid {
+  gap: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.settings-wrap .setting-group,
+.settings-wrap .setting-group:hover {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.settings-wrap .setting-group label {
+  margin-bottom: 6px;
+  font-size: 0.92rem;
+}
+
+.settings-wrap .setting-group input {
+  padding: 10px 12px;
+  border-width: 1px;
+}
+
+.settings-wrap .setting-group input[type="color"] {
+  height: 44px;
+  padding: 4px;
+}
+
+@media (max-width: 480px) {
+  .settings-wrap .settings-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+}

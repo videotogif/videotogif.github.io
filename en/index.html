@@ -90,8 +90,15 @@ ref: home
           </button>
         </div>
 
+        <!-- 설정 탭: 화질 / 텍스트 / 자르기 (GIF가 만들어지면 보임) -->
+        <div class="settings-wrap" id="settingsWrap">
+        <div class="settings-tabs" id="settingsTabs" role="tablist" aria-label="GIF settings">
+          <button type="button" class="settings-tab active" role="tab" id="tabQuality" aria-controls="advancedSettings" aria-selected="true">⚙️ Quality</button>
+          <button type="button" class="settings-tab" role="tab" id="tabText" aria-controls="textSettings" aria-selected="false" tabindex="-1">✏️ Text</button>
+          <button type="button" class="settings-tab" role="tab" id="tabTrim" aria-controls="trimSettings" aria-selected="false" tabindex="-1">✂️ Trim</button>
+        </div>
         <!-- Quality (shown after the GIF is made): picked automatically for the video, slider from low-spec to high-spec -->
-        <div class="advanced-settings" id="advancedSettings">
+        <div class="advanced-settings" id="advancedSettings" role="tabpanel" aria-labelledby="tabQuality">
           <h2 class="sr-only">GIF quality</h2>
           <div class="advanced-settings-header" id="advancedToggle">
             <div class="advanced-settings-title">
@@ -122,7 +129,7 @@ ref: home
         </div>
 
         <!-- Text overlay -->
-        <div class="advanced-settings" id="textSettings">
+        <div class="advanced-settings" id="textSettings" role="tabpanel" aria-labelledby="tabText" hidden>
           <h2 class="sr-only">GIF text settings</h2>
           <div class="advanced-settings-header" id="textToggle">
             <div class="advanced-settings-title">
@@ -131,7 +138,7 @@ ref: home
             </div>
             <div class="toggle-icon" id="textToggleIcon">▼</div>
           </div>
-          <div class="advanced-content" id="textContent">
+          <div class="advanced-content expanded" id="textContent">
             <div class="settings-grid">
               <div class="setting-group">
                 <label for="overlayText" id="overlayTextLabel">Caption text</label>
@@ -168,14 +175,13 @@ ref: home
         </div>
 
         <!-- GIF trim (opens in a new tab) -->
-        <div class="advanced-settings" id="trimSettings">
-          <a href="{{ '/en/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink" target="_blank" rel="noopener">
-            <div class="advanced-settings-title">
-              <span>✂️</span>
-              <span id="trimSettingsTitle">Trim GIF</span>
-            </div>
-            <div class="toggle-icon">→</div>
-          </a>
+        <div class="advanced-settings" id="trimSettings" role="tabpanel" aria-labelledby="tabTrim" hidden>
+          <h2 class="sr-only" id="trimSettingsTitle">Trim GIF</h2>
+          <div class="advanced-content expanded">
+            <p class="trim-tab-intro">Keep only the part you need, or cut out a section in the middle. The button saves this GIF and opens the trim tool in a new tab; just upload the saved GIF there.</p>
+            <a href="{{ '/en/gif-trim/' | relative_url }}" class="start-button trim-page-link" id="trimPageLink" target="_blank" rel="noopener">✂️ Open Trim GIF</a>
+          </div>
+        </div>
         </div>
       </section>
 

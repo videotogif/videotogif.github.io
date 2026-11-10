@@ -259,9 +259,38 @@ ready(() => {
   // 필수 요소 없으면 중단
   if (!canvas || !video || !uploadSection) return;
 
-  // 초기 상태: 고급 설정, 텍스트 설정 숨기기
-  if (advancedSettings) advancedSettings.style.display = 'none';
-  if (textSettings) textSettings.style.display = 'none';
+  // 초기 상태: 설정 탭 숨기기 (GIF가 만들어지면 보임)
+  const settingsWrap = document.getElementById("settingsWrap");
+  if (settingsWrap) settingsWrap.style.display = "none";
+
+  // 설정 탭 (화질 / 텍스트 / 자르기): 누르거나 ←→ 키로 옮겨 다님
+  const settingTabs = Array.from(document.querySelectorAll('#settingsTabs [role="tab"]'));
+  function selectSettingTab(tab, focus) {
+    settingTabs.forEach((t) => {
+      const on = t === tab;
+      t.classList.toggle("active", on);
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute("aria-controls"));
+      if (panel) panel.hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  settingTabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => selectSettingTab(tab));
+    tab.addEventListener("keydown", (e) => {
+      const n = settingTabs.length;
+      let j = null;
+      if (e.key === "ArrowRight") j = (i + 1) % n;
+      else if (e.key === "ArrowLeft") j = (i - 1 + n) % n;
+      else if (e.key === "Home") j = 0;
+      else if (e.key === "End") j = n - 1;
+      if (j !== null) {
+        e.preventDefault();
+        selectSettingTab(settingTabs[j], true);
+      }
+    });
+  });
 
   // 텍스트 설정 토글
   const textToggle = document.getElementById("textToggle");
@@ -872,9 +901,8 @@ ready(() => {
     // 결과 섹션 표시
     if (outputSection) outputSection.style.display = "block";
 
-    // GIF 생성 후 고급 설정, 텍스트 설정 표시
-    if (advancedSettings) advancedSettings.style.display = 'block';
-    if (textSettings) textSettings.style.display = 'block';
+    // GIF 생성 후 설정 탭 표시
+    if (settingsWrap) settingsWrap.style.display = "block";
 
     // 완료 후 스크롤
     setTimeout(() => {

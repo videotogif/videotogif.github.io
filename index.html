@@ -131,8 +131,15 @@ ref: home
           </button>
         </div>
 
+        <!-- 설정 탭: 화질 / 텍스트 / 자르기 (GIF가 만들어지면 보임) -->
+        <div class="settings-wrap" id="settingsWrap">
+        <div class="settings-tabs" id="settingsTabs" role="tablist" aria-label="GIF 설정">
+          <button type="button" class="settings-tab active" role="tab" id="tabQuality" aria-controls="advancedSettings" aria-selected="true">⚙️ 화질 조절</button>
+          <button type="button" class="settings-tab" role="tab" id="tabText" aria-controls="textSettings" aria-selected="false" tabindex="-1">✏️ 텍스트</button>
+          <button type="button" class="settings-tab" role="tab" id="tabTrim" aria-controls="trimSettings" aria-selected="false" tabindex="-1">✂️ 자르기</button>
+        </div>
         <!-- 화질 조절 (GIF 생성 후 표시): 영상에 맞춰 자동 설정, 눈금으로 저사양~고사양 선택 -->
-        <div class="advanced-settings" id="advancedSettings">
+        <div class="advanced-settings" id="advancedSettings" role="tabpanel" aria-labelledby="tabQuality">
           <h2 class="sr-only">GIF 화질 조절</h2>
           <div class="advanced-settings-header" id="advancedToggle">
             <div class="advanced-settings-title">
@@ -163,7 +170,7 @@ ref: home
         </div>
 
         <!-- 텍스트 설정 -->
-        <div class="advanced-settings" id="textSettings">
+        <div class="advanced-settings" id="textSettings" role="tabpanel" aria-labelledby="tabText" hidden>
           <h2 class="sr-only">GIF 텍스트 설정</h2>
           <div class="advanced-settings-header" id="textToggle">
             <div class="advanced-settings-title">
@@ -172,7 +179,7 @@ ref: home
             </div>
             <div class="toggle-icon" id="textToggleIcon">▼</div>
           </div>
-          <div class="advanced-content" id="textContent">
+          <div class="advanced-content expanded" id="textContent">
             <div class="settings-grid">
               <div class="setting-group">
                 <label for="overlayText" id="overlayTextLabel">텍스트 추가</label>
@@ -209,14 +216,13 @@ ref: home
         </div>
 
         <!-- GIF 자르기 설정 -->
-        <div class="advanced-settings" id="trimSettings">
-          <a href="{{ '/gif-trim/' | relative_url }}" class="advanced-settings-header trim-page-link" id="trimPageLink" target="_blank" rel="noopener">
-            <div class="advanced-settings-title">
-              <span>✂️</span>
-              <span id="trimSettingsTitle">GIF 자르기</span>
-            </div>
-            <div class="toggle-icon">→</div>
-          </a>
+        <div class="advanced-settings" id="trimSettings" role="tabpanel" aria-labelledby="tabTrim" hidden>
+          <h2 class="sr-only" id="trimSettingsTitle">GIF 자르기</h2>
+          <div class="advanced-content expanded">
+            <p class="trim-tab-intro">만든 GIF에서 필요한 구간만 남기거나, 중간을 잘라 낼 수 있어요. 버튼을 누르면 지금 GIF가 저장되고 자르기 화면이 새 탭으로 열려요. 저장된 GIF를 거기에 올리면 됩니다.</p>
+            <a href="{{ '/gif-trim/' | relative_url }}" class="start-button trim-page-link" id="trimPageLink" target="_blank" rel="noopener">✂️ GIF 자르기 열기</a>
+          </div>
+        </div>
         </div>
       </section>
 
