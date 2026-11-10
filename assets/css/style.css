@@ -3383,3 +3383,26 @@ img[src$="-pixel.png"] {
 .settings-wrap .setting-group:has(.text-pad) {
   grid-row: span 2;
 }
+
+/* 변환기 메인: 제목을 작게, 위아래 여백도 좁게 (바로 업로드 상자가 보이도록) */
+.page-hero--compact {
+  margin: -6px 0 22px;
+  padding-bottom: 14px;
+}
+
+.page-hero--compact .page-title {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+  .page-hero--compact {
+    margin: -16px 0 18px;
+    padding-bottom: 12px;
+  }
+
+  .page-hero--compact .page-title {
+    font-size: 1.6rem;
+  }
+}
