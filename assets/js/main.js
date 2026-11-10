@@ -36,15 +36,11 @@ const translations = {
       `영상이 길어서 ${x}배속으로 만들어요. 원본 속도가 필요하면 필요한 부분만 잘라서 올려 주세요.`,
     noDuration: "영상 길이를 읽을 수 없어요. MP4로 바꿔서 다시 올려 주세요.",
     dlgTitle: "이 브라우저에서는 열 수 없는 영상이에요",
-    dlgMac:
-      "ProRes처럼 크롬·엣지·파이어폭스가 재생하지 못하는 형식이에요. 맥에 기본으로 들어 있는 사파리에서는 열려요. 사파리로 이 페이지를 열고 다시 올려 주세요.",
-    dlgMacNote: "사파리에서도 안 되면 MP4(H.264)로 내보낸 뒤 올려 주세요.",
-    dlgWindows:
-      "ProRes처럼 윈도우의 브라우저가 재생하지 못하는 형식이에요. 사파리는 윈도우용이 없어서, 영상 편집 프로그램이나 무료 변환 프로그램(예: HandBrake)으로 MP4(H.264)로 바꾼 뒤 올려 주세요.",
-    dlgOther:
-      "이 기기의 브라우저가 재생하지 못하는 형식이에요(ProRes, 일부 HEVC 영상 등). MP4(H.264)로 바꾼 뒤 다시 올려 주세요.",
-    dlgCopy: "사파리에 붙여 넣을 주소 복사",
-    dlgCopied: "주소를 복사했어요",
+    dlgMac: "사파리로 이 페이지를 열고 다시 올려 주세요.",
+    dlgWindows: "MP4(H.264)로 바꾼 뒤 다시 올려 주세요.",
+    dlgOther: "MP4(H.264)로 바꾼 뒤 다시 올려 주세요.",
+    dlgCopy: "주소 복사",
+    dlgCopied: "복사했어요",
     dlgClose: "닫기",
   },
   en: {
@@ -72,15 +68,11 @@ const translations = {
       `This video is long, so the GIF plays at ${x}x speed. For original speed, trim the video to the part you need first.`,
     noDuration: "Couldn't read this video's length. Please convert it to MP4 and try again.",
     dlgTitle: "This browser can't open this video",
-    dlgMac:
-      "It's in a format like ProRes that Chrome, Edge and Firefox can't play. Safari, which comes with every Mac, can. Open this page in Safari and upload the video again.",
-    dlgMacNote: "If Safari can't open it either, export it as MP4 (H.264) and upload that.",
-    dlgWindows:
-      "It's in a format like ProRes that browsers on Windows can't play. Safari isn't available for Windows, so convert it to MP4 (H.264) with a video editor or a free converter (e.g. HandBrake) and upload that.",
-    dlgOther:
-      "The browser on this device can't play this format (ProRes, some HEVC files, etc.). Convert it to MP4 (H.264) and upload it again.",
-    dlgCopy: "Copy the address for Safari",
-    dlgCopied: "Address copied",
+    dlgMac: "Open this page in Safari and upload it again.",
+    dlgWindows: "Convert it to MP4 (H.264) and upload it again.",
+    dlgOther: "Convert it to MP4 (H.264) and upload it again.",
+    dlgCopy: "Copy link",
+    dlgCopied: "Copied",
     dlgClose: "Close",
   },
 };
@@ -765,15 +757,12 @@ ready(() => {
       unsupportedDialog.className = "vtg-dialog";
       unsupportedDialog.setAttribute("aria-labelledby", "vtgDialogTitle");
       unsupportedDialog.innerHTML =
-        '<h2 id="vtgDialogTitle" class="vtg-dialog-title"></h2>' +
+        '<button type="button" class="vtg-dialog-x"><span aria-hidden="true">×</span></button>' +
+        '<h2 id="vtgDialogTitle" class="vtg-dialog-title" tabindex="-1" autofocus></h2>' +
         '<p class="vtg-dialog-body"></p>' +
-        '<p class="vtg-dialog-note"></p>' +
-        '<div class="vtg-dialog-actions">' +
-        '<button type="button" class="vtg-dialog-copy"></button>' +
-        '<button type="button" class="vtg-dialog-close"></button>' +
-        "</div>";
+        '<button type="button" class="vtg-dialog-copy"></button>';
       document.body.appendChild(unsupportedDialog);
-      unsupportedDialog.querySelector(".vtg-dialog-close").addEventListener("click", () => unsupportedDialog.close());
+      unsupportedDialog.querySelector(".vtg-dialog-x").addEventListener("click", () => unsupportedDialog.close());
       // 바깥(어두운 배경)을 눌러도 닫힘
       unsupportedDialog.addEventListener("click", (e) => {
         if (e.target === unsupportedDialog) unsupportedDialog.close();
@@ -791,17 +780,14 @@ ready(() => {
     const body = suggestSafari ? t.dlgMac : isWindows ? t.dlgWindows : t.dlgOther;
     d.querySelector(".vtg-dialog-title").textContent = t.dlgTitle;
     d.querySelector(".vtg-dialog-body").textContent = body;
-    const note = d.querySelector(".vtg-dialog-note");
-    note.textContent = suggestSafari ? t.dlgMacNote : "";
-    note.hidden = !suggestSafari;
     const copyBtn = d.querySelector(".vtg-dialog-copy");
     copyBtn.textContent = t.dlgCopy;
     copyBtn.hidden = !suggestSafari;
-    d.querySelector(".vtg-dialog-close").textContent = t.dlgClose;
+    d.querySelector(".vtg-dialog-x").setAttribute("aria-label", t.dlgClose);
 
     // <dialog>를 못 쓰는 아주 오래된 브라우저는 결과 영역의 안내 문구만 보여 준다
     if (typeof d.showModal === "function" && !d.open) d.showModal();
-    return body;
+    return `${t.dlgTitle}. ${body}`;
   }
 
   async function handleVideoFile(file) {

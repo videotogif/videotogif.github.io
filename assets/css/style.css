@@ -2829,12 +2829,17 @@ img[src$="-pixel.png"] {
    안내 창: 브라우저가 못 여는 영상일 때
 ========================== */
 .vtg-dialog {
-  width: min(440px, calc(100vw - 32px));
-  padding: 24px 24px 20px;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(380px, calc(100vw - 32px));
+  height: fit-content;
+  padding: 30px 26px 24px;
   border: 1px solid var(--border-color);
   border-radius: 16px;
   background: var(--bg-container);
   color: var(--text-primary);
+  text-align: center;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
@@ -2842,58 +2847,66 @@ img[src$="-pixel.png"] {
   background: rgba(0, 0, 0, 0.45);
 }
 
+.vtg-dialog-x {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.vtg-dialog-x:hover {
+  background: var(--bg-section-hover);
+  color: var(--text-primary);
+}
+
+.vtg-dialog-x:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* 창이 열리면 제목에 포커스(화면 읽기 프로그램이 제목부터 읽음), 테두리는 표시하지 않음 */
+.vtg-dialog-title:focus {
+  outline: none;
+}
+
 .vtg-dialog-title {
   margin: 0 0 10px;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   line-height: 1.4;
   word-break: keep-all;
 }
 
-.vtg-dialog-body,
-.vtg-dialog-note {
-  margin: 0 0 10px;
-  line-height: 1.65;
+.vtg-dialog-body {
+  margin: 0;
+  line-height: 1.6;
   color: var(--text-secondary);
   word-break: keep-all;
 }
 
-.vtg-dialog-note {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.vtg-dialog-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.vtg-dialog-actions button {
-  padding: 10px 18px;
+.vtg-dialog-copy {
+  margin-top: 18px;
+  padding: 10px 22px;
+  border: 0;
   border-radius: 999px;
+  background: #4b7a28;
+  color: #ffffff;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
 }
 
-.vtg-dialog-copy {
-  border: 0;
-  background: #4b7a28;
-  color: #ffffff;
-}
-
 .dark-mode .vtg-dialog-copy {
   background: var(--primary-green);
   color: #1a202c;
-}
-
-.vtg-dialog-close {
-  border: 1px solid var(--border-color);
-  background: transparent;
-  color: var(--text-primary);
 }
 
 .vtg-dialog [hidden] {
