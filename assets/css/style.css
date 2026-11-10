@@ -3416,17 +3416,31 @@ img[src$="-pixel.png"] {
   }
 }
 
-/* 텍스트 추가 칸 아래 '완료' */
+/* 텍스트 추가 칸 오른쪽 안에 작은 '완료' */
+.text-input-row {
+  position: relative;
+}
+
+.settings-wrap .text-input-row input {
+  padding-right: 72px;
+}
+
 .text-done-btn {
-  width: 100%;
-  margin-top: 8px;
-  padding: 10px 16px;
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  height: 30px;
+  padding: 0 14px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #4b7a28;
   color: #ffffff;
   font: inherit;
+  font-size: 0.85rem;
   font-weight: 700;
+  line-height: 30px;
+  white-space: nowrap;
   cursor: pointer;
 }
 
