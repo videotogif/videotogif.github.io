@@ -317,11 +317,12 @@ main {
   text-align: center;
 }
 
-#output img {
+#output img,
+#trimOutput img {
   max-width: 100%;
   border-radius: 15px;
   box-shadow: 0 15px 40px var(--shadow-lg);
-  margin-bottom: 25px;
+  margin-bottom: 14px;
   border: 3px solid var(--bg-container);
 }
 
@@ -337,7 +338,7 @@ main {
   border: 2px solid var(--primary-green);
   border-radius: 50px;
   transition: all 0.3s ease;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 #downloadLink:hover,
@@ -347,35 +348,32 @@ main {
   box-shadow: 0 6px 20px rgba(160, 200, 120, 0.3);
 }
 
+/* 설정 칸: 배경 카드 없이 위쪽 구분선만 (미리보기 바로 아래에서 보면서 조절하도록) */
 .advanced-settings {
-  background: var(--bg-section);
-  border-radius: 20px;
-  padding: 0;
-  margin-top: 30px;
-  border: 2px solid var(--border-color);
-  overflow: hidden;
-  box-shadow: 0 10px 30px var(--shadow-sm);
-  transition: all 0.3s ease;
+  margin-top: 0;
+  border-top: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.advanced-settings:last-child {
+  border-bottom: 1px solid var(--border-color);
 }
 
 .advanced-settings-header {
-  background: var(--bg-input);
   color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 20px 25px;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid var(--border-color);
+  padding: 14px 4px;
 }
 
-.advanced-settings-header:hover {
-  background: var(--bg-section);
+.advanced-settings-header:hover .advanced-settings-title {
+  color: var(--primary-green);
 }
 
 .advanced-settings-title {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -398,13 +396,12 @@ main {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
-  padding: 0 25px;
-  background: var(--bg-section);
+  padding: 0 4px;
 }
 
 .advanced-content.expanded {
   max-height: 800px;
-  padding: 25px;
+  padding: 0 4px 20px;
   overflow: visible;
 }
 
@@ -2027,8 +2024,8 @@ html {
 }
 
 .trim-timeline {
-  padding: 20px 0;
-  margin-bottom: 20px;
+  padding: 14px 0;
+  margin-bottom: 4px;
 }
 
 .trim-timeline-track {
@@ -2200,13 +2197,10 @@ html {
 
 /* Trim 슬라이더 컨테이너 */
 .trim-slider-container {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 25px;
-  background: var(--bg-section);
-  border-radius: 12px;
-  border: 2px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 12px;
+  margin-bottom: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
 }
 
 .trim-info-row {
@@ -2214,9 +2208,7 @@ html {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  padding: 20px;
-  background: var(--bg-section);
-  border-radius: 8px;
+  padding: 8px 0 16px;
   flex-wrap: wrap;
 }
 
@@ -2713,11 +2705,7 @@ img[src$="-pixel.png"] {
 .auto-summary {
   display: grid;
   gap: 4px;
-  margin: 18px 0 0;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: var(--bg-container);
-  border: 1px solid var(--border-color);
+  margin: 14px 0 0;
   line-height: 1.55;
 }
 
