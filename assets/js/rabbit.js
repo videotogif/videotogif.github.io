@@ -125,22 +125,23 @@ function hide() {
   if (el) el.style.display = "none";
 }
 
-let showTimer = null;
+let shownAt = 0;
 export function rabbitStart() {
   busy += 1;
   clearTimeout(hideTimer);
-  if (busy === 1 && !active) {
-    clearTimeout(showTimer);
-    showTimer = setTimeout(() => busy > 0 && show(), 600);
+  // 기다리는 일이 생기면 바로 등장 (프레임 추출, GIF 굽기, 텍스트 넣기, 자르기 모두)
+  if (!active) {
+    show();
+    shownAt = performance.now();
   }
 }
 
 export function rabbitStop() {
   busy = Math.max(0, busy - 1);
   if (busy === 0) {
-    clearTimeout(showTimer);
     clearTimeout(hideTimer);
-    // 작업이 연달아 이어질 때 깜빡이지 않게 조금 기다렸다가 숨김
-    hideTimer = setTimeout(hide, 500);
+    // 작업이 연달아 이어질 때 깜빡이지 않게, 그리고 너무 잠깐 보였다 사라지지 않게 최소 1.2초는 보여 줌
+    const left = Math.max(500, 1200 - (performance.now() - shownAt));
+    hideTimer = setTimeout(hide, left);
   }
 }
