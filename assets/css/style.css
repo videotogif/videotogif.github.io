@@ -3151,3 +3151,64 @@ img[src$="-pixel.png"] {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================
+   정렬 다듬기: 버튼 묶음은 같은 너비, 화질 탭 안내·요약은 가운데
+========================== */
+/* 묶음 안 버튼은 가장 긴 버튼에 맞춰 같은 너비 */
+.seg {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.seg-btn {
+  text-align: center;
+}
+
+/* 자동 | 직접 설정: 가운데, 두 버튼 같은 너비 */
+.quality-mode {
+  display: grid;
+  width: fit-content;
+  margin: 0 auto 16px;
+}
+
+.quality-mode .seg-btn {
+  min-width: 116px;
+}
+
+/* 초당 장수·재생 속도: 칸 너비를 꽉 채우고 버튼은 같은 너비 */
+.custom-field .seg {
+  display: grid;
+  width: 100%;
+}
+
+.custom-field .seg-btn {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* 화질 탭의 안내, 요약, 예상치, 적용 버튼은 가운데 */
+.settings-wrap .auto-intro,
+.settings-wrap .auto-summary,
+.settings-wrap .custom-estimate {
+  text-align: center;
+  word-break: keep-all;
+}
+
+.settings-wrap .custom-apply {
+  justify-self: center;
+}
+
+/* GIF 자르기: 구간만 남기기 | 중간 잘라 내기도 같은 너비 */
+.trim-mode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.trim-mode-btn {
+  min-width: 128px;
+  text-align: center;
+}
