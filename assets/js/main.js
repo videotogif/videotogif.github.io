@@ -31,6 +31,8 @@ const translations = {
     spedUp: (x) =>
       `영상이 길어서 ${x}배속으로 만들어요. 원본 속도가 필요하면 필요한 부분만 잘라서 올려 주세요.`,
     noDuration: "영상 길이를 읽을 수 없어요. MP4로 바꿔서 다시 올려 주세요.",
+    unsupportedVideo:
+      "이 브라우저는 이 영상의 화면을 읽지 못해요(ProRes, 일부 HEVC 영상 등). 맥이라면 사파리에서 열어 보거나, MP4(H.264)로 내보낸 뒤 다시 올려 주세요.",
   },
   en: {
     uploadText: "Select Video File",
@@ -52,6 +54,8 @@ const translations = {
     spedUp: (x) =>
       `This video is long, so the GIF plays at ${x}x speed. For original speed, trim the video to the part you need first.`,
     noDuration: "Couldn't read this video's length. Please convert it to MP4 and try again.",
+    unsupportedVideo:
+      "This browser can't read the picture in this video (ProRes, some HEVC files, etc.). On a Mac, try Safari, or export it as MP4 (H.264) and upload it again.",
   },
 };
 
@@ -559,10 +563,21 @@ ready(() => {
     showUploadLoading(translations[currentLanguage].processingVideo);
 
     video.src = URL.createObjectURL(file);
-    await new Promise((resolve) => {
-      if (video.readyState >= 1) return resolve();
-      video.addEventListener("loadedmetadata", resolve, { once: true });
+    const opened = await new Promise((resolve) => {
+      if (video.readyState >= 1) return resolve(true);
+      video.addEventListener("loadedmetadata", () => resolve(true), { once: true });
+      video.addEventListener("error", () => resolve(false), { once: true });
     });
+
+    // 파일은 열려도 화면(코덱)을 못 읽는 영상(예: 크롬에서 ProRes)은 가로·세로가 0으로 나온다.
+    // 그대로 만들면 빈 GIF가 나오므로 안내하고 멈춘다.
+    if (!opened || !video.videoWidth || !video.videoHeight) {
+      hideUploadLoading();
+      if (outputSection) outputSection.style.display = "block";
+      if (downloadLink) downloadLink.style.display = "none";
+      if (output) output.textContent = translations[currentLanguage].unsupportedVideo;
+      return;
+    }
 
     let duration = video.duration;
     if (!isFinite(duration) || duration <= 0) duration = await probeDuration(video);
