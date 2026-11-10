@@ -28,6 +28,7 @@ const translations = {
         .join(" · "),
     openCustom: "직접 설정하기",
     backToAuto: "자동으로 돌아가기",
+    applyingText: "넣는 중…",
     estimate: (e) => `총 ${e.frames}장 · 재생 ${e.play}초 · 작업 메모리 약 ${e.mb}MB`,
     heavy: "메모리를 많이 써서 기기에 따라 느리거나 멈출 수 있어요. 크기나 초당 장수를 낮추거나 영상을 짧게 잘라 보세요.",
     tooHeavy: "브라우저가 버티기 어려운 크기예요. 크기나 초당 장수를 낮추거나 재생 속도를 올려 주세요.",
@@ -57,6 +58,7 @@ const translations = {
         .join(" · "),
     openCustom: "Custom settings",
     backToAuto: "Back to auto",
+    applyingText: "Adding…",
     estimate: (e) => `${e.frames} frames · ${e.play}s long · about ${e.mb}MB of working memory`,
     heavy: "This uses a lot of memory and may be slow or freeze on some devices. Try a smaller size, fewer frames per second, or a shorter clip.",
     tooHeavy: "This is too big for the browser to handle. Lower the size or frames per second, or speed it up.",
@@ -694,6 +696,33 @@ ready(() => {
       }
     }, 500);
   }
+
+  // 텍스트 추가 칸의 '완료': 누르면(또는 Enter) 바로 GIF에 글자를 넣음. 비우고 누르면 글자를 뺌
+  const textDoneBtn = document.getElementById("textDoneBtn");
+  async function applyTextNow() {
+    if (!textDoneBtn || !currentSettings || !frames || frames.length === 0) return;
+    if (textRegenRunning || converting) return;
+    clearTimeout(textRegenTimer);
+    const label = textDoneBtn.textContent;
+    textDoneBtn.disabled = true;
+    textDoneBtn.textContent = translations[currentLanguage].applyingText;
+    textRegenRunning = true;
+    try {
+      await bakeText();
+    } finally {
+      textRegenRunning = false;
+      textDoneBtn.disabled = false;
+      textDoneBtn.textContent = label;
+    }
+  }
+  textDoneBtn?.addEventListener("click", applyTextNow);
+  overlayTextInput?.addEventListener("keydown", (e) => {
+    // 한글 입력 중(조합 중) Enter는 무시
+    if (e.key === "Enter" && !e.isComposing) {
+      e.preventDefault();
+      applyTextNow();
+    }
+  });
 
   // 텍스트 위치 방향키 (인형뽑기처럼 누르고 있으면 계속 움직임)
   const TEXT_STEP = 0.02;

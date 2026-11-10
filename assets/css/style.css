@@ -3415,3 +3415,36 @@ img[src$="-pixel.png"] {
     font-size: 1.3rem;
   }
 }
+
+/* 텍스트 추가 칸 아래 '완료' */
+.text-done-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #4b7a28;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dark-mode .text-done-btn {
+  background: var(--primary-green);
+  color: #1a202c;
+}
+
+.text-done-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.text-done-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.text-done-btn:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
