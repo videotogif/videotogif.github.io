@@ -23,9 +23,11 @@ const translations = {
     regeneratingGif: "GIF 재생성 중...",
     processingVideo: "비디오 처리 중...",
     status: (s, size) =>
-      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}초`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}배속` : ""]
+      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}초`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}X` : ""]
         .filter(Boolean)
         .join(" · "),
+    openCustom: "직접 설정하기",
+    backToAuto: "자동으로 돌아가기",
     estimate: (e) => `총 ${e.frames}장 · 재생 ${e.play}초 · 작업 메모리 약 ${e.mb}MB`,
     heavy: "메모리를 많이 써서 기기에 따라 느리거나 멈출 수 있어요. 크기나 초당 장수를 낮추거나 영상을 짧게 잘라 보세요.",
     tooHeavy: "브라우저가 버티기 어려운 크기예요. 크기나 초당 장수를 낮추거나 재생 속도를 올려 주세요.",
@@ -50,9 +52,11 @@ const translations = {
     regeneratingGif: "Regenerating GIF...",
     processingVideo: "Processing video...",
     status: (s, size) =>
-      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}s`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}x speed` : ""]
+      [`${s.width}×${s.height}px`, `${(s.frames / s.fps).toFixed(1)}s`, size, Math.abs(s.speed - 1) > 0.05 ? `${s.speed}X` : ""]
         .filter(Boolean)
         .join(" · "),
+    openCustom: "Custom settings",
+    backToAuto: "Back to auto",
     estimate: (e) => `${e.frames} frames · ${e.play}s long · about ${e.mb}MB of working memory`,
     heavy: "This uses a lot of memory and may be slow or freeze on some devices. Try a smaller size, fewer frames per second, or a shorter clip.",
     tooHeavy: "This is too big for the browser to handle. Lower the size or frames per second, or speed it up.",
@@ -419,29 +423,24 @@ ready(() => {
     });
   });
 
-  // 화질 조절: 자동(눈금) / 직접 설정
-  const qualityModeButtons = document.querySelectorAll("[data-qmode]");
+  // 화질 조절: 자동 눈금이 기본, 아래 '직접 설정하기'를 누르면 펼쳐짐 (펼치면 자동 눈금은 흐리게)
   const autoPanel = document.getElementById("autoPanel");
   const customPanel = document.getElementById("customPanel");
+  const customToggle = document.getElementById("customToggle");
   const customWidthInput = document.getElementById("customWidth");
   const customWidthOut = document.getElementById("customWidthOut");
   const customQualityInput = document.getElementById("customQuality");
   const customQualityOut = document.getElementById("customQualityOut");
-  const customFpsButtons = document.querySelectorAll("#customFps [data-value]");
-  const customSpeedButtons = document.querySelectorAll("#customSpeed [data-value]");
+  const customFpsInput = document.getElementById("customFps");
+  const customFpsOut = document.getElementById("customFpsOut");
+  const customSpeedInput = document.getElementById("customSpeed");
+  const customSpeedOut = document.getElementById("customSpeedOut");
   const customEstimate = document.getElementById("customEstimate");
   const customApplyBtn = document.getElementById("customApplyBtn");
-  const CUSTOM_FPS = [5, 10, 20, 25];
+  const CUSTOM_FPS = [5, 10, 20, 25]; // 초당 장수 눈금 (GIF 지연 단위로 정확히 떨어지는 값)
+  const CUSTOM_SPEEDS = [0.5, 1, 1.5, 2, 3]; // 재생 속도 눈금
   const custom = { width: 540, fps: 10, quality: 90, speed: 1 };
   let qualityMode = "auto";
-
-  function pickSeg(buttons, value) {
-    buttons.forEach((b) => {
-      const on = Number(b.dataset.value) === value;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-pressed", String(on));
-    });
-  }
 
   function renderCustomEstimate() {
     if (!videoMeta) return;
@@ -449,6 +448,8 @@ ready(() => {
     const s = computeCustomSettings(custom, videoMeta);
     if (customWidthOut) customWidthOut.textContent = `${s.width}×${s.height}px`;
     if (customQualityOut) customQualityOut.textContent = String(custom.quality);
+    if (customFpsOut) customFpsOut.textContent = String(custom.fps);
+    if (customSpeedOut) customSpeedOut.textContent = `${custom.speed}X`;
     const comfortable = lowEndDevice ? 200 : 400;
     const tooHeavy = s.mb > CUSTOM_HARD_LIMIT_MB;
     let text = t.estimate({ frames: s.frames, play: (s.frames / s.fps).toFixed(1), mb: s.mb });
@@ -471,8 +472,8 @@ ready(() => {
       customWidthInput.value = String(custom.width);
     }
     if (customQualityInput) customQualityInput.value = String(custom.quality);
-    pickSeg(customFpsButtons, custom.fps);
-    pickSeg(customSpeedButtons, custom.speed);
+    if (customFpsInput) customFpsInput.value = String(Math.max(0, CUSTOM_FPS.indexOf(custom.fps)));
+    if (customSpeedInput) customSpeedInput.value = String(Math.max(0, CUSTOM_SPEEDS.indexOf(custom.speed)));
     renderCustomEstimate();
   }
 
@@ -480,21 +481,24 @@ ready(() => {
   function setQualityMode(mode, silent) {
     const prev = qualityMode;
     qualityMode = mode === "custom" ? "custom" : "auto";
-    qualityModeButtons.forEach((b) => {
-      const on = b.dataset.qmode === qualityMode;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-pressed", String(on));
-    });
-    if (autoPanel) autoPanel.hidden = qualityMode !== "auto";
-    if (customPanel) customPanel.hidden = qualityMode !== "custom";
+    const isCustom = qualityMode === "custom";
+    if (customToggle) {
+      customToggle.setAttribute("aria-expanded", String(isCustom));
+      const label = customToggle.querySelector(".custom-toggle-text");
+      if (label) label.textContent = isCustom ? translations[currentLanguage].backToAuto : translations[currentLanguage].openCustom;
+    }
+    if (autoPanel) autoPanel.classList.toggle("dim", isCustom);
+    if (qualityLevelInput) qualityLevelInput.disabled = isCustom;
+    levelTickButtons.forEach((b) => (b.disabled = isCustom));
+    if (customPanel) customPanel.hidden = !isCustom;
     if (silent || prev === qualityMode) return;
-    if (qualityMode === "custom") {
+    if (isCustom) {
       // 지금 GIF의 값에서 시작
       if (currentSettings) {
         custom.width = currentSettings.width;
         custom.quality = currentSettings.quality;
         custom.fps = CUSTOM_FPS.includes(currentSettings.fps) ? currentSettings.fps : 10;
-        custom.speed = currentSettings.custom ? currentSettings.speed : 1;
+        custom.speed = currentSettings.custom && CUSTOM_SPEEDS.includes(currentSettings.speed) ? currentSettings.speed : 1;
       }
       syncCustomInputs();
     } else if (currentSettings && currentSettings.custom) {
@@ -503,7 +507,7 @@ ready(() => {
     }
   }
 
-  qualityModeButtons.forEach((b) => b.addEventListener("click", () => setQualityMode(b.dataset.qmode)));
+  customToggle?.addEventListener("click", () => setQualityMode(qualityMode === "custom" ? "auto" : "custom"));
   customWidthInput?.addEventListener("input", () => {
     custom.width = Number(customWidthInput.value);
     renderCustomEstimate();
@@ -512,20 +516,14 @@ ready(() => {
     custom.quality = Number(customQualityInput.value);
     renderCustomEstimate();
   });
-  customFpsButtons.forEach((b) =>
-    b.addEventListener("click", () => {
-      custom.fps = Number(b.dataset.value);
-      pickSeg(customFpsButtons, custom.fps);
-      renderCustomEstimate();
-    })
-  );
-  customSpeedButtons.forEach((b) =>
-    b.addEventListener("click", () => {
-      custom.speed = Number(b.dataset.value);
-      pickSeg(customSpeedButtons, custom.speed);
-      renderCustomEstimate();
-    })
-  );
+  customFpsInput?.addEventListener("input", () => {
+    custom.fps = CUSTOM_FPS[Number(customFpsInput.value)] || 10;
+    renderCustomEstimate();
+  });
+  customSpeedInput?.addEventListener("input", () => {
+    custom.speed = CUSTOM_SPEEDS[Number(customSpeedInput.value)] || 1;
+    renderCustomEstimate();
+  });
   customApplyBtn?.addEventListener("click", () => {
     if (videoMeta) requestConvert({ ...custom });
   });

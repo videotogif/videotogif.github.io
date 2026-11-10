@@ -108,10 +108,6 @@ ref: home
             <div class="toggle-icon" id="toggleIcon">▼</div>
           </div>
           <div class="advanced-content expanded" id="advancedContent">
-            <div class="seg quality-mode" role="group" aria-label="Settings mode">
-              <button type="button" class="seg-btn active" data-qmode="auto" aria-pressed="true">Auto</button>
-              <button type="button" class="seg-btn" data-qmode="custom" aria-pressed="false">Custom</button>
-            </div>
             <div id="autoPanel">
             <p class="auto-intro">Settings were picked automatically for this video's length and resolution. Move the slider to adjust it.</p>
             <div class="spec-slider" data-level="3">
@@ -130,6 +126,8 @@ ref: home
               </div>
             </div>
             </div>
+            <p class="auto-summary" id="autoSummary" aria-live="polite"></p>
+            <button type="button" class="custom-toggle" id="customToggle" aria-expanded="false" aria-controls="customPanel"><span class="custom-toggle-text">Custom settings</span><span class="chev" aria-hidden="true">⌄</span></button>
             <div id="customPanel" class="custom-panel" hidden>
               <div class="custom-field">
                 <label for="customWidth">Size <output id="customWidthOut"></output></label>
@@ -140,28 +138,16 @@ ref: home
                 <input type="range" id="customQuality" min="1" max="100" step="1" value="90">
               </div>
               <div class="custom-field">
-                <span class="custom-label" id="customFpsLabel">Frames per second</span>
-                <div class="seg" id="customFps" role="group" aria-labelledby="customFpsLabel">
-                <button type="button" class="seg-btn" data-value="5" aria-pressed="false">5</button>
-                <button type="button" class="seg-btn" data-value="10" aria-pressed="false">10</button>
-                <button type="button" class="seg-btn" data-value="20" aria-pressed="false">20</button>
-                <button type="button" class="seg-btn" data-value="25" aria-pressed="false">25</button>
-                </div>
+                <label for="customFps">Frames per second <output id="customFpsOut">10</output></label>
+                <input type="range" id="customFps" min="0" max="3" step="1" value="1">
               </div>
               <div class="custom-field">
-                <span class="custom-label" id="customSpeedLabel">Playback speed</span>
-                <div class="seg" id="customSpeed" role="group" aria-labelledby="customSpeedLabel">
-                <button type="button" class="seg-btn" data-value="0.5" aria-pressed="false">0.5x</button>
-                <button type="button" class="seg-btn" data-value="1" aria-pressed="false">1x</button>
-                <button type="button" class="seg-btn" data-value="1.5" aria-pressed="false">1.5x</button>
-                <button type="button" class="seg-btn" data-value="2" aria-pressed="false">2x</button>
-                <button type="button" class="seg-btn" data-value="3" aria-pressed="false">3x</button>
-                </div>
+                <label for="customSpeed">Playback speed <output id="customSpeedOut">1X</output></label>
+                <input type="range" id="customSpeed" min="0" max="4" step="1" value="1">
               </div>
               <p class="custom-estimate" id="customEstimate" aria-live="polite"></p>
               <button type="button" class="start-button custom-apply" id="customApplyBtn">Remake with these settings</button>
             </div>
-            <p class="auto-summary" id="autoSummary" aria-live="polite"></p>
           </div>
         </div>
 

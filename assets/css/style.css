@@ -3212,3 +3212,55 @@ img[src$="-pixel.png"] {
   min-width: 128px;
   text-align: center;
 }
+
+/* ==========================
+   화질 탭 C안: 자동 눈금 + '직접 설정하기' 펼치기
+========================== */
+.custom-toggle {
+  display: block;
+  margin: 12px auto 0;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.93rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.custom-toggle:hover {
+  color: var(--text-primary);
+}
+
+.custom-toggle:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.custom-toggle .chev {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.custom-toggle[aria-expanded="true"] .chev {
+  transform: rotate(180deg);
+}
+
+/* 직접 설정 중에는 자동 눈금을 흐리게 */
+#autoPanel {
+  transition: opacity 0.2s ease;
+}
+
+#autoPanel.dim {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.settings-wrap .custom-panel {
+  margin-top: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color);
+}
