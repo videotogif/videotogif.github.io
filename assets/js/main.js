@@ -569,6 +569,15 @@ ready(() => {
       video.addEventListener("error", () => resolve(false), { once: true });
     });
 
+    // 크기를 조금 늦게 알려 주는 브라우저도 있으니, 0이면 첫 장면이 준비될 때까지 최대 3초 더 기다린다.
+    if (opened && (!video.videoWidth || !video.videoHeight)) {
+      await new Promise((resolve) => {
+        video.addEventListener("loadeddata", resolve, { once: true });
+        video.addEventListener("resize", resolve, { once: true });
+        setTimeout(resolve, 3000);
+      });
+    }
+
     // 파일은 열려도 화면(코덱)을 못 읽는 영상(예: 크롬에서 ProRes)은 가로·세로가 0으로 나온다.
     // 그대로 만들면 빈 GIF가 나오므로 안내하고 멈춘다.
     if (!opened || !video.videoWidth || !video.videoHeight) {
