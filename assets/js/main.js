@@ -26,7 +26,11 @@ const translations = {
     source: (m) => `원본 ${m.duration.toFixed(1)}초 · ${m.width}×${m.height}`,
     summary: (s, name) =>
       `${name}: 가로 ${s.width}px · 초당 ${s.fps}장 · 품질 ${s.quality} · 총 ${s.frames}장`,
-    realtime: "원본과 같은 속도로 재생돼요.",
+    customName: "직접 설정",
+    customSpeed: (x) => (x > 1 ? `${x}배속으로 빠르게 재생돼요.` : `${x}배속으로 느리게 재생돼요.`),
+    estimate: (e) => `총 ${e.frames}장 · 재생 ${e.play}초 · 작업 메모리 약 ${e.mb}MB`,
+    heavy: "메모리를 많이 써서 기기에 따라 느리거나 멈출 수 있어요. 크기나 초당 장수를 낮추거나 영상을 짧게 잘라 보세요.",
+    tooHeavy: "브라우저가 버티기 어려운 크기예요. 크기나 초당 장수를 낮추거나 재생 속도를 올려 주세요.",
     reduced: "기기에 무리가 가지 않도록 이 영상 길이에 맞춰 크기나 장수를 줄였어요.",
     spedUp: (x) =>
       `영상이 길어서 ${x}배속으로 만들어요. 원본 속도가 필요하면 필요한 부분만 잘라서 올려 주세요.`,
@@ -58,7 +62,11 @@ const translations = {
     source: (m) => `Original ${m.duration.toFixed(1)}s · ${m.width}×${m.height}`,
     summary: (s, name) =>
       `${name}: ${s.width}px wide · ${s.fps} frames/sec · quality ${s.quality} · ${s.frames} frames`,
-    realtime: "Plays at the same speed as the original.",
+    customName: "Custom",
+    customSpeed: (x) => (x > 1 ? `Plays ${x}x faster.` : `Plays at ${x}x (slow motion).`),
+    estimate: (e) => `${e.frames} frames · ${e.play}s long · about ${e.mb}MB of working memory`,
+    heavy: "This uses a lot of memory and may be slow or freeze on some devices. Try a smaller size, fewer frames per second, or a shorter clip.",
+    tooHeavy: "This is too big for the browser to handle. Lower the size or frames per second, or speed it up.",
     reduced: "Size or frame count was lowered for this video's length so your device doesn't struggle.",
     spedUp: (x) =>
       `This video is long, so the GIF plays at ${x}x speed. For original speed, trim the video to the part you need first.`,
@@ -215,6 +223,26 @@ ready(() => {
     const frames = Math.max(2, Math.ceil(meta.duration / interval - 1e-9));
     const speed = Math.round(interval * fps * 10) / 10;
     return { level, fps, interval, width, height: heightOf(width), quality: L.quality, frames, speed, reduced };
+  }
+
+  // 직접 설정: 크기·초당 장수·품질·재생 속도를 사용자가 정한다
+  // 장면 간격 = 재생 속도 ÷ 초당 장수 (1배속이면 원본 속도, 2배속이면 두 배 빠르게)
+  const CUSTOM_MAX_SIDE = 900; // 긴 쪽 최대 (고사양 단계와 같음)
+  const CUSTOM_HARD_LIMIT_MB = 1200; // 이보다 크면 탭이 멈출 수 있어 만들지 않음
+  function customMaxWidth(meta) {
+    const aspect = meta.height / meta.width;
+    return Math.max(2, Math.floor(Math.min(meta.width, CUSTOM_MAX_SIDE, CUSTOM_MAX_SIDE / aspect) / 2) * 2);
+  }
+  function computeCustomSettings(c, meta) {
+    const aspect = meta.height / meta.width;
+    const even = (n) => Math.max(2, Math.round(n / 2) * 2);
+    const width = Math.min(even(c.width), customMaxWidth(meta));
+    const height = even(width * aspect);
+    let interval = c.speed / c.fps;
+    if (meta.duration / interval < 2) interval = meta.duration / 2; // gifski는 최소 2장
+    const frames = Math.max(2, Math.ceil(meta.duration / interval - 1e-9));
+    const mb = Math.round((frames * width * height * 4) / (1024 * 1024));
+    return { custom: true, level: null, fps: c.fps, interval, width, height, quality: c.quality, frames, speed: c.speed, reduced: false, mb };
   }
 
   let frames = [];
@@ -409,6 +437,117 @@ ready(() => {
     });
   });
 
+  // 화질 조절: 자동(눈금) / 직접 설정
+  const qualityModeButtons = document.querySelectorAll("[data-qmode]");
+  const autoPanel = document.getElementById("autoPanel");
+  const customPanel = document.getElementById("customPanel");
+  const customWidthInput = document.getElementById("customWidth");
+  const customWidthOut = document.getElementById("customWidthOut");
+  const customQualityInput = document.getElementById("customQuality");
+  const customQualityOut = document.getElementById("customQualityOut");
+  const customFpsButtons = document.querySelectorAll("#customFps [data-value]");
+  const customSpeedButtons = document.querySelectorAll("#customSpeed [data-value]");
+  const customEstimate = document.getElementById("customEstimate");
+  const customApplyBtn = document.getElementById("customApplyBtn");
+  const CUSTOM_FPS = [5, 10, 20, 25];
+  const custom = { width: 540, fps: 10, quality: 90, speed: 1 };
+  let qualityMode = "auto";
+
+  function pickSeg(buttons, value) {
+    buttons.forEach((b) => {
+      const on = Number(b.dataset.value) === value;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  function renderCustomEstimate() {
+    if (!videoMeta) return;
+    const t = translations[currentLanguage];
+    const s = computeCustomSettings(custom, videoMeta);
+    if (customWidthOut) customWidthOut.textContent = `${s.width}×${s.height}px`;
+    if (customQualityOut) customQualityOut.textContent = String(custom.quality);
+    const comfortable = lowEndDevice ? 200 : 400;
+    const tooHeavy = s.mb > CUSTOM_HARD_LIMIT_MB;
+    let text = t.estimate({ frames: s.frames, play: (s.frames / s.fps).toFixed(1), mb: s.mb });
+    if (tooHeavy) text += " " + t.tooHeavy;
+    else if (s.mb > comfortable) text += " " + t.heavy;
+    if (customEstimate) {
+      customEstimate.textContent = text;
+      customEstimate.classList.toggle("warn", s.mb > comfortable);
+    }
+    if (customApplyBtn) customApplyBtn.disabled = tooHeavy;
+  }
+
+  function syncCustomInputs() {
+    if (!videoMeta) return;
+    const maxW = customMaxWidth(videoMeta);
+    custom.width = Math.min(custom.width, maxW);
+    if (customWidthInput) {
+      customWidthInput.max = String(maxW);
+      customWidthInput.min = String(Math.min(100, maxW));
+      customWidthInput.value = String(custom.width);
+    }
+    if (customQualityInput) customQualityInput.value = String(custom.quality);
+    pickSeg(customFpsButtons, custom.fps);
+    pickSeg(customSpeedButtons, custom.speed);
+    renderCustomEstimate();
+  }
+
+  // silent: 화면만 바꾸고 다시 만들지는 않음 (새 영상을 올릴 때)
+  function setQualityMode(mode, silent) {
+    const prev = qualityMode;
+    qualityMode = mode === "custom" ? "custom" : "auto";
+    qualityModeButtons.forEach((b) => {
+      const on = b.dataset.qmode === qualityMode;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+    if (autoPanel) autoPanel.hidden = qualityMode !== "auto";
+    if (customPanel) customPanel.hidden = qualityMode !== "custom";
+    if (silent || prev === qualityMode) return;
+    if (qualityMode === "custom") {
+      // 지금 GIF의 값에서 시작
+      if (currentSettings) {
+        custom.width = currentSettings.width;
+        custom.quality = currentSettings.quality;
+        custom.fps = CUSTOM_FPS.includes(currentSettings.fps) ? currentSettings.fps : 10;
+        custom.speed = currentSettings.custom ? currentSettings.speed : 1;
+      }
+      syncCustomInputs();
+    } else if (currentSettings && currentSettings.custom) {
+      // 자동으로 돌아오면 눈금 단계로 다시 만든다
+      requestConvert(Number(qualityLevelInput?.value) || DEFAULT_LEVEL);
+    }
+  }
+
+  qualityModeButtons.forEach((b) => b.addEventListener("click", () => setQualityMode(b.dataset.qmode)));
+  customWidthInput?.addEventListener("input", () => {
+    custom.width = Number(customWidthInput.value);
+    renderCustomEstimate();
+  });
+  customQualityInput?.addEventListener("input", () => {
+    custom.quality = Number(customQualityInput.value);
+    renderCustomEstimate();
+  });
+  customFpsButtons.forEach((b) =>
+    b.addEventListener("click", () => {
+      custom.fps = Number(b.dataset.value);
+      pickSeg(customFpsButtons, custom.fps);
+      renderCustomEstimate();
+    })
+  );
+  customSpeedButtons.forEach((b) =>
+    b.addEventListener("click", () => {
+      custom.speed = Number(b.dataset.value);
+      pickSeg(customSpeedButtons, custom.speed);
+      renderCustomEstimate();
+    })
+  );
+  customApplyBtn?.addEventListener("click", () => {
+    if (videoMeta) requestConvert({ ...custom });
+  });
+
   function markActiveTick(level) {
     const slider = qualityLevelInput?.closest(".spec-slider");
     if (slider) slider.dataset.level = String(level);
@@ -420,14 +559,19 @@ ready(() => {
   function renderSummary(settings) {
     if (!autoSummary || !videoMeta) return;
     const t = translations[currentLanguage];
-    const name = t.levelNames[settings.level - 1];
+    const name = settings.custom ? t.customName : t.levelNames[settings.level - 1];
     autoSummary.innerHTML = "";
     const lines = [
       ["auto-source", t.source(videoMeta)],
       ["auto-main", t.summary(settings, name)],
-      ["auto-note", settings.speed > 1.05 ? t.spedUp(settings.speed) : t.realtime],
     ];
-    if (settings.reduced && settings.speed <= 1.05) lines.push(["auto-note", t.reduced]);
+    if (settings.custom) {
+      if (Math.abs(settings.speed - 1) > 0.05) lines.push(["auto-note", t.customSpeed(settings.speed)]);
+    } else if (settings.speed > 1.05) {
+      lines.push(["auto-note", t.spedUp(settings.speed)]);
+    } else if (settings.reduced) {
+      lines.push(["auto-note", t.reduced]);
+    }
     lines.forEach(([cls, text]) => {
       const span = document.createElement("span");
       span.className = cls;
@@ -448,7 +592,8 @@ ready(() => {
     };
   }
 
-  // 변환 중에 눈금을 또 옮기면, 끝난 뒤 마지막 단계로 한 번 더 만든다
+  // 변환 요청: 화질 단계(숫자) 또는 직접 설정 값(객체).
+  // 변환 중에 또 요청이 오면, 끝난 뒤 마지막 요청으로 한 번 더 만든다
   async function requestConvert(level) {
     if (!videoMeta) return;
     if (converting) {
@@ -457,7 +602,9 @@ ready(() => {
     }
     converting = true;
     try {
-      await convertAt(level);
+      await convertAt(
+        typeof level === "number" ? computeAutoSettings(level, videoMeta) : computeCustomSettings(level, videoMeta)
+      );
     } finally {
       converting = false;
     }
@@ -470,8 +617,7 @@ ready(() => {
     }
   }
 
-  async function convertAt(level) {
-    const settings = computeAutoSettings(level, videoMeta);
+  async function convertAt(settings) {
     currentSettings = settings;
     renderSummary(settings);
 
@@ -706,6 +852,8 @@ ready(() => {
       height: video.videoHeight || 236,
     };
 
+    // 새 영상은 '자동'으로 시작
+    setQualityMode("auto", true);
     const level = Number(qualityLevelInput?.value) || DEFAULT_LEVEL;
     await requestConvert(level);
 

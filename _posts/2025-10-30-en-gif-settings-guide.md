@@ -16,7 +16,7 @@ permalink: /en/blog/gif-settings-guide/
 
 > I've written several posts about settings over time, but when I reread them, they overlapped and some of them were wrong. One even said a lower quality number means higher quality. It's the other way around. Sorry for the confusion. So I rewrote everything into this one post, based on how the code actually works.
 >
-> **Update, November 2026:** You no longer type these values into the converter. It now picks them automatically for each video's length and resolution, and you just choose a level on one slider (Low-spec to High-spec). Read this post as an explanation of what each value changes behind the scenes. The comparison GIFs and the screenshot below were made with the older version, where you entered the values yourself.
+> **Update, November 2026:** The converter now picks these values automatically for each video's length and resolution, and you just choose a level on one slider (Low-spec to High-spec). If you want specific values, Custom lets you set the size, frames per second, quality, and playback speed yourself. Read this post as an explanation of what each value changes behind the scenes. The comparison GIFs and the screenshot below were made with the older version, where you entered the values yourself.
 
 ## Results first
 

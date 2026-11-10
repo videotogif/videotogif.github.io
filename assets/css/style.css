@@ -3011,3 +3011,130 @@ img[src$="-pixel.png"] {
     gap: 14px;
   }
 }
+
+/* ==========================
+   화질 탭: 자동 / 직접 설정
+========================== */
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.seg-btn {
+  margin-left: -1px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-container);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.seg-btn:first-child {
+  margin-left: 0;
+  border-radius: 999px 0 0 999px;
+}
+
+.seg-btn:last-child {
+  border-radius: 0 999px 999px 0;
+}
+
+.seg-btn.active {
+  position: relative;
+  z-index: 1;
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #1a202c;
+}
+
+.seg-btn:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.quality-mode {
+  margin-bottom: 16px;
+}
+
+.custom-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px;
+}
+
+.custom-panel[hidden] {
+  display: none;
+}
+
+.custom-field label,
+.custom-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.custom-field output {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.custom-field input[type="range"] {
+  width: 100%;
+  accent-color: #4b7a28;
+}
+
+.dark-mode .custom-field input[type="range"] {
+  accent-color: var(--primary-green);
+}
+
+.custom-estimate,
+.custom-apply {
+  grid-column: 1 / -1;
+}
+
+.custom-estimate {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+.custom-estimate.warn {
+  color: #b7591c;
+}
+
+.dark-mode .custom-estimate.warn {
+  color: #f6ad55;
+}
+
+.custom-apply {
+  justify-self: start;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.custom-apply:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 560px) {
+  .custom-panel {
+    grid-template-columns: 1fr;
+  }
+}

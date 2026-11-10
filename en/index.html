@@ -108,6 +108,11 @@ ref: home
             <div class="toggle-icon" id="toggleIcon">▼</div>
           </div>
           <div class="advanced-content expanded" id="advancedContent">
+            <div class="seg quality-mode" role="group" aria-label="Settings mode">
+              <button type="button" class="seg-btn active" data-qmode="auto" aria-pressed="true">Auto</button>
+              <button type="button" class="seg-btn" data-qmode="custom" aria-pressed="false">Custom</button>
+            </div>
+            <div id="autoPanel">
             <p class="auto-intro">Settings were picked automatically for this video's length and resolution. Move the slider to adjust it.</p>
             <div class="spec-slider" data-level="3">
               <label for="qualityLevel" class="sr-only">Quality level (1 low-spec to 5 high-spec)</label>
@@ -123,6 +128,38 @@ ref: home
                 <span>Light &amp; fast</span>
                 <span>Sharp &amp; smooth</span>
               </div>
+            </div>
+            </div>
+            <div id="customPanel" class="custom-panel" hidden>
+              <div class="custom-field">
+                <label for="customWidth">Size <output id="customWidthOut"></output></label>
+                <input type="range" id="customWidth" min="100" max="900" step="2" value="540">
+              </div>
+              <div class="custom-field">
+                <label for="customQuality">Quality <output id="customQualityOut">90</output></label>
+                <input type="range" id="customQuality" min="1" max="100" step="1" value="90">
+              </div>
+              <div class="custom-field">
+                <span class="custom-label" id="customFpsLabel">Frames per second</span>
+                <div class="seg" id="customFps" role="group" aria-labelledby="customFpsLabel">
+                <button type="button" class="seg-btn" data-value="5" aria-pressed="false">5</button>
+                <button type="button" class="seg-btn" data-value="10" aria-pressed="false">10</button>
+                <button type="button" class="seg-btn" data-value="20" aria-pressed="false">20</button>
+                <button type="button" class="seg-btn" data-value="25" aria-pressed="false">25</button>
+                </div>
+              </div>
+              <div class="custom-field">
+                <span class="custom-label" id="customSpeedLabel">Playback speed</span>
+                <div class="seg" id="customSpeed" role="group" aria-labelledby="customSpeedLabel">
+                <button type="button" class="seg-btn" data-value="0.5" aria-pressed="false">0.5x</button>
+                <button type="button" class="seg-btn" data-value="1" aria-pressed="false">1x</button>
+                <button type="button" class="seg-btn" data-value="1.5" aria-pressed="false">1.5x</button>
+                <button type="button" class="seg-btn" data-value="2" aria-pressed="false">2x</button>
+                <button type="button" class="seg-btn" data-value="3" aria-pressed="false">3x</button>
+                </div>
+              </div>
+              <p class="custom-estimate" id="customEstimate" aria-live="polite"></p>
+              <button type="button" class="start-button custom-apply" id="customApplyBtn">Remake with these settings</button>
             </div>
             <p class="auto-summary" id="autoSummary" aria-live="polite"></p>
           </div>
@@ -200,7 +237,7 @@ ref: home
           </li>
           <li>
             <strong>Adjust the quality (optional)</strong>
-            <p>Want it lighter or sharper? Move the quality slider between Low-spec and High-spec. The GIF is remade for that level as soon as you let go.</p>
+            <p>Want it lighter or sharper? Move the quality slider between Low-spec and High-spec. The GIF is remade for that level as soon as you let go. If you want specific values, switch to Custom to set the size, frames per second, quality, and playback speed yourself.</p>
             <p>Use Text Settings to add a caption or watermark, then drag it anywhere on the GIF.</p>
           </li>
           <li>
