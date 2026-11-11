@@ -3464,8 +3464,8 @@ img[src$="-pixel.png"] {
 }
 
 /* ==========================
-   작업 중 픽셀 토끼 (잡기 놀이) — 픽셀 아트 방식
-   6장 그림을 초당 12장으로 끊어서 바꿔 끼움(보간 없음). 투명도 애니메이션이라 화면이 바빠도 계속 움직임
+   작업 중 픽셀 토끼 (잡기 놀이) — rabbit.js
+   장면 36장을 2배로 키운 그림 띠를 옮겨 바꿔 끼움(보간 없음). 그림자는 땅에 따로, 굴은 칸을 직접 찍는 캔버스
 ========================== */
 .pixel-rabbit {
   position: fixed;
@@ -3473,83 +3473,118 @@ img[src$="-pixel.png"] {
   top: 0;
   z-index: 9000;
   display: none;
-  width: 72px;
-  height: 90px;
-  pointer-events: none; /* 클릭이 닿지 않아 절대 못 잡음 */
+  width: 80px;
+  height: 68px;
+  pointer-events: none;
   user-select: none;
   will-change: transform;
 }
 
-.pr-flip,
-.pr-sink {
+.pr-clip,
+.pr-sink,
+.pr-flip {
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+/* 굴에 들어가고 나올 때 굴 입구 가운데 줄 아래는 안 보이게 */
+.pixel-rabbit.clip .pr-clip {
+  height: 64px;
+  overflow: hidden;
 }
 
 .pr-flip.left {
   transform: scaleX(-1);
 }
 
-/* 한 장짜리 창: 3배로 미리 키운 그림 띠를 옮겨서 장면을 바꿈 (JS가 이동과 같은 박자로) */
-.pr-sprite {
+.pr-cell {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
 
-.pr-sprite img {
+.pr-cell img {
   position: absolute;
   left: 0;
   top: 0;
-  width: 576px; /* 72px × 8장 */
+  width: 2880px; /* 80px × 36장 */
   max-width: none;
-  height: 90px;
+  height: 68px;
   image-rendering: pixelated;
   pointer-events: none;
 }
 
-/* 굴에 들어가고 나올 때 굴 가운데 줄 아래는 안 보이게 */
-.pixel-rabbit.clip {
-  overflow: hidden;
+/* 잡기: 몸통 부분만 클릭을 받아서 토끼 밑의 버튼이 같이 눌리지 않게 */
+.pr-hit {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 20px;
+  bottom: 2px;
+  pointer-events: none;
 }
 
+.pixel-rabbit.touchable .pr-hit {
+  pointer-events: auto;
+}
+
+/* 그림자: 땅에 따로 깔림. 높이 뜰수록 작고 옅게(JS) */
+.pr-shadow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 8998;
+  display: none;
+  width: 68px;
+  height: 8px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pr-shadow img {
+  display: block;
+  width: 816px;
+  max-width: none;
+  height: 8px;
+  image-rendering: pixelated;
+}
+
+/* 굴: 토끼 뒤. 숨어 있을 때만 눌러서 흙을 덮을 수 있음 */
 .pixel-hole {
   position: fixed;
-  z-index: 8999; /* 토끼 뒤: 나오는 몸이 굴 입구 위로 보이게 */
+  z-index: 8999;
   display: none;
-  width: 72px;
-  height: 30px;
-  background: url("/assets/img/rabbit-hole-3x.png") no-repeat 0 0;
-  image-rendering: pixelated;
+  width: 64px;
+  height: 26px;
   pointer-events: none;
+  transform-origin: 50% 50%;
+}
+
+.pixel-hole.open,
+.pixel-hole.shown {
+  display: block;
 }
 
 .pixel-hole.open {
-  display: block;
-  animation: pr-hole-open 0.25s steps(3, end) both;
+  animation: pr-hole-open 0.24s steps(3, end) both;
 }
 
-.pixel-hole.closing {
-  display: block;
-  animation: pr-hole-close 0.25s steps(3, end) both;
+.pixel-hole.diggable {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 @keyframes pr-hole-open {
-  from { transform: scale(0.34, 0.34); }
-  to { transform: scale(1, 1); }
-}
-
-@keyframes pr-hole-close {
-  from { transform: scale(1, 1); }
-  to { transform: scale(0.34, 0); }
+  from { transform: scale(0.2, 0.2); }
+  to { transform: none; }
 }
 
 .pr-bubble {
   position: absolute;
-  bottom: 70%;
+  bottom: calc(100% - 16px);
   left: 50%;
-  transform: translate(-50%, -6px);
+  transform: translateX(-50%);
   padding: 4px 10px;
   border: 1px solid var(--border-color);
   border-radius: 999px;
@@ -3567,25 +3602,47 @@ img[src$="-pixel.png"] {
   opacity: 1;
 }
 
-/* 굴에서 나올 때 튀는 흙 부스러기 (픽셀 조각, 6장으로 끊어서) */
+/* 굴에서 나올 때 튀는 흙 부스러기 */
 .pixel-dirt {
-  position: absolute;
-  left: 33px;
-  top: 9px;
-  width: 6px;
-  height: 6px;
-  background: #a8744a;
-  animation: pr-dirt 0.5s steps(6, end) forwards;
+  position: fixed;
+  z-index: 9001;
+  width: 4px;
+  height: 4px;
+  background: #a8845e;
+  pointer-events: none;
+  animation: pr-dirt 0.6s steps(6, end) forwards;
 }
 
 .pixel-dirt.dark {
-  width: 3px;
-  height: 3px;
-  background: #5b3a22;
+  background: #7a5a3c;
 }
 
 @keyframes pr-dirt {
-  0% { transform: translate(0, 0); opacity: 1; }
-  45% { transform: translate(calc(var(--dx) * 0.6), var(--up)); opacity: 1; }
+  0% { transform: translate(0, 0); }
+  45% { transform: translate(calc(var(--dx) * 0.6), var(--up)); }
   100% { transform: translate(var(--dx), 6px); opacity: 0; }
 }
+
+/* 굴 둘레를 누르면 그쪽 흙이 구덩이로 밀려 들어감 */
+.pixel-push {
+  position: fixed;
+  z-index: 9001;
+  width: 4px;
+  height: 4px;
+  background: #a8845e;
+  pointer-events: none;
+  animation: pr-push 0.26s steps(4, end) forwards;
+}
+
+.pixel-push.dark {
+  background: #80603f;
+}
+
+.pixel-push.light {
+  background: #be9a70;
+}
+
+@keyframes pr-push {
+  to { transform: translate(var(--dx), var(--dy)); }
+}
+
