@@ -18,6 +18,8 @@
         function done() {
             msg.hidden = false;
             setTimeout(function () { msg.hidden = true; }, 2000);
+            // 토끼가 버튼 옆에 굴을 파고 나와 인사하고 쏙 들어감
+            import('/assets/js/rabbit.js').then(function (m) { m.rabbitGreet(btn); }).catch(function () {});
         }
         btn.addEventListener('click', function () {
             var url = window.location.href;

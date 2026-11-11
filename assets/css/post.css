@@ -27,8 +27,8 @@
 .category-tag {
     display: inline-block;
     padding: 0.4rem 1rem;
-    background: linear-gradient(135deg, #A0C878 0%, #B0DB9C 100%);
-    color: white !important;
+    background: var(--accent);
+    color: var(--on-accent) !important;
     font-size: 0.85rem;
     font-weight: 700;
     border-radius: 25px;
@@ -109,9 +109,9 @@
 }
 
 .post-tag:hover {
-    background-color: #B0DB9C;
-    color: white !important;
-    border-color: #B0DB9C;
+    background-color: var(--accent);
+    color: var(--on-accent) !important;
+    border-color: var(--accent);
     transform: translateY(-1px);
 }
 
@@ -122,9 +122,9 @@
 }
 
 .dark-mode .post-tag:hover {
-    background-color: #B0DB9C;
-    color: white !important;
-    border-color: #B0DB9C;
+    background-color: var(--accent);
+    color: var(--on-accent) !important;
+    border-color: var(--accent);
 }
 
 .post-hero-image {
@@ -202,14 +202,14 @@
 }
 
 .post-article-body a {
-    color: #A0C878 !important;
+    color: var(--accent) !important;
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.2s;
 }
 
 .post-article-body a:hover {
-    color: #8ab868 !important;
+    color: var(--accent-hover) !important;
 }
 
 .post-article-body ul,
@@ -228,7 +228,7 @@
 }
 
 .post-article-body blockquote {
-    border-left: 4px solid #A0C878;
+    border-left: 4px solid var(--accent);
     padding-left: 1.5rem;
     margin: 2rem 0;
     font-style: italic;
@@ -383,7 +383,7 @@
 /* Hover Effects */
 .nav-item:not(.nav-spacer):not(.nav-center):hover {
     transform: translateY(-4px);
-    border-color: #A0C878;
+    border-color: var(--accent);
     background: #f7fafc;
     box-shadow: 0 12px 24px rgba(var(--accent-rgb), 0.2);
 }
@@ -401,7 +401,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #A0C878, #B0DB9C);
+    background: var(--accent);
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -437,7 +437,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #A0C878 0%, #B0DB9C 100%);
+    background: var(--accent);
     border-radius: 12px;
     transition: transform 0.3s ease;
     box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
@@ -449,7 +449,7 @@
 }
 
 .nav-arrow {
-    stroke: white;
+    stroke: var(--on-accent);
 }
 
 /* Nav Content */
@@ -470,14 +470,14 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 700;
-    color: #A0C878 !important;
+    color: var(--accent) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
 }
 
 .dark-mode .nav-label {
-    color: #B0DB9C !important;
+    color: var(--accent-hover) !important;
 }
 
 .nav-title {
@@ -516,8 +516,8 @@
     flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #A0C878 0%, #B0DB9C 100%);
-    color: white !important;
+    background: var(--accent);
+    color: var(--on-accent) !important;
     font-weight: 700;
     min-height: auto;
     padding: 1.5rem 2rem;
@@ -528,17 +528,17 @@
 .nav-center:hover {
     transform: scale(1.05);
     box-shadow: 0 12px 24px rgba(var(--accent-rgb), 0.4);
-    background: linear-gradient(135deg, #8ab868 0%, #a0cc8c 100%);
+    background: var(--accent-hover);
 }
 
 .nav-grid-icon {
-    stroke: white;
+    stroke: var(--on-accent);
 }
 
 .nav-center-label {
     font-size: 0.95rem;
     letter-spacing: 0.5px;
-    color: white !important;
+    color: var(--on-accent) !important;
 }
 
 /* Spacer (when no prev/next post) */

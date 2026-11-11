@@ -34,8 +34,8 @@ const CALM = { fps: 10, hop: 9 * PX, restMin: 2, restMax: 7 };
 const KEY = "vtg-rabbit-caught";
 const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
 const T = IS_EN
-  ? { taunts: ["Can't catch me!", "Too slow!", "Nope!"], caught: "You got me!", once: "Just this once~" }
-  : { taunts: ["못 잡지롱~", "메롱~", "어림없지!"], caught: "잡혔다!", once: "이번 한 번만이야~" };
+  ? { taunts: ["Can't catch me!", "Too slow!", "Nope!"], caught: "You got me!", once: "Just this once~", hi: "Hi!" }
+  : { taunts: ["못 잡지롱~", "메롱~", "어림없지!"], caught: "잡혔다!", once: "이번 한 번만이야~", hi: "안녕!" };
 const LIVE = ["calm", "startle", "flee", "stopping"];
 
 let busy = 0;
@@ -773,4 +773,44 @@ export function rabbitResume() {
   if (mode !== "ducked") return;
   if (busy > 0) emerge();
   else finish();
+}
+
+// 잠깐 인사(예: 링크 복사): anchor 옆에 굴을 파고 앞모습으로 나와 한 번 깡충, 인사하고 다시 쏙 들어감
+export function rabbitGreet(anchor, text = T.hi) {
+  if (reduced()) return;
+  if (mode !== "off") {
+    if (el) say(text, 1200); // 이미 나와 있으면 말만
+    return;
+  }
+  if (!built) build();
+  const r = anchor && anchor.getBoundingClientRect ? anchor.getBoundingClientRect() : null;
+  let gx = r ? r.right + 10 : window.innerWidth / 2 - CW / 2;
+  if (r && gx > maxX()) gx = r.left - CW - 10; // 오른쪽에 자리가 없으면 왼쪽
+  x = snap(clamp(gx, 0, maxX()));
+  y = snap(clamp(r ? r.bottom - FEET : maxY() - 40, 0, maxY()));
+  mode = "greeting";
+  view = "side";
+  faceDir = 1;
+  frame = 14;
+  sink = 72;
+  lift = 0;
+  el.classList.add("clip");
+  el.style.display = "block";
+  render();
+  openHole();
+  const c = PX;
+  seq = setTimeout(() => {
+    dirt(true);
+    play(
+      [
+        { frame: 14, sink: 22 * c }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 6 * c }, { frame: 14, sink: 0 },
+        { frame: 16, sink: 0 }, { frame: 18, sink: 0 }, { frame: 19, sink: 0, lift: -6 }, { frame: 19, sink: 0, lift: -8 }, { frame: 21, sink: 0 },
+        { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 14, sink: 0 },
+        { frame: 17, sink: 4 * c }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 24 * c }, { frame: 14, sink: 72 },
+      ],
+      10,
+      () => closeHole(hideNow)
+    );
+    setTimeout(() => mode === "greeting" && say(text, 1300), 450);
+  }, 220);
 }

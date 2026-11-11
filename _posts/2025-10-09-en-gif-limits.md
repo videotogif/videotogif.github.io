@@ -72,8 +72,4 @@ Adjusting the frame rate and handling resizing and cropping as separate tools is
 
 But wait, what's FFmpeg? 🤔
 
-Next up, I dig into FFmpeg. In the next post, I'll go through how to use FFmpeg directly to make high-quality GIFs, step by step!
-
----
-
-**Next**: [2. How to Turn Videos into High-Quality GIFs with FFmpeg]({% post_url 2025-10-18-en-ffmpeg-high-quality-gif %}) - what I actually did, from installing FFmpeg to generating a palette and converting color spaces.
+Next up, I dig into FFmpeg. In the [next post]({% post_url 2025-10-18-en-ffmpeg-high-quality-gif %}), I'll go through how to use FFmpeg directly to make high-quality GIFs, step by step!
