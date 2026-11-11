@@ -48,25 +48,6 @@ layout: default
             {{ content }}
         </section>
 
-        <!-- 글을 다 읽은 사람이 바로 써 볼 수 있게 -->
-        <aside class="post-cta" aria-label="{% if is_en %}Try the converter{% else %}변환기 써 보기{% endif %}">
-            {%- if is_en %}
-            <p class="post-cta-title">Want to try it on your own video?</p>
-            <p class="post-cta-text">Pick a video and it turns into a GIF right in your browser. Nothing gets uploaded, and there's no sign-up.</p>
-            <div class="post-cta-actions">
-                <a class="post-cta-button" href="{{ '/en/' | relative_url }}">Convert a video to GIF →</a>
-                <a class="post-cta-link" href="{{ '/en/gif-trim/' | relative_url }}">Trim a GIF</a>
-            </div>
-            {%- else %}
-            <p class="post-cta-title">내 영상으로 바로 해 보세요</p>
-            <p class="post-cta-text">동영상을 고르면 브라우저 안에서 바로 GIF로 바뀌어요. 파일은 어디에도 올라가지 않고, 가입도 필요 없어요.</p>
-            <div class="post-cta-actions">
-                <a class="post-cta-button" href="{{ '/' | relative_url }}">동영상 GIF로 바꾸기 →</a>
-                <a class="post-cta-link" href="{{ '/gif-trim/' | relative_url }}">GIF 자르기</a>
-            </div>
-            {%- endif %}
-        </aside>
-
         {% include share.html %}
     </article>
 

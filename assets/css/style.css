@@ -2959,72 +2959,11 @@ img[src$="-pixel.png"] {
 }
 
 /* ==========================
-   블로그 글: 읽는 시간, 써 보기 상자
+   블로그 글: 읽는 시간
 ========================== */
 .post-reading-time {
   margin-left: 8px;
   opacity: 0.8;
-}
-
-
-.post-cta {
-  max-width: 520px;
-  margin: 2.5rem auto 0;
-  padding: 16px 18px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-container);
-  box-shadow: 0 2px 10px var(--shadow-sm);
-}
-
-.post-cta-title {
-  margin: 0 0 4px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.post-cta-text {
-  margin: 0 0 12px;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  line-height: 1.55;
-}
-
-.post-cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-}
-
-.post-cta-button {
-  display: inline-block;
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.post-cta-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px var(--shadow-sm);
-  color: var(--on-accent);
-}
-
-.post-cta-link {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .post-cta-button { transition: none; }
-  .post-cta-button:hover { transform: none; }
 }
 
 /* ==========================
