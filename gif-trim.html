@@ -29,6 +29,12 @@ ref: gif-trim
         <span>GIF 미리보기</span>
       </div>
       <div id="trimOutput"></div>
+      <!-- 미리보기 재생 막대: 자른 결과를 재생·멈춤, 원하는 장면으로 옮기기 -->
+      <div class="trim-player" id="trimPlayer" hidden>
+        <button type="button" class="trim-play" id="trimPlayBtn" aria-label="일시정지"><svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z"/></svg><svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg></button>
+        <input type="range" class="trim-seek" id="trimSeek" min="0" max="0" value="0" step="1" aria-label="재생 위치">
+        <span class="trim-time" id="trimTime">0.0 / 0.0초</span>
+      </div>
       <a id="trimDownloadLink" style="display:none;" download="trimmed.gif">
         <span>GIF 다운로드</span>
       </a>
@@ -40,7 +46,6 @@ ref: gif-trim
           <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">구간만 남기기</button>
           <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">중간 잘라 내기</button>
         </div>
-        <p class="trim-mode-hint" id="trimModeHint" aria-live="polite">손잡이 사이 구간만 남겨요.</p>
         <!-- 타임라인 슬라이더 with 프레임 썸네일 배경 -->
         <div class="trim-timeline">
           <div class="trim-timeline-track" id="trimTrack">
@@ -90,7 +95,7 @@ ref: gif-trim
       </li>
       <li>
         <strong>방식과 구간 고르기</strong>
-        <p>"구간만 남기기"는 손잡이 사이만 남기고, "중간 잘라 내기"는 손잡이 사이를 지우고 앞뒤를 이어 붙여요. 타임라인 양 끝의 초록색 손잡이를 끌어서 구간을 정하세요. 끄는 동안 위에 그 지점의 장면이 보여요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
+        <p>"구간만 남기기"는 손잡이 사이만 남기고, "중간 잘라 내기"는 손잡이 사이를 지우고 앞뒤를 이어 붙여요. 타임라인 양 끝의 초록색 손잡이를 끌어서 구간을 정하세요. 위 미리보기에서 자른 결과가 바로 재생되고, 아래 막대로 멈추거나 원하는 장면으로 옮겨 볼 수 있어요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
       </li>
       <li>
         <strong>자르고 저장하기</strong>

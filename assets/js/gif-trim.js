@@ -13,8 +13,8 @@ const T = IS_EN
       sec: "s",
       keepBtn: "✂️ Keep only the selection",
       cutBtn: "✂️ Cut out the selection",
-      keepHint: "Only the part between the handles is kept.",
-      cutHint: "The part between the handles is removed, and the parts before and after are joined.",
+      play: "Play",
+      pause: "Pause",
     }
   : {
       generating: "GIF 생성 중...",
@@ -24,8 +24,8 @@ const T = IS_EN
       sec: "초",
       keepBtn: "✂️ 선택한 구간만 남기기",
       cutBtn: "✂️ 선택한 구간 잘라 내기",
-      keepHint: "손잡이 사이 구간만 남겨요.",
-      cutHint: "손잡이 사이 구간을 지우고 앞뒤를 이어 붙여요.",
+      play: "재생",
+      pause: "일시정지",
     };
 
 function ready(fn) {
@@ -74,7 +74,11 @@ ready(() => {
   );
   const trimSliderContainer = document.getElementById("trimSliderContainer");
   const trimModeButtons = document.querySelectorAll(".trim-mode-btn[data-mode]");
-  const trimModeHint = document.getElementById("trimModeHint");
+  // 미리보기 재생 막대
+  const trimPlayer = document.getElementById("trimPlayer");
+  const trimPlayBtn = document.getElementById("trimPlayBtn");
+  const trimSeek = document.getElementById("trimSeek");
+  const trimTime = document.getElementById("trimTime");
 
   // 필수 요소 없으면 중단
   if (!gifInput || !gifUploadSection || !trimCanvas) return;
@@ -121,10 +125,7 @@ ready(() => {
     const trimmedFrames = kept.map((i) => frames[i]);
     const trimmedDurations = kept.map((i) => frameDurations[i]);
 
-    if (trimOutput) trimOutput.innerHTML = "";
     if (trimDownloadLink) trimDownloadLink.style.display = "none";
-
-    setProgressMessage(T.generating);
 
     const original = generateTrimmedGifBtn.innerHTML;
     generateTrimmedGifBtn.innerHTML = `<span class="loading-spinner"></span> ${T.generating}`;
@@ -263,7 +264,6 @@ ready(() => {
       btn.setAttribute("aria-pressed", String(on));
     });
     trimSliderContainer?.classList.toggle("mode-cut", trimMode === "cut");
-    if (trimModeHint) trimModeHint.textContent = trimMode === "cut" ? T.cutHint : T.keepHint;
     if (generateTrimmedGifBtn && !generateTrimmedGifBtn.disabled) {
       generateTrimmedGifBtn.innerHTML = `<span>${trimMode === "cut" ? T.cutBtn : T.keepBtn}</span>`;
     }
@@ -276,6 +276,7 @@ ready(() => {
     }
     lastTrimmedLength = -1;
     updateTrimUI(false);
+    resetPlayer();
   }
 
   trimModeButtons.forEach((btn) => {
@@ -328,9 +329,83 @@ ready(() => {
     // output 영역에 첫 프레임 표시
     showFramePreview(0);
 
-    // 새 GIF는 '남기기' 방식으로 시작
+    // 새 GIF는 '남기기' 방식으로 시작하고, 자른 결과를 바로 재생
+    if (trimPlayer) trimPlayer.hidden = false;
+    playing = true;
     setTrimMode("keep");
   }
+
+  // ------------ 미리보기 재생: 지금 고른 방식·구간으로 남는 프레임만 원본 속도로 재생 ------------
+  let playing = false;
+  let wasPlaying = false;
+  let playPos = 0; // 남는 프레임 목록 안에서의 위치
+  let keptList = [];
+  let playTimer = null;
+  let keptSig = "";
+
+  function renderPlayer() {
+    if (!trimSeek || !trimTime) return;
+    const n = keptList.length;
+    trimSeek.max = String(Math.max(0, n - 1));
+    trimSeek.value = String(playPos);
+    trimSeek.disabled = n < 2;
+    trimSeek.style.setProperty("--p", `${n > 1 ? (playPos / (n - 1)) * 100 : 0}%`);
+    let done = 0, total = 0;
+    keptList.forEach((fi, k) => {
+      total += frameDurations[fi];
+      if (k < playPos) done += frameDurations[fi];
+    });
+    trimTime.textContent = `${(done / 1000).toFixed(1)} / ${(total / 1000).toFixed(1)}${T.sec}`;
+    if (trimPlayBtn) {
+      trimPlayBtn.classList.toggle("is-playing", playing);
+      trimPlayBtn.setAttribute("aria-label", playing ? T.pause : T.play);
+    }
+  }
+  function showPlayFrame() {
+    if (keptList.length) showFramePreview(keptList[playPos]);
+    renderPlayer();
+  }
+  function scheduleNext() {
+    clearTimeout(playTimer);
+    if (!playing || keptList.length < 2) return;
+    playTimer = setTimeout(() => {
+      playPos = (playPos + 1) % keptList.length;
+      showPlayFrame();
+      scheduleNext();
+    }, frameDurations[keptList[playPos]] || 100);
+  }
+  function play() {
+    playing = keptList.length > 1;
+    renderPlayer();
+    scheduleNext();
+  }
+  function pause() {
+    playing = false;
+    clearTimeout(playTimer);
+    renderPlayer();
+  }
+  // 구간·방식이 바뀌면 처음부터 다시
+  function resetPlayer() {
+    keptList = keptFrameIndices();
+    playPos = 0;
+    const sig = `${trimMode}:${keptList.join(",")}`;
+    if (sig !== keptSig) {
+      keptSig = sig;
+      if (trimDownloadLink) trimDownloadLink.style.display = "none"; // 구간이 바뀌면 예전 결과는 감춤
+    }
+    showPlayFrame();
+    if (playing) scheduleNext();
+  }
+  trimPlayBtn?.addEventListener("click", () => (playing ? pause() : play()));
+  trimSeek?.addEventListener("input", () => {
+    playPos = Math.max(0, Math.min(keptList.length - 1, Number(trimSeek.value) || 0));
+    showPlayFrame();
+    if (playing) scheduleNext();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) clearTimeout(playTimer);
+    else if (playing) scheduleNext();
+  });
 
   function showFramePreview(frameIndex) {
     if (!trimOutput || !frames || frameIndex < 0 || frameIndex >= frames.length)
@@ -446,15 +521,7 @@ ready(() => {
     const gifBlob = new Blob([gifBuffer], { type: "image/gif" });
     const gifUrl = URL.createObjectURL(gifBlob);
 
-    const gifImg = document.createElement("img");
-    gifImg.src = gifUrl;
-    gifImg.alt = "Trimmed GIF";
-    gifImg.id = "trimOutputGif";
-
-    if (trimOutput) {
-      trimOutput.innerHTML = "";
-      trimOutput.appendChild(gifImg);
-    }
+    // 미리보기는 같은 프레임을 같은 속도로 재생 중이라 그대로 두고, 다운로드만 켬
     if (trimDownloadLink) {
       trimDownloadLink.href = gifUrl;
       trimDownloadLink.style.display = "inline-block";
@@ -473,6 +540,7 @@ ready(() => {
   if (trimHandleStart) {
     trimHandleStart.addEventListener("pointerdown", (e) => {
       e.preventDefault();
+      if (!isDraggingTrimHandle) { wasPlaying = playing; pause(); }
       isDraggingTrimHandle = true;
       activeTrimHandle = "start";
     });
@@ -481,6 +549,7 @@ ready(() => {
   if (trimHandleEnd) {
     trimHandleEnd.addEventListener("pointerdown", (e) => {
       e.preventDefault();
+      if (!isDraggingTrimHandle) { wasPlaying = playing; pause(); }
       isDraggingTrimHandle = true;
       activeTrimHandle = "end";
     });
@@ -497,9 +566,17 @@ ready(() => {
       const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
       const frameIndex = Math.round((percent / 100) * (frames.length - 1));
 
-      // 클릭한 위치의 프레임 미리보기
+      // 결과에 남는 프레임이면 재생 위치를 그 장면으로, 아니면 멈추고 그 장면만 보여 줌
       if (frames && frameIndex >= 0 && frameIndex < frames.length) {
-        showFramePreview(frameIndex);
+        const k = keptList.indexOf(frameIndex);
+        if (k >= 0) {
+          playPos = k;
+          showPlayFrame();
+          if (playing) scheduleNext();
+        } else {
+          pause();
+          showFramePreview(frameIndex);
+        }
       }
     });
   }
@@ -532,8 +609,10 @@ ready(() => {
       isDraggingTrimHandle = false;
       activeTrimHandle = null;
 
-      // 드래그 종료 후 최종 텍스트 업데이트
+      // 드래그 종료 후 최종 텍스트 업데이트, 자른 결과를 처음부터 다시 재생
       updateTrimUI(false);
+      playing = wasPlaying;
+      resetPlayer();
     }
   });
 

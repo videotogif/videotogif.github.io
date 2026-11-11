@@ -31,6 +31,12 @@ permalink: /en/gif-trim/
         <span>GIF Preview</span>
       </div>
       <div id="trimOutput"></div>
+      <!-- Preview player: play/pause the trimmed result and scrub to any frame -->
+      <div class="trim-player" id="trimPlayer" hidden>
+        <button type="button" class="trim-play" id="trimPlayBtn" aria-label="Pause"><svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z"/></svg><svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg></button>
+        <input type="range" class="trim-seek" id="trimSeek" min="0" max="0" value="0" step="1" aria-label="Playback position">
+        <span class="trim-time" id="trimTime">0.0 / 0.0s</span>
+      </div>
       <a id="trimDownloadLink" style="display:none;" download="trimmed.gif">
         <span>Download GIF</span>
       </a>
@@ -42,7 +48,6 @@ permalink: /en/gif-trim/
           <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">Keep selection</button>
           <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">Cut out middle</button>
         </div>
-        <p class="trim-mode-hint" id="trimModeHint" aria-live="polite">Only the part between the handles is kept.</p>
         <div class="trim-timeline">
           <div class="trim-timeline-track" id="trimTrack">
             <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
@@ -89,7 +94,7 @@ permalink: /en/gif-trim/
       </li>
       <li>
         <strong>Pick a mode and a range</strong>
-        <p>"Keep selection" keeps only the part between the handles; "Cut out middle" removes that part and joins what comes before and after. Drag the green handles at both ends of the timeline to set the range. The frame at the handle shows up above while you drag. On a phone, just drag with your finger.</p>
+        <p>"Keep selection" keeps only the part between the handles; "Cut out middle" removes that part and joins what comes before and after. Drag the green handles at both ends of the timeline to set the range. The preview above plays the trimmed result right away, and the bar under it lets you pause or jump to any frame. On a phone, just drag with your finger.</p>
       </li>
       <li>
         <strong>Trim and save</strong>

@@ -2179,11 +2179,108 @@ html {
   outline-offset: 2px;
 }
 
-.trim-mode-hint {
-  margin: 10px 0 0;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+/* GIF 자르기: 미리보기 아래 재생 막대(재생·멈춤 버튼, 위치 막대, 시간) */
+.trim-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 520px;
+  margin: -2px auto 18px;
+  padding: 0 4px;
+}
+
+.trim-player[hidden] {
+  display: none;
+}
+
+.trim-play {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-container);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.trim-play:hover {
+  border-color: var(--primary-green);
+}
+
+.trim-play:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.trim-play svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
+.trim-play .icon-pause,
+.trim-play.is-playing .icon-play {
+  display: none;
+}
+
+.trim-play.is-playing .icon-pause {
+  display: block;
+}
+
+.trim-seek {
+  flex: 1;
+  min-width: 0;
+  height: 4px;
+  margin: 0;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--primary-green) var(--p, 0%), var(--border-color) var(--p, 0%));
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.trim-seek::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--primary-green);
+  border-radius: 50%;
+  background: var(--bg-container);
+  box-shadow: 0 1px 3px var(--shadow-sm);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.trim-seek::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--primary-green);
+  border-radius: 50%;
+  background: var(--bg-container);
+}
+
+.trim-seek::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.trim-seek:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 6px;
+}
+
+.trim-time {
+  flex: none;
+  min-width: 76px;
+  text-align: right;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* 잘라 내기 방식: 지울 구간을 빨간 빗금으로 */
