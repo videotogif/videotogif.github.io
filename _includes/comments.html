@@ -6,15 +6,37 @@
         <p class="comments-description">{% if c_en %}Questions or feedback are always welcome. (Sign in with GitHub to comment.){% else %}자유롭게 의견을 나눠주세요{% endif %}</p>
     </div>
 
-    <div class="comments-container">
-        <!-- Giscus 댓글 시스템 -->
-        <script src="https://giscus.app/client.js" data-repo="videotogif/videotogif.github.io"
-            data-repo-id="R_kgDOQHyumg" data-category="Announcements" data-category-id="DIC_kwDOQHyums4CxKIE"
-            data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0"
-            data-input-position="top" data-theme="preferred_color_scheme" data-lang="{% if c_en %}en{% else %}ko{% endif %}" data-loading="lazy"
-            crossorigin="anonymous" async>
-            </script>
-    </div>
+    <div class="comments-container" id="giscusBox" data-lang="{% if c_en %}en{% else %}ko{% endif %}"></div>
+    <script>
+        // Giscus 댓글: 사이트 테마(밝게/어둡게)에 맞춘 전용 테마 파일로 불러옴(안쪽 간격을 줄인 버전)
+        function giscusTheme() {
+            var dark = document.documentElement.classList.contains('dark-mode');
+            return 'https://videotogif.github.io/assets/css/giscus-' + (dark ? 'dark' : 'light') + '.css';
+        }
+        (function () {
+            var box = document.getElementById('giscusBox');
+            var s = document.createElement('script');
+            var attrs = {
+                'data-repo': 'videotogif/videotogif.github.io',
+                'data-repo-id': 'R_kgDOQHyumg',
+                'data-category': 'Announcements',
+                'data-category-id': 'DIC_kwDOQHyums4CxKIE',
+                'data-mapping': 'pathname',
+                'data-strict': '0',
+                'data-reactions-enabled': '1',
+                'data-emit-metadata': '0',
+                'data-input-position': 'top',
+                'data-theme': giscusTheme(),
+                'data-lang': box.dataset.lang,
+                'data-loading': 'lazy'
+            };
+            Object.keys(attrs).forEach(function (k) { s.setAttribute(k, attrs[k]); });
+            s.src = 'https://giscus.app/client.js';
+            s.crossOrigin = 'anonymous';
+            s.async = true;
+            box.appendChild(s);
+        })();
+    </script>
 
     <style>
         .comments-section {
@@ -77,8 +99,7 @@
     <script>
         // 다크모드 토글 시 Giscus 테마 변경
         function updateGiscusTheme() {
-            const isDark = document.documentElement.classList.contains('dark-mode');
-            const theme = isDark ? 'dark' : 'light';
+            const theme = giscusTheme();
 
             const iframe = document.querySelector('iframe.giscus-frame');
             if (iframe) {

@@ -1,0 +1,25 @@
+/* giscus 댓글창 테마: 기본 dark 테마에 안쪽 간격만 줄여서 덮어씀 */
+@import url("https://giscus.app/themes/dark.css");
+
+/* 반응 · 댓글 · 입력창 사이 간격 (기본 32px · 24px) */
+main .gsc-main {
+  gap: 14px;
+}
+
+main .gsc-comments {
+  gap: 10px;
+}
+
+/* "반응 0개"와 이모지 버튼을 한 줄에 */
+main .gsc-reactions {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+main .gsc-reactions > h4,
+main .gsc-reactions > div {
+  flex: none;
+  margin: 0;
+}
