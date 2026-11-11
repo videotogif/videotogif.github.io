@@ -8,7 +8,7 @@ category: "기술 설명"
 tags: [WebAssembly, gifski, 브라우저, 개인정보, 개발]
 excerpt: "파일을 올리지 않는데 어떻게 GIF가 나오는지, 이 사이트 코드가 실제로 하는 일을 순서대로 적었습니다. 정말 업로드가 안 되는지 직접 확인하는 방법도 같이 넣었어요."
 description: "Video to GIF가 서버 업로드 없이 브라우저 안에서 동영상을 GIF로 바꾸는 과정과, 개발자 도구로 업로드가 없는지 직접 확인하는 방법"
-image: /assets/img/og-default.jpg
+image: /assets/img/og-image.png
 redirect_from:
   - /기술 설명/2025/12/08/webassembly-gif-conversion/
   - /기술 설명/2025/01/14/webassembly-gif-conversion/

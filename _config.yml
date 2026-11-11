@@ -26,13 +26,13 @@ defaults:
       layout: page
       lang: ko-KR
       robots: index,follow
-      image: /assets/img/og-default.jpg
+      image: /assets/img/og-image.png
   - scope: { path: "_posts" }
     values:
       layout: post
       is_blog: true
       robots: index,follow
-      image: /assets/img/og-default.jpg
+      image: /assets/img/og-image.png
       comments: true
 
 # 소유권/광고

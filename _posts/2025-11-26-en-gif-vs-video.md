@@ -10,7 +10,7 @@ category: "Guide"
 tags: [GIF, MP4, WebP, FormatComparison, VideoToGIF]
 excerpt: "When you need to show something moving, should it be a GIF or an MP4? Here's how I pick, based on file size, compatibility, and autoplay."
 description: "How I choose between GIF and MP4 video, based on file size, compatibility, autoplay, and image quality."
-image: /assets/img/og-default.jpg
+image: /assets/img/og-image.png
 permalink: /en/blog/gif-vs-video/
 ---
 

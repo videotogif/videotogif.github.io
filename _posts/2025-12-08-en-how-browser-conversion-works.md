@@ -10,7 +10,7 @@ category: "Tech"
 tags: [WebAssembly, gifski, Browser, Privacy, Development]
 excerpt: "If nothing gets uploaded, how does a GIF come out? I wrote down what this site's code actually does, step by step, along with how to check for yourself that nothing is uploaded."
 description: "How Video to GIF converts videos to GIFs inside your browser with no server upload, and how to confirm there's no upload yourself using DevTools."
-image: /assets/img/og-default.jpg
+image: /assets/img/og-image.png
 permalink: /en/blog/how-browser-conversion-works/
 ---
 

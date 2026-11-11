@@ -8,7 +8,7 @@ category: "GIF 제작 가이드"
 tags: [GIF, MP4, WebP, 포맷비교, videotogif]
 excerpt: "움직이는 걸 보여 줘야 할 때 GIF와 MP4 중 무엇을 고를지. 용량, 호환성, 자동 재생 기준으로 정리했습니다."
 description: "GIF와 MP4(동영상) 중 무엇을 써야 할지 용량, 호환성, 자동 재생, 화질 기준으로 정리한 글"
-image: /assets/img/og-default.jpg
+image: /assets/img/og-image.png
 redirect_from:
   - /gif 제작 가이드/2025/11/26/gif-vs-video/
 permalink: /blog/gif-vs-video/
