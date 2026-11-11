@@ -43,11 +43,12 @@ ref: gif-trim
       <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
         <!-- 자르는 방식 -->
         <div class="trim-mode" role="group" aria-label="자르는 방식">
-          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">구간만 남기기</button>
-          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">중간 잘라 내기</button>
+          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">구간 남기기</button>
+          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">중간 자르기</button>
         </div>
         <!-- 타임라인 슬라이더 with 프레임 썸네일 배경 -->
         <div class="trim-timeline">
+          <button type="button" class="trim-apply" id="trimApply" aria-label="이 구간만 남기기" hidden><svg class="icon-keep" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-cut" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4.5h4V6M6 6l.8 9.5h6.4L14 6M8.6 9v4M11.4 9v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="trim-timeline-track" id="trimTrack">
             <!-- 프레임 썸네일 배경 레이어 -->
             <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
@@ -70,15 +71,12 @@ ref: gif-trim
           </div>
           <div class="trim-info-item trim-separator">→</div>
           <div class="trim-info-item">
-            <label>결과 길이:</label>
+            <label>지금 길이:</label>
             <span id="trimmedDuration" class="duration-value highlight">0.0초</span>
           </div>
         </div>
 
-        <!-- GIF 생성 버튼 -->
-        <button id="generateTrimmedGifBtn" class="convert-btn">
-          <span>✂️ 선택한 구간만 남기기</span>
-        </button>
+        <button type="button" class="trim-undo" id="trimUndo" hidden>되돌리기</button>
       </div>
 
     </section>
@@ -95,11 +93,11 @@ ref: gif-trim
       </li>
       <li>
         <strong>방식과 구간 고르기</strong>
-        <p>"구간만 남기기"는 손잡이 사이만 남기고, "중간 잘라 내기"는 손잡이 사이를 지우고 앞뒤를 이어 붙여요. 타임라인 양 끝의 초록색 손잡이를 끌어서 구간을 정하세요. 위 미리보기에서 자른 결과가 바로 재생되고, 아래 막대로 멈추거나 원하는 장면으로 옮겨 볼 수 있어요. 휴대폰에서는 손가락으로 끌면 됩니다.</p>
+        <p>타임라인 양 끝의 손잡이를 끌어서 구간을 정하세요. "구간 남기기"에서는 고른 구간 위의 체크를 누르면 그 구간만 남고, "중간 자르기"에서는 휴지통을 누르면 그 구간이 지워지고 앞뒤가 이어져요. 여러 번 반복할 수 있고, 되돌리기로 한 단계씩 취소할 수 있어요. 위 미리보기에서 결과가 바로 재생되고, 아래 막대로 멈추거나 원하는 장면으로 옮겨 볼 수 있어요.</p>
       </li>
       <li>
         <strong>자르고 저장하기</strong>
-        <p>아래 자르기 버튼을 누르면 새 GIF가 만들어지고, GIF 다운로드로 저장할 수 있어요.</p>
+        <p>체크나 휴지통을 누를 때마다 새 GIF가 바로 만들어져요. GIF 다운로드로 저장하면 돼요.</p>
       </li>
     </ol>
   </section>

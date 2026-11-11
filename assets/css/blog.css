@@ -170,7 +170,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(160, 200, 120, 0.3);
+  box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
 }
 
 .post-title {
@@ -349,7 +349,7 @@
 .nav-next:hover {
   transform: translateY(-5px);
   border-color: #A0C878;
-  box-shadow: 0 10px 30px rgba(160, 200, 120, 0.2);
+  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.2);
 }
 
 .nav-label {

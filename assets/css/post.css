@@ -34,7 +34,7 @@
     border-radius: 25px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(160, 200, 120, 0.3);
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
 }
 
 .post-article-title {
@@ -385,12 +385,12 @@
     transform: translateY(-4px);
     border-color: #A0C878;
     background: #f7fafc;
-    box-shadow: 0 12px 24px rgba(160, 200, 120, 0.2);
+    box-shadow: 0 12px 24px rgba(var(--accent-rgb), 0.2);
 }
 
 .dark-mode .nav-item:not(.nav-spacer):not(.nav-center):hover {
     background: #3a475f;
-    box-shadow: 0 12px 24px rgba(160, 200, 120, 0.25);
+    box-shadow: 0 12px 24px rgba(var(--accent-rgb), 0.25);
 }
 
 /* Gradient Bar on Hover */
@@ -440,12 +440,12 @@
     background: linear-gradient(135deg, #A0C878 0%, #B0DB9C 100%);
     border-radius: 12px;
     transition: transform 0.3s ease;
-    box-shadow: 0 2px 8px rgba(160, 200, 120, 0.3);
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
 }
 
 .nav-item:hover .nav-icon-wrapper {
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(160, 200, 120, 0.4);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.4);
 }
 
 .nav-arrow {
@@ -522,12 +522,12 @@
     min-height: auto;
     padding: 1.5rem 2rem;
     border: none;
-    box-shadow: 0 4px 12px rgba(160, 200, 120, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
 }
 
 .nav-center:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 24px rgba(160, 200, 120, 0.4);
+    box-shadow: 0 12px 24px rgba(var(--accent-rgb), 0.4);
     background: linear-gradient(135deg, #8ab868 0%, #a0cc8c 100%);
 }
 

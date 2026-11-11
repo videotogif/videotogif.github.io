@@ -45,10 +45,11 @@ permalink: /en/gif-trim/
       <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
         <!-- Trim mode -->
         <div class="trim-mode" role="group" aria-label="Trim mode">
-          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">Keep selection</button>
-          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">Cut out middle</button>
+          <button type="button" class="trim-mode-btn active" data-mode="keep" aria-pressed="true">Keep range</button>
+          <button type="button" class="trim-mode-btn" data-mode="cut" aria-pressed="false">Cut middle</button>
         </div>
         <div class="trim-timeline">
+          <button type="button" class="trim-apply" id="trimApply" aria-label="Keep only this range" hidden><svg class="icon-keep" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="icon-cut" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4.5h4V6M6 6l.8 9.5h6.4L14 6M8.6 9v4M11.4 9v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="trim-timeline-track" id="trimTrack">
             <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
 
@@ -70,14 +71,12 @@ permalink: /en/gif-trim/
           </div>
           <div class="trim-info-item trim-separator">→</div>
           <div class="trim-info-item">
-            <label>Result:</label>
+            <label>Now:</label>
             <span id="trimmedDuration" class="duration-value highlight">0.0s</span>
           </div>
         </div>
 
-        <button id="generateTrimmedGifBtn" class="convert-btn">
-          <span>✂️ Keep only the selection</span>
-        </button>
+        <button type="button" class="trim-undo" id="trimUndo" hidden>Undo</button>
       </div>
 
     </section>
@@ -94,11 +93,11 @@ permalink: /en/gif-trim/
       </li>
       <li>
         <strong>Pick a mode and a range</strong>
-        <p>"Keep selection" keeps only the part between the handles; "Cut out middle" removes that part and joins what comes before and after. Drag the green handles at both ends of the timeline to set the range. The preview above plays the trimmed result right away, and the bar under it lets you pause or jump to any frame. On a phone, just drag with your finger.</p>
+        <p>Drag the handles at both ends of the timeline to pick a range. In "Keep range", click the check above the range to keep only that part. In "Cut middle", click the trash can to remove it and join what comes before and after. You can repeat this, and Undo takes back one step at a time. The preview above plays the result right away, and the bar under it lets you pause or jump to any frame.</p>
       </li>
       <li>
         <strong>Trim and save</strong>
-        <p>Click the trim button below the timeline to create the new GIF, then save it with Download GIF.</p>
+        <p>Each time you keep or cut, a new GIF is made right away. Save it with Download GIF.</p>
       </li>
     </ol>
   </section>
