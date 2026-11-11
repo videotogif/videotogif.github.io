@@ -2,24 +2,24 @@
 @import url("https://giscus.app/themes/light.css");
 
 /* 반응 · 댓글 · 입력창 사이 간격 (기본 32px · 24px) */
-main .gsc-main {
+#__next .gsc-main {
   gap: 14px;
 }
 
-main .gsc-comments {
+#__next .gsc-comments {
   gap: 10px;
 }
 
 /* "반응 0개"와 이모지 버튼을 한 줄에 */
-main .gsc-reactions {
+#__next .gsc-reactions {
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-main .gsc-reactions > h4,
-main .gsc-reactions > div {
+#__next .gsc-reactions > h4,
+#__next .gsc-reactions > div {
   flex: none;
   margin: 0;
 }
