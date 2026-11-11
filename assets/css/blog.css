@@ -390,8 +390,8 @@
    ============================================ */
 
 .comments-section {
-  margin: 28px 0 40px;
-  padding: 24px 0 40px;
+  margin: 28px 0 0;
+  padding: 24px 0 0;
 }
 
 .comments-section h2 {
@@ -486,8 +486,8 @@
   }
 
   .comments-section {
-    margin: 24px 0 30px;
-    padding: 20px 0 30px;
+    margin: 24px 0 0;
+    padding: 20px 0 0;
   }
 
   .comments-section h2 {

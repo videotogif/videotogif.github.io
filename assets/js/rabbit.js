@@ -511,20 +511,16 @@ function dirt(big) {
 }
 // ---- 하트: 빵 하고 떠올랐다가 뿅 터짐
 const HEART = [
-  "..LLLLL...LLLRR..",
-  ".LHHLLLR.LhLLRRR.",
-  "LHHhLLRRRLLLRRRRD",
-  "LHhLLRRRRRRRRRRDD",
-  "LhLLRRRRRRRRRRRDD",
-  "LLRRRRRRRRRRRRDDE",
-  ".LRRRRRRRRRRRRDE.",
-  "..RRRRRRRRRRRDE..",
-  "...RRRRRRRRRDE...",
-  "....RRRRRRRDE....",
-  ".....RRRRRDE.....",
-  "......RRRDE......",
-  ".......RDE.......",
-  "........E........",
+  ".LLL...LLR.",
+  "LHHLL.LhLRR",
+  "LHhLRRRRRRD",
+  "LhLRRRRRRDD",
+  "LRRRRRRRRDD",
+  ".RRRRRRRDE.",
+  "..RRRRRDE..",
+  "...RRRDE...",
+  "....RDE....",
+  ".....E.....",
 ];
 const MINI = [".L.R.", "LhRRD", ".RRD.", "..D.."];
 const HCOL = { H: "#ffffff", h: "#ffbec8", L: "#ff5c70", R: "#e2263e", D: "#aa1630", E: "#780c24" };
@@ -558,11 +554,11 @@ function heartPop(cx, cy) {
   setTimeout(() => {
     hv.classList.add("burst");
     setTimeout(() => hv.remove(), 70);
-    const top = cy - 22; // 떠오른 자리에서 터짐
+    const top = cy - 16; // 떠오른 자리에서 터짐
     for (let k = 0; k < 12; k++) {
       const big = k % 2 === 0;
       const a = (k / 12) * Math.PI * 2 - Math.PI / 2 + (Math.random() - 0.5) * 0.45;
-      const d = (big ? 34 : 22) + Math.random() * 12;
+      const d = (big ? 26 : 16) + Math.random() * 8;
       const b = big ? pixCanvas(MINI, false) : document.createElement("span");
       b.className = big ? "pixel-bit" : `pixel-bit sq c${k % 3}`;
       b.setAttribute("aria-hidden", "true");
@@ -842,23 +838,22 @@ export function rabbitResume() {
   else finish();
 }
 
-// 잠깐 인사(예: 링크 복사): anchor 옆에 굴을 파고 앞모습으로 나와 한 번 깡충, 쏙 들어가면서 하트를 터뜨림
+// 잠깐 인사(예: 링크 복사): anchor 바로 위에 굴을 파고 앞모습으로 나와 한 번 깡충, 쏙 들어가면서 하트를 터뜨림
 export function rabbitGreet(anchor) {
   if (reduced()) return;
   if (mode !== "off") {
-    if (el) heartPop(x + feetCx(), y + 4); // 이미 나와 있으면 하트만
+    if (el) heartPop(x + feetCx(), y + 14); // 이미 나와 있으면 하트만
     return;
   }
   if (!built) build();
   const r = anchor && anchor.getBoundingClientRect ? anchor.getBoundingClientRect() : null;
-  let gx = r ? r.right + 10 : window.innerWidth / 2 - CW / 2;
-  if (r && gx > maxX()) gx = r.left - CW - 10; // 오른쪽에 자리가 없으면 왼쪽
-  x = snap(clamp(gx, 0, maxX()));
-  y = snap(clamp(r ? r.bottom - FEET : maxY() - 40, 0, maxY()));
   mode = "greeting";
   view = "side";
   faceDir = 1;
   frame = 14;
+  // anchor 바로 위 가운데: 발밑 선이 버튼 윗변에 오도록
+  x = snap(clamp(r ? r.left + r.width / 2 - feetCx() : window.innerWidth / 2 - CW / 2, 0, maxX()));
+  y = snap(clamp(r ? r.top - FEET - 4 : maxY() - 40, 0, maxY()));
   sink = 72;
   lift = 0;
   el.classList.add("clip");
@@ -873,7 +868,7 @@ export function rabbitGreet(anchor) {
         { frame: 14, sink: 22 * c }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 6 * c }, { frame: 14, sink: 0 },
         { frame: 16, sink: 0 }, { frame: 18, sink: 0 }, { frame: 19, sink: 0, lift: -6 }, { frame: 19, sink: 0, lift: -8 }, { frame: 21, sink: 0 },
         { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 14, sink: 0 },
-        { frame: 17, sink: 4 * c, fn: () => heartPop(x + feetCx(), y + 4) }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 24 * c }, { frame: 14, sink: 72 },
+        { frame: 17, sink: 4 * c, fn: () => heartPop(x + feetCx(), y + 14) }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 24 * c }, { frame: 14, sink: 72 },
       ],
       10,
       () => closeHole(hideNow)

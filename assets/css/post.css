@@ -8,7 +8,7 @@
 .post-page-wrapper {
     max-width: 850px;
     margin: 0 auto;
-    padding: 40px 20px 80px;
+    padding: 40px 20px 16px;
 }
 
 /* ========== Post Article ========== */
@@ -556,7 +556,7 @@
 /* ========== Responsive Design ========== */
 @media (max-width: 768px) {
     .post-page-wrapper {
-        padding: 30px 15px 60px;
+        padding: 30px 15px 12px;
     }
 
     .post-article-title {
