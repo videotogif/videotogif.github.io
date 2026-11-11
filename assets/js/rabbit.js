@@ -34,8 +34,8 @@ const CALM = { fps: 10, hop: 9 * PX, restMin: 2, restMax: 7 };
 const KEY = "vtg-rabbit-caught";
 const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
 const T = IS_EN
-  ? { taunts: ["Can't catch me!", "Too slow!", "Nope!"], caught: "You got me!", once: "Just this once~", hi: "Hi!" }
-  : { taunts: ["못 잡지롱~", "메롱~", "어림없지!"], caught: "잡혔다!", once: "이번 한 번만이야~", hi: "안녕!" };
+  ? { taunts: ["Can't catch me!", "Too slow!", "Nope!"], caught: "You got me!", once: "Just this once~" }
+  : { taunts: ["못 잡지롱~", "메롱~", "어림없지!"], caught: "잡혔다!", once: "이번 한 번만이야~" };
 const LIVE = ["calm", "startle", "flee", "stopping"];
 
 let busy = 0;
@@ -170,6 +170,7 @@ function play(steps, fps, done, abort, onAbort) {
     if (s.dy) y = snap(clamp(y + s.dy, 0, maxY()));
     if (s.dirt) dirt();
     render();
+    if (s.fn) s.fn();
     i += 1;
     if (i < steps.length) seq = setTimeout(step, 1000 / fps);
     else if (done) seq = setTimeout(done, 1000 / fps);
@@ -508,6 +509,72 @@ function dirt(big) {
     setTimeout(() => b.remove(), 700);
   });
 }
+// ---- 하트: 빵 하고 떠올랐다가 뿅 터짐
+const HEART = [
+  "..LLLLL...LLLRR..",
+  ".LHHLLLR.LhLLRRR.",
+  "LHHhLLRRRLLLRRRRD",
+  "LHhLLRRRRRRRRRRDD",
+  "LhLLRRRRRRRRRRRDD",
+  "LLRRRRRRRRRRRRDDE",
+  ".LRRRRRRRRRRRRDE.",
+  "..RRRRRRRRRRRDE..",
+  "...RRRRRRRRRDE...",
+  "....RRRRRRRDE....",
+  ".....RRRRRDE.....",
+  "......RRRDE......",
+  ".......RDE.......",
+  "........E........",
+];
+const MINI = [".L.R.", "LhRRD", ".RRD.", "..D.."];
+const HCOL = { H: "#ffffff", h: "#ffbec8", L: "#ff5c70", R: "#e2263e", D: "#aa1630", E: "#780c24" };
+function pixCanvas(rows, outline) {
+  const pad = outline ? 1 : 0;
+  const w = rows[0].length, h = rows.length;
+  const cv = document.createElement("canvas");
+  cv.width = (w + pad * 2) * PX;
+  cv.height = (h + pad * 2) * PX;
+  cv.setAttribute("aria-hidden", "true");
+  const g = cv.getContext("2d");
+  const on = (cx, cy) => cy >= 0 && cy < h && cx >= 0 && cx < w && rows[cy][cx] !== ".";
+  for (let cy = -pad; cy < h + pad; cy++) {
+    for (let cx = -pad; cx < w + pad; cx++) {
+      const col = on(cx, cy) ? HCOL[rows[cy][cx]] : outline && N4.some(([a, b]) => on(cx + a, cy + b)) ? "#2b2d38" : null;
+      if (!col) continue;
+      g.fillStyle = col;
+      g.fillRect((cx + pad) * PX, (cy + pad) * PX, PX, PX);
+    }
+  }
+  return cv;
+}
+function heartPop(cx, cy) {
+  cx = Math.round(clamp(cx, 30, window.innerWidth - 30));
+  cy = Math.round(Math.max(cy, 44));
+  const hv = pixCanvas(HEART, true);
+  hv.className = "pixel-heart";
+  hv.style.left = `${cx}px`;
+  hv.style.top = `${cy}px`;
+  document.body.appendChild(hv);
+  setTimeout(() => {
+    hv.classList.add("burst");
+    setTimeout(() => hv.remove(), 70);
+    const top = cy - 22; // 떠오른 자리에서 터짐
+    for (let k = 0; k < 12; k++) {
+      const big = k % 2 === 0;
+      const a = (k / 12) * Math.PI * 2 - Math.PI / 2 + (Math.random() - 0.5) * 0.45;
+      const d = (big ? 34 : 22) + Math.random() * 12;
+      const b = big ? pixCanvas(MINI, false) : document.createElement("span");
+      b.className = big ? "pixel-bit" : `pixel-bit sq c${k % 3}`;
+      b.setAttribute("aria-hidden", "true");
+      b.style.left = `${cx}px`;
+      b.style.top = `${top}px`;
+      b.style.setProperty("--dx", `${snap(Math.cos(a) * d)}px`);
+      b.style.setProperty("--dy", `${snap(Math.sin(a) * d)}px`);
+      document.body.appendChild(b);
+      setTimeout(() => b.remove(), 620);
+    }
+  }, 640);
+}
 // 굴로 쏙. kind: corner(모서리로 몰림) · caught(잡힌 뒤) · duck(굽기 직전) · leave(작업 끝)
 function dive(kind, done) {
   mode = kind === "duck" ? "ducking" : kind === "leave" ? "leaving" : "diving";
@@ -775,11 +842,11 @@ export function rabbitResume() {
   else finish();
 }
 
-// 잠깐 인사(예: 링크 복사): anchor 옆에 굴을 파고 앞모습으로 나와 한 번 깡충, 인사하고 다시 쏙 들어감
-export function rabbitGreet(anchor, text = T.hi) {
+// 잠깐 인사(예: 링크 복사): anchor 옆에 굴을 파고 앞모습으로 나와 한 번 깡충, 쏙 들어가면서 하트를 터뜨림
+export function rabbitGreet(anchor) {
   if (reduced()) return;
   if (mode !== "off") {
-    if (el) say(text, 1200); // 이미 나와 있으면 말만
+    if (el) heartPop(x + feetCx(), y + 4); // 이미 나와 있으면 하트만
     return;
   }
   if (!built) build();
@@ -806,11 +873,10 @@ export function rabbitGreet(anchor, text = T.hi) {
         { frame: 14, sink: 22 * c }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 6 * c }, { frame: 14, sink: 0 },
         { frame: 16, sink: 0 }, { frame: 18, sink: 0 }, { frame: 19, sink: 0, lift: -6 }, { frame: 19, sink: 0, lift: -8 }, { frame: 21, sink: 0 },
         { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 16, sink: 0 }, { frame: 14, sink: 0 },
-        { frame: 17, sink: 4 * c }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 24 * c }, { frame: 14, sink: 72 },
+        { frame: 17, sink: 4 * c, fn: () => heartPop(x + feetCx(), y + 4) }, { frame: 14, sink: 14 * c }, { frame: 14, sink: 24 * c }, { frame: 14, sink: 72 },
       ],
       10,
       () => closeHole(hideNow)
     );
-    setTimeout(() => mode === "greeting" && say(text, 1300), 450);
   }, 220);
 }

@@ -1,11 +1,11 @@
 {%- assign s_en = false -%}{%- if page.lang contains "en" -%}{%- assign s_en = true -%}{%- endif %}
 <div class="post-share">
     {%- if s_en %}
-    <p>If this helped, sharing the link would mean a lot. I run this site on my own.</p>
+    <p>If this helped, sharing the link would mean a lot.<br>I run this site on my own.</p>
     <button type="button" class="post-share-btn" id="postShareBtn" data-prompt="Copy this link">Copy link</button>
     <span class="post-share-msg" id="postShareMsg" hidden>Link copied. Thank you!</span>
     {%- else %}
-    <p>글이 도움이 됐다면 링크를 한 번 공유해 주세요. 혼자 운영하는 사이트라 큰 힘이 됩니다.</p>
+    <p>글이 도움이 됐다면 링크를 한 번 공유해 주세요.<br>혼자 운영하는 사이트라 큰 힘이 됩니다.</p>
     <button type="button" class="post-share-btn" id="postShareBtn" data-prompt="이 링크를 복사하세요">링크 복사</button>
     <span class="post-share-msg" id="postShareMsg" hidden>링크를 복사했어요. 고마워요!</span>
     {%- endif %}
