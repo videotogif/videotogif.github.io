@@ -76,6 +76,12 @@ ready(() => {
   // 필수 요소 없으면 중단
   if (!gifInput || !gifUploadSection || !trimCanvas) return;
 
+  // 구간 남기기에서 잘려 나갈 앞·뒤를 빨간 빗금으로 덮는 두 장
+  const dropL = document.createElement("div");
+  const dropR = document.createElement("div");
+  dropL.className = dropR.className = "trim-drop";
+  trimTrack?.append(dropL, dropR);
+
   // ---- 파일 올리기
   gifUploadSection.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -225,9 +231,17 @@ ready(() => {
     trimHandleStart.style.left = `${(trimStartIndex / n) * 100}%`;
     trimHandleEnd.style.left = `${(trimEndIndex / n) * 100}%`;
     const sel = hasSelection();
-    trimSelected.style.display = sel ? "block" : "none";
+    // 중간 자르기: 고른 구간(지울 곳)이 빨간 빗금 / 구간 남기기: 고른 구간은 그대로 두고 앞·뒤(지울 곳)가 빨간 빗금
+    trimSelected.style.display = sel && trimMode === "cut" ? "block" : "none";
     trimSelected.style.left = `${sp}%`;
     trimSelected.style.width = `${ep - sp}%`;
+    const keepSel = sel && trimMode === "keep";
+    dropL.style.display = keepSel && sp > 0 ? "block" : "none";
+    dropL.style.left = "0%";
+    dropL.style.width = `${sp}%`;
+    dropR.style.display = keepSel && trimEndIndex < n - 1 ? "block" : "none";
+    dropR.style.left = `${ep}%`;
+    dropR.style.width = `${100 - ep}%`;
     // 체크/휴지통: 고른 구간 가운데 위. 남는 게 2장 미만이 되면 감춤
     if (trimApply) {
       const left = keptFrameIndices().length;

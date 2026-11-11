@@ -2380,6 +2380,22 @@ html {
   );  box-shadow: inset 0 0 0 2px rgba(229, 62, 62, 0.75);
 }
 
+/* 구간 남기기: 잘려 나갈 앞·뒤를 빨간 빗금으로 (중간 자르기의 지울 구간과 같은 모양) */
+.trim-drop {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: none;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(229, 62, 62, 0.55) 0 8px,
+    rgba(229, 62, 62, 0.3) 8px 16px
+  );
+  box-shadow: inset 0 0 0 2px rgba(229, 62, 62, 0.75);
+  pointer-events: none;
+  z-index: 2;
+}
+
 /* Trim 슬라이더 컨테이너 */
 .trim-slider-container {
   margin-top: 12px;
