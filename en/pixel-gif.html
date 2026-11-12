@@ -1,0 +1,130 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: pixel-gif
+title: "Pixel GIF Maker - Turn Video into 16×16, 32×32, 64×64 Pixel Art GIFs"
+description: "Turn a video into a 16×16, 32×32 or 64×64 pixel GIF for pixel displays like Divoom Ditoo and Pixoo. Everything runs in your browser, with no upload."
+permalink: /en/pixel-gif/
+---
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">Pixel GIF Maker</h1>
+    <p class="page-subtitle">Turn a video into a 16×16, 32×32 or 64×64 pixel GIF</p>
+  </header>
+
+  <div class="content-section">
+    <section class="upload-section" id="pxUploadSection">
+      <div class="upload-icon">👾</div>
+      <div class="upload-text" id="pxUploadText">Choose a video file</div>
+      <div class="upload-subtext">Click or drag & drop. Your file never leaves your browser.</div>
+      <input type="file" id="pxInput" accept="video/*" hidden>
+    </section>
+    <p class="px-message" id="pxMessage" role="alert" hidden></p>
+
+    <section class="px-work" id="pxWork" hidden>
+      <h2 class="sr-only">Pixel GIF settings</h2>
+      <div class="px-stage">
+        <figure class="px-source">
+          <div class="px-source-box" id="pxSourceBox">
+            <video id="pxVideo" class="px-video" muted playsinline preload="auto"></video>
+            <div class="px-crop" id="pxCrop" aria-hidden="true"></div>
+          </div>
+          <figcaption>Original · the bright square goes into the GIF</figcaption>
+        </figure>
+        <figure class="px-preview">
+          <div class="px-led" id="pxLiveWrap">
+            <canvas id="pxLive" class="px-canvas" width="16" height="16" aria-label="Pixel preview"></canvas>
+          </div>
+          <figcaption id="pxLiveCap">Preview 16×16</figcaption>
+        </figure>
+      </div>
+
+      <div class="px-controls">
+        <div class="px-field">
+          <span class="custom-label">Size</span>
+          <div class="trim-mode px-seg" role="group" aria-label="Size">
+            <button type="button" class="trim-mode-btn active" data-size="16" aria-pressed="true">16×16</button>
+            <button type="button" class="trim-mode-btn" data-size="32" aria-pressed="false">32×32</button>
+            <button type="button" class="trim-mode-btn" data-size="64" aria-pressed="false">64×64</button>
+          </div>
+        </div>
+        <div class="px-field">
+          <span class="custom-label">Fit</span>
+          <div class="trim-mode px-seg" role="group" aria-label="Fit">
+            <button type="button" class="trim-mode-btn active" data-fit="crop" aria-pressed="true">Fill (crop)</button>
+            <button type="button" class="trim-mode-btn" data-fit="contain" aria-pressed="false">Show all</button>
+          </div>
+        </div>
+        <div class="custom-field px-field px-wide" id="pxPosField">
+          <label for="pxPos"><span id="pxPosLabel">Crop position</span> <output id="pxPosOut">Center</output></label>
+          <input type="range" id="pxPos" min="0" max="100" step="1" value="50">
+        </div>
+        <div class="custom-field px-field">
+          <label for="pxStart">Start <output id="pxStartOut">0.0s</output></label>
+          <input type="range" id="pxStart" min="0" max="0" step="0.1" value="0">
+        </div>
+        <div class="custom-field px-field">
+          <label for="pxLen">Length <output id="pxLenOut">3.0s</output></label>
+          <input type="range" id="pxLen" min="0.5" max="10" step="0.5" value="3">
+        </div>
+        <div class="px-field">
+          <span class="custom-label">Frames per second</span>
+          <div class="trim-mode px-seg" role="group" aria-label="Frames per second">
+            <button type="button" class="trim-mode-btn" data-fps="5" aria-pressed="false">5</button>
+            <button type="button" class="trim-mode-btn active" data-fps="10" aria-pressed="true">10</button>
+            <button type="button" class="trim-mode-btn" data-fps="20" aria-pressed="false">20</button>
+          </div>
+        </div>
+        <label class="px-check"><input type="checkbox" id="pxVivid" checked> <span>Vivid colors<small>Slightly boosts saturation and contrast so it reads well on a tiny screen</small></span></label>
+        <p class="custom-estimate px-estimate" id="pxEstimate" aria-live="polite"></p>
+        <button type="button" class="convert-btn px-make" id="pxMakeBtn">👾 Make pixel GIF</button>
+      </div>
+    </section>
+
+    <section class="output-section px-result" id="pxResult" hidden>
+      <h2 class="section-title"><span>✨</span><span>Your pixel GIF</span></h2>
+      <img id="pxGif" class="px-result-img" alt="">
+      <p class="px-info" id="pxInfo"></p>
+      <div class="px-downloads">
+        <a id="pxDownload" class="px-dl" download="pixel.gif">Save GIF</a>
+        <a id="pxDownloadBig" class="px-dl px-dl-sub" download="pixel-large.gif">Save large</a>
+      </div>
+      <p class="px-note">Use the original-size file for your device, and the large file for chats and social media.</p>
+    </section>
+  </div>
+
+  {% include ad-unit.html slot="home" %}
+
+  <section class="zif-how-to">
+    <h2>How to use</h2>
+    <ol class="how-to-steps">
+      <li>
+        <strong>Add a video</strong>
+        <p>Drop a video on the box above or click to choose one. It's processed inside your browser and never uploaded.</p>
+      </li>
+      <li>
+        <strong>Pick the size and the moment</strong>
+        <p>Choose 16×16, 32×32 or 64×64 to match your display. Drag on the original to move the square that goes into the GIF, then set the start and length. The preview on the right loops the real result as you change things.</p>
+      </li>
+      <li>
+        <strong>Make and save</strong>
+        <p>Press Make pixel GIF and save it. You get the original-size file and a large copy with each pixel scaled up.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="zif-how-to">
+    <h2>Good to know</h2>
+    <ul>
+      <li>16×16 is only 256 pixels, so faces and text are hard to read. Big, simple shapes with a clear color difference from the background work best. Move the square while watching the preview.</li>
+      <li>Pixel animation is usually made at 8 to 12 frames per second. For a device, start with 10 fps and 2 to 4 seconds.</li>
+      <li>Each pixel's color is the average of all the source pixels that fall into it, so you get less shimmering and fewer broken dots than with a plain resize.</li>
+      <li>Pixel displays like Divoom can load a GIF from their app. Making it at the same size as the screen lets you see exactly which color each pixel will be. Apps may limit the number of frames or the file size, so if it won't load, shorten it or drop to 5 fps.</li>
+      <li>Need a regular-size GIF? Use the <a href="{{ '/en/' | relative_url }}">video to GIF converter</a>.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module" src="{{ '/assets/js/pixel-gif.js' | relative_url }}"></script>

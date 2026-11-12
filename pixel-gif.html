@@ -1,0 +1,128 @@
+---
+layout: default
+title: "픽셀 GIF 만들기 - 동영상을 16×16·32×32·64×64 픽셀 아트 GIF로"
+description: "동영상을 16×16, 32×32, 64×64 픽셀 GIF로 바꿔요. Divoom 디투·Pixoo 같은 픽셀 디스플레이에 넣을 GIF를 서버 업로드 없이 브라우저에서 바로 만들 수 있어요."
+permalink: /pixel-gif/
+ref: pixel-gif
+---
+
+<div class="page-container">
+  <header class="page-hero">
+    <h1 class="page-title">픽셀 GIF 만들기</h1>
+    <p class="page-subtitle">동영상을 16×16·32×32·64×64 픽셀 GIF로 바꿔 보세요</p>
+  </header>
+
+  <div class="content-section">
+    <section class="upload-section" id="pxUploadSection">
+      <div class="upload-icon">👾</div>
+      <div class="upload-text" id="pxUploadText">동영상 파일을 선택하세요</div>
+      <div class="upload-subtext">클릭하거나 드래그 & 드롭으로 올리세요. 파일은 서버로 올라가지 않아요.</div>
+      <input type="file" id="pxInput" accept="video/*" hidden>
+    </section>
+    <p class="px-message" id="pxMessage" role="alert" hidden></p>
+
+    <section class="px-work" id="pxWork" hidden>
+      <h2 class="sr-only">픽셀 GIF 설정</h2>
+      <div class="px-stage">
+        <figure class="px-source">
+          <div class="px-source-box" id="pxSourceBox">
+            <video id="pxVideo" class="px-video" muted playsinline preload="auto"></video>
+            <div class="px-crop" id="pxCrop" aria-hidden="true"></div>
+          </div>
+          <figcaption>원본 · 밝은 네모가 GIF에 들어가요</figcaption>
+        </figure>
+        <figure class="px-preview">
+          <div class="px-led" id="pxLiveWrap">
+            <canvas id="pxLive" class="px-canvas" width="16" height="16" aria-label="픽셀 미리보기"></canvas>
+          </div>
+          <figcaption id="pxLiveCap">미리보기 16×16</figcaption>
+        </figure>
+      </div>
+
+      <div class="px-controls">
+        <div class="px-field">
+          <span class="custom-label">크기</span>
+          <div class="trim-mode px-seg" role="group" aria-label="크기">
+            <button type="button" class="trim-mode-btn active" data-size="16" aria-pressed="true">16×16</button>
+            <button type="button" class="trim-mode-btn" data-size="32" aria-pressed="false">32×32</button>
+            <button type="button" class="trim-mode-btn" data-size="64" aria-pressed="false">64×64</button>
+          </div>
+        </div>
+        <div class="px-field">
+          <span class="custom-label">화면 맞추기</span>
+          <div class="trim-mode px-seg" role="group" aria-label="화면 맞추기">
+            <button type="button" class="trim-mode-btn active" data-fit="crop" aria-pressed="true">꽉 채우기</button>
+            <button type="button" class="trim-mode-btn" data-fit="contain" aria-pressed="false">전체 보이기</button>
+          </div>
+        </div>
+        <div class="custom-field px-field px-wide" id="pxPosField">
+          <label for="pxPos"><span id="pxPosLabel">자르는 위치</span> <output id="pxPosOut">가운데</output></label>
+          <input type="range" id="pxPos" min="0" max="100" step="1" value="50">
+        </div>
+        <div class="custom-field px-field">
+          <label for="pxStart">시작 지점 <output id="pxStartOut">0.0초</output></label>
+          <input type="range" id="pxStart" min="0" max="0" step="0.1" value="0">
+        </div>
+        <div class="custom-field px-field">
+          <label for="pxLen">길이 <output id="pxLenOut">3.0초</output></label>
+          <input type="range" id="pxLen" min="0.5" max="10" step="0.5" value="3">
+        </div>
+        <div class="px-field">
+          <span class="custom-label">초당 장수</span>
+          <div class="trim-mode px-seg" role="group" aria-label="초당 장수">
+            <button type="button" class="trim-mode-btn" data-fps="5" aria-pressed="false">5</button>
+            <button type="button" class="trim-mode-btn active" data-fps="10" aria-pressed="true">10</button>
+            <button type="button" class="trim-mode-btn" data-fps="20" aria-pressed="false">20</button>
+          </div>
+        </div>
+        <label class="px-check"><input type="checkbox" id="pxVivid" checked> <span>색 또렷하게<small>작은 화면에서 잘 보이게 채도와 대비를 조금 올려요</small></span></label>
+        <p class="custom-estimate px-estimate" id="pxEstimate" aria-live="polite"></p>
+        <button type="button" class="convert-btn px-make" id="pxMakeBtn">👾 픽셀 GIF 만들기</button>
+      </div>
+    </section>
+
+    <section class="output-section px-result" id="pxResult" hidden>
+      <h2 class="section-title"><span>✨</span><span>완성된 픽셀 GIF</span></h2>
+      <img id="pxGif" class="px-result-img" alt="">
+      <p class="px-info" id="pxInfo"></p>
+      <div class="px-downloads">
+        <a id="pxDownload" class="px-dl" download="pixel.gif">GIF 저장</a>
+        <a id="pxDownloadBig" class="px-dl px-dl-sub" download="pixel-large.gif">크게 저장</a>
+      </div>
+      <p class="px-note">기기에 넣을 때는 원래 크기로 저장한 파일을, 메신저나 SNS에 올릴 때는 크게 저장한 파일을 쓰세요.</p>
+    </section>
+  </div>
+
+  {% include ad-unit.html slot="home" %}
+
+  <section class="zif-how-to">
+    <h2>사용 방법</h2>
+    <ol class="how-to-steps">
+      <li>
+        <strong>동영상 올리기</strong>
+        <p>위 상자에 동영상을 끌어다 놓거나 눌러서 고르세요. 파일은 서버로 올라가지 않고 브라우저 안에서만 처리돼요.</p>
+      </li>
+      <li>
+        <strong>크기와 장면 고르기</strong>
+        <p>기기 화면에 맞춰 16×16, 32×32, 64×64 중에서 고르세요. 원본 위를 끌면 GIF에 들어갈 네모가 따라오고, 시작 지점과 길이를 정하면 오른쪽 미리보기에 실제 결과가 바로 반복 재생돼요.</p>
+      </li>
+      <li>
+        <strong>만들고 저장하기</strong>
+        <p>픽셀 GIF 만들기를 누르고 저장하면 끝이에요. 원래 크기 파일과, 칸을 그대로 키운 큰 파일을 따로 받을 수 있어요.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="zif-how-to">
+    <h2>알아 두면 좋은 점</h2>
+    <ul>
+      <li>16×16은 모두 256칸뿐이라 얼굴이나 글자는 거의 알아볼 수 없어요. 크고 단순한 모양, 배경과 색이 확실히 다른 장면이 잘 보여요. 미리보기를 보면서 네모 위치를 옮겨 보세요.</li>
+      <li>픽셀 애니메이션은 보통 초당 8~12장으로 만들어요. 기기에 넣을 거라면 초당 10장, 2~4초 정도로 시작해 보세요.</li>
+      <li>한 칸의 색은 그 칸에 들어가는 원본 픽셀들의 평균으로 정해요. 그냥 줄일 때 생기는 지글거림이나 깨진 점이 덜 생겨요.</li>
+      <li>Divoom 같은 픽셀 디스플레이 기기는 전용 앱에서 GIF를 불러와 띄울 수 있어요. 기기 화면과 같은 크기로 만들어 두면 어떤 칸이 어떤 색이 될지 미리 보고 고를 수 있어요. 앱에 따라 넣을 수 있는 장수나 용량이 정해져 있을 수 있으니, 안 들어가면 길이를 줄이거나 초당 장수를 5로 낮춰 보세요.</li>
+      <li>보통 크기의 GIF가 필요하면 <a href="{{ '/' | relative_url }}">동영상 GIF 변환기</a>를 쓰세요.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module" src="{{ '/assets/js/pixel-gif.js' | relative_url }}"></script>
