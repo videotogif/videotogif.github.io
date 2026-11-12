@@ -22,21 +22,21 @@ const T = IS_EN
       center: "Center",
       posH: "Crop position (left ↔ right)",
       posV: "Crop position (top ↔ bottom)",
-      live: (s) => `Preview ${s}×${s}`,
+      live: (w, h) => `Preview ${w}×${h}`,
       swatch: (i) => `Change color ${i}`,
       paletteHint: "Click a color to change it",
       paletteReset: "Reset colors",
       picking: "Picking colors...",
-      estimate: (n, sec, s, c) => `${n} frames · ${sec}s · ${s}×${s} · ${c} colors`,
+      estimate: (n, sec, w, h, c) => `${n} frames · ${sec}s · ${w}×${h} · ${c} colors`,
       make: "👾 Make pixel GIF",
       extracting: (i, n) => `Drawing frames (${i}/${n})`,
       encoding: "Saving GIF...",
-      info: (s, n, sec, size) => `${s}×${s} · ${n} frames · ${sec}s · ${size}`,
-      dl: (s) => `Save ${s}×${s} GIF`,
-      dlBig: (b) => `Save large (${b}×${b})`,
+      info: (w, h, n, sec, size) => `${w}×${h} · ${n} frames · ${sec}s · ${size}`,
+      dl: (w, h) => `Save ${w}×${h} GIF`,
+      dlBig: (w, h) => `Save large (${w}×${h})`,
       preparing: "Preparing large file...",
       failed: "Couldn't make the GIF. Try a shorter length and make it again.",
-      alt: (s) => `Pixel art GIF made at ${s}×${s}`,
+      alt: (w, h) => `Pixel art GIF made at ${w}×${h}`,
     }
   : {
       opening: "동영상을 여는 중...",
@@ -47,21 +47,21 @@ const T = IS_EN
       center: "가운데",
       posH: "자르는 위치 (좌우)",
       posV: "자르는 위치 (위아래)",
-      live: (s) => `미리보기 ${s}×${s}`,
+      live: (w, h) => `미리보기 ${w}×${h}`,
       swatch: (i) => `${i}번 색 바꾸기`,
       paletteHint: "색을 누르면 바꿀 수 있어요",
       paletteReset: "원래 색으로",
       picking: "색 고르는 중...",
-      estimate: (n, sec, s, c) => `${n}장 · ${sec}초 · ${s}×${s} · ${c}색`,
+      estimate: (n, sec, w, h, c) => `${n}장 · ${sec}초 · ${w}×${h} · ${c}색`,
       make: "👾 픽셀 GIF 만들기",
       extracting: (i, n) => `장면 그리는 중 (${i}/${n})`,
       encoding: "GIF 저장하는 중...",
-      info: (s, n, sec, size) => `${s}×${s} · ${n}장 · ${sec}초 · ${size}`,
-      dl: (s) => `${s}×${s} GIF 저장`,
-      dlBig: (b) => `크게 저장 (${b}×${b})`,
+      info: (w, h, n, sec, size) => `${w}×${h} · ${n}장 · ${sec}초 · ${size}`,
+      dl: (w, h) => `${w}×${h} GIF 저장`,
+      dlBig: (w, h) => `크게 저장 (${w}×${h})`,
       preparing: "큰 파일 준비 중...",
       failed: "GIF를 만들지 못했어요. 길이를 줄여서 다시 만들어 보세요.",
-      alt: (s) => `${s}×${s} 픽셀 아트 GIF`,
+      alt: (w, h) => `${w}×${h} 픽셀 아트 GIF`,
     };
 
 const F = 8; // 한 칸 = 칸 수의 8배로 줄인 그림에서 8×8 픽셀이 투표
@@ -283,7 +283,7 @@ function artPalette(centers) {
 }
 
 // ---------- GIF 굽기: 팔레트 그대로, 디더링 없이 ----------
-function encodeGif(frames, size, palette, delays) {
+function encodeGif(frames, gw, gh, palette, delays) {
   let bits = 1;
   while (1 << bits < palette.length) bits++;
   const tableSize = 1 << bits;
@@ -294,8 +294,8 @@ function encodeGif(frames, size, palette, delays) {
   };
   const word = (v) => push(v & 255, (v >> 8) & 255);
   for (const ch of "GIF89a") push(ch.charCodeAt(0));
-  word(size);
-  word(size);
+  word(gw);
+  word(gh);
   push(0x80 | ((bits - 1) << 4) | (bits - 1), 0, 0);
   for (let i = 0; i < tableSize; i++) {
     const c = palette[i] || [0, 0, 0];
@@ -317,8 +317,8 @@ function encodeGif(frames, size, palette, delays) {
     push(0x2c);
     word(0);
     word(0);
-    word(size);
-    word(size);
+    word(gw);
+    word(gh);
     push(0);
     // LZW (omggif와 같은 방식)
     push(minCode);
@@ -404,12 +404,13 @@ function holdFrames(frames, fps) {
   return { kept, delays };
 }
 
-function upscaleIdx(idx, s, k) {
-  const n = s * k;
-  const out = new Uint8Array(n * n);
-  for (let y = 0; y < n; y++) {
-    const row = ((y / k) | 0) * s;
-    for (let x = 0; x < n; x++) out[y * n + x] = idx[row + ((x / k) | 0)];
+function upscaleIdx(idx, gw, gh, k) {
+  const w = gw * k;
+  const h = gh * k;
+  const out = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const row = ((y / k) | 0) * gw;
+    for (let x = 0; x < w; x++) out[y * w + x] = idx[row + ((x / k) | 0)];
   }
   return out;
 }
@@ -482,16 +483,22 @@ ready(() => {
   const midCtx = mid.getContext("2d", { willReadFrequently: true });
   const liveCtx = live.getContext("2d");
 
+  // GIF 칸 수: 꽉 채우기는 정사각형, 전체 보이기는 여백 없이 영상 비율 그대로 (긴 쪽 = 고른 크기)
+  function dims() {
+    const s = S.size;
+    if (!meta || S.fit === "crop" || meta.w === meta.h) return { gw: s, gh: s };
+    return meta.w > meta.h
+      ? { gw: s, gh: Math.max(1, Math.round((s * meta.h) / meta.w)) }
+      : { gw: Math.max(1, Math.round((s * meta.w) / meta.h)), gh: s };
+  }
+
   function sourceRect() {
     const { w, h } = meta;
     if (S.fit === "crop") {
       const side = Math.min(w, h);
-      return { sx: (w - side) * S.pos, sy: (h - side) * S.pos, sw: side, sh: side, dx: 0, dy: 0, dw: 1, dh: 1 };
+      return { sx: (w - side) * S.pos, sy: (h - side) * S.pos, sw: side, sh: side };
     }
-    const k = 1 / Math.max(w, h);
-    const dw = w * k;
-    const dh = h * k;
-    return { sx: 0, sy: 0, sw: w, sh: h, dx: (1 - dw) / 2, dy: (1 - dh) / 2, dw, dh };
+    return { sx: 0, sy: 0, sw: w, sh: h };
   }
 
   function sized(c, w, h) {
@@ -500,12 +507,12 @@ ready(() => {
     return c.getContext("2d");
   }
 
-  // 원본 → (절반씩 줄이며) → 칸 수 × 8 정사각형 → 픽셀 데이터
+  // 원본 → (절반씩 줄이며) → 칸 수 × 8 → 픽셀 데이터
   function grabMid() {
     const r = sourceRect();
-    const M = S.size * F;
-    const tw = Math.max(1, Math.round(r.dw * M));
-    const th = Math.max(1, Math.round(r.dh * M));
+    const { gw, gh } = dims();
+    const tw = gw * F;
+    const th = gh * F;
     let cur = video;
     let x = r.sx;
     let y = r.sy;
@@ -526,25 +533,23 @@ ready(() => {
       h = nh;
       out = out === bufA ? bufB : bufA;
     }
-    const c = sized(mid, M, M);
-    c.fillStyle = "#000";
-    c.fillRect(0, 0, M, M);
+    const c = sized(mid, tw, th);
     c.imageSmoothingEnabled = true;
     c.imageSmoothingQuality = "high";
-    c.drawImage(cur, x, y, w, h, Math.round(r.dx * M), Math.round(r.dy * M), tw, th);
-    return midCtx.getImageData(0, 0, M, M).data;
+    c.drawImage(cur, x, y, w, h, 0, 0, tw, th);
+    return midCtx.getImageData(0, 0, tw, th).data;
   }
 
   // 팔레트용 샘플: 칸 평균 + 군데군데 낱 픽셀(작은 강한 색도 놓치지 않게)
   function collectSamples(px, list) {
-    const s = S.size;
-    const M = s * F;
+    const { gw, gh } = dims();
+    const M = gw * F;
     const take = (r, g, b) => {
       const c = S.vivid ? boost(r, g, b) : [r, g, b];
       list.push(...toOklab(c[0], c[1], c[2]));
     };
-    for (let by = 0; by < s; by++) {
-      for (let bx = 0; bx < s; bx++) {
+    for (let by = 0; by < gh; by++) {
+      for (let bx = 0; bx < gw; bx++) {
         let r = 0;
         let g = 0;
         let b = 0;
@@ -651,13 +656,14 @@ ready(() => {
 
   // 한 장면 → 칸 색 번호 (가장 많이 차지한 색, 깜빡임 줄이기, 외톨이 정리)
   function quantize(px, prev) {
-    const s = S.size;
-    const M = s * F;
+    const { gw, gh } = dims();
+    const M = gw * F;
     const { k, lut, dist } = pal;
-    const out = new Uint8Array(s * s);
+    const out = new Uint8Array(gw * gh);
+    if (prev && prev.length !== out.length) prev = null;
     const votes = new Uint16Array(k);
-    for (let by = 0; by < s; by++) {
-      for (let bx = 0; bx < s; bx++) {
+    for (let by = 0; by < gh; by++) {
+      for (let bx = 0; bx < gw; bx++) {
         votes.fill(0);
         for (let y = by * F; y < by * F + F; y++) {
           let i = (y * M + bx * F) * 4;
@@ -667,7 +673,7 @@ ready(() => {
         }
         let best = 0;
         for (let c = 1; c < k; c++) if (votes[c] > votes[best]) best = c;
-        const cell = by * s + bx;
+        const cell = by * gw + bx;
         if (prev && prev[cell] !== best && votes[prev[cell]] >= votes[best] * KEEP_RATIO) best = prev[cell];
         out[cell] = best;
       }
@@ -675,14 +681,14 @@ ready(() => {
     // 외톨이 칸: 위아래좌우가 모두 다른 색이면 이웃에서 가장 많은 색(같으면 가까운 색)으로
     const fixed = out.slice();
     const nb = [0, 0, 0, 0];
-    for (let y = 0; y < s; y++) {
-      for (let x = 0; x < s; x++) {
-        const c = out[y * s + x];
+    for (let y = 0; y < gh; y++) {
+      for (let x = 0; x < gw; x++) {
+        const c = out[y * gw + x];
         let n = 0;
-        if (y > 0) nb[n++] = out[(y - 1) * s + x];
-        if (y < s - 1) nb[n++] = out[(y + 1) * s + x];
-        if (x > 0) nb[n++] = out[y * s + x - 1];
-        if (x < s - 1) nb[n++] = out[y * s + x + 1];
+        if (y > 0) nb[n++] = out[(y - 1) * gw + x];
+        if (y < gh - 1) nb[n++] = out[(y + 1) * gw + x];
+        if (x > 0) nb[n++] = out[y * gw + x - 1];
+        if (x < gw - 1) nb[n++] = out[y * gw + x + 1];
         let alone = true;
         for (let i = 0; i < n; i++) if (nb[i] === c) alone = false;
         if (!alone) continue;
@@ -696,23 +702,36 @@ ready(() => {
             pickCount = cnt;
           }
         }
-        fixed[y * s + x] = pick;
+        fixed[y * gw + x] = pick;
       }
     }
     return fixed;
   }
 
+  // 미리보기 칸이 정수 픽셀이 되게 (긴 쪽을 상자에 맞추고 칸 크기는 내림)
+  function fitLive(gw, gh) {
+    const box = (liveWrap && liveWrap.clientWidth) || 256;
+    const cell = Math.max(1, Math.floor(box / Math.max(gw, gh)));
+    live.style.width = `${gw * cell}px`;
+    live.style.height = `${gh * cell}px`;
+  }
+  window.addEventListener("resize", () => {
+    if (meta) fitLive(dims().gw, dims().gh);
+  });
+
   function paint(idx) {
-    const s = S.size;
-    const img = new ImageData(s, s);
-    for (let i = 0; i < s * s; i++) {
+    const { gw, gh } = dims();
+    if (idx.length !== gw * gh) return;
+    const img = new ImageData(gw, gh);
+    for (let i = 0; i < gw * gh; i++) {
       const c = pal.colors[idx[i]];
       img.data[i * 4] = c[0];
       img.data[i * 4 + 1] = c[1];
       img.data[i * 4 + 2] = c[2];
       img.data[i * 4 + 3] = 255;
     }
-    sized(live, s, s);
+    sized(live, gw, gh);
+    fitLive(gw, gh);
     liveCtx.putImageData(img, 0, 0);
   }
 
@@ -888,12 +907,9 @@ ready(() => {
     if (!meta) return;
     if (startOut) startOut.textContent = `${fmt(S.start)}${T.sec}`;
     if (lenOut) lenOut.textContent = `${fmt(effLen())}${T.sec}`;
-    if (estimate) estimate.textContent = T.estimate(frameCount(), fmt(frameCount() / S.fps), S.size, S.colors);
-    if (liveCap && !scanning) liveCap.textContent = T.live(S.size);
-    if (liveWrap) {
-      liveWrap.style.setProperty("--n", String(S.size));
-      liveWrap.dataset.n = String(S.size);
-    }
+    const { gw, gh } = dims();
+    if (estimate) estimate.textContent = T.estimate(frameCount(), fmt(frameCount() / S.fps), gw, gh, S.colors);
+    if (liveCap && !scanning) liveCap.textContent = T.live(gw, gh);
     setPressed("size", S.size);
     setPressed("fit", S.fit);
     setPressed("fps", S.fps);
@@ -925,6 +941,7 @@ ready(() => {
     b.addEventListener("click", () => {
       if (busy) return;
       S.fit = b.dataset.fit;
+      prevIdx = null;
       changed(true);
     })
   );
@@ -1115,14 +1132,14 @@ ready(() => {
 
   // 칸 번호 → GIF 두 개(원래 크기·크게). 색은 굽는 순간의 팔레트(바꾼 색 포함)
   async function bake(made, my, first) {
-    const { frames, delays, size } = made;
+    const { frames, delays, size, gw, gh } = made;
     const palette = pal.colors.map((c) => c.slice());
     const total = delays.reduce((a, b) => a + b, 0);
     const k = BIG[size];
     if (first) await rabbitDuck(); // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가 다시 나옴
     let buf;
     try {
-      buf = encodeGif(frames, size, palette, delays);
+      buf = encodeGif(frames, gw, gh, palette, delays);
     } finally {
       if (first) rabbitResume();
     }
@@ -1130,11 +1147,15 @@ ready(() => {
     if (gifUrl) URL.revokeObjectURL(gifUrl);
     gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
     gifImg.src = gifUrl;
-    gifImg.alt = T.alt(size);
-    info.textContent = T.info(size, frames.length, fmt(total / 100), sizeText(buf.length));
+    gifImg.alt = T.alt(gw, gh);
+    // 결과 그림도 칸이 정수 픽셀이 되게 (긴 쪽 256px 안)
+    const cellR = Math.max(1, Math.floor(256 / Math.max(gw, gh)));
+    gifImg.style.width = `${gw * cellR}px`;
+    gifImg.style.height = `${gh * cellR}px`;
+    info.textContent = T.info(gw, gh, frames.length, fmt(total / 100), sizeText(buf.length));
     dl.href = gifUrl;
-    dl.download = `pixel-${size}x${size}.gif`;
-    dl.textContent = T.dl(size);
+    dl.download = `pixel-${gw}x${gh}.gif`;
+    dl.textContent = T.dl(gw, gh);
     if (bigUrl) URL.revokeObjectURL(bigUrl);
     bigUrl = null;
     dlBig.removeAttribute("href");
@@ -1151,8 +1172,9 @@ ready(() => {
     let big;
     try {
       big = encodeGif(
-        frames.map((f) => upscaleIdx(f, size, k)),
-        size * k,
+        frames.map((f) => upscaleIdx(f, gw, gh, k)),
+        gw * k,
+        gh * k,
         palette,
         delays
       );
@@ -1162,9 +1184,9 @@ ready(() => {
     if (my !== job) return;
     bigUrl = URL.createObjectURL(new Blob([big], { type: "image/gif" }));
     dlBig.href = bigUrl;
-    dlBig.download = `pixel-${size}x${size}-large.gif`;
+    dlBig.download = `pixel-${gw}x${gh}-large.gif`;
     dlBig.removeAttribute("aria-disabled");
-    dlBig.textContent = T.dlBig(size * k);
+    dlBig.textContent = T.dlBig(gw * k, gh * k);
   }
 
   // 만든 GIF가 지금 팔레트로 만든 것이면, 색을 바꿀 때 장면을 다시 뽑지 않고 바로 다시 굽는다
@@ -1219,7 +1241,7 @@ ready(() => {
         frames.push(prev);
       }
       const held = holdFrames(frames, fps);
-      lastMade = { frames: held.kept, delays: held.delays, size, key: palKey };
+      lastMade = { frames: held.kept, delays: held.delays, size, ...dims(), key: palKey };
       setButton(T.encoding, true);
       await bake(lastMade, my, true);
     } catch (err) {

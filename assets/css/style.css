@@ -3956,14 +3956,12 @@ img[src$="-pixel.png"] {
 
 /* 미리보기: 칸이 또렷하게, 16·32칸이면 LED처럼 칸 사이 선 */
 .px-led {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 256px;
   height: 256px;
   margin: 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #000;
-  box-shadow: 0 12px 30px var(--shadow-lg);
 }
 
 .content-section h2.section-title {
@@ -4056,6 +4054,9 @@ img[src$="-pixel.png"] {
   display: block;
   width: 100%;
   height: 100%;
+  border-radius: 6px;
+  background: #000;
+  box-shadow: 0 12px 30px var(--shadow-lg);
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 }
