@@ -3,23 +3,23 @@ layout: default
 lang: en-US
 locale: en_US
 ref: pixel-gif
-title: "Pixel GIF Maker - Turn Video into 16×16, 32×32, 64×64 Pixel Art GIFs"
-description: "Turn a video into a 16×16, 32×32 or 64×64 pixel art GIF with a locked 8 to 32 color palette, for pixel displays like Divoom Ditoo and Pixoo. Everything runs in your browser, with no upload."
+title: "Pixel GIF Maker - Turn Videos and Photos into 16×16, 32×32, 64×64 Pixel Art"
+description: "Turn a video into a 16×16, 32×32 or 64×64 pixel art GIF, or a photo (JPG, PNG, HEIC) into pixel art, with a locked 8 to 32 color palette, for pixel displays like Divoom Ditoo and Pixoo. Everything runs in your browser, with no upload."
 permalink: /en/pixel-gif/
 ---
 
 <div class="page-container">
   <header class="page-hero">
     <h1 class="page-title">Pixel GIF Maker</h1>
-    <p class="page-subtitle">Turn a video into a 16×16, 32×32 or 64×64 pixel art GIF</p>
+    <p class="page-subtitle">Turn a video into a pixel art GIF, or a photo into pixel art</p>
   </header>
 
   <div class="content-section">
     <section class="upload-section" id="pxUploadSection">
       <div class="upload-icon">👾</div>
-      <div class="upload-text" id="pxUploadText">Choose a video file</div>
-      <div class="upload-subtext">Click or drag & drop. Your file never leaves your browser.</div>
-      <input type="file" id="pxInput" accept="video/*" hidden>
+      <div class="upload-text" id="pxUploadText">Choose a video or photo</div>
+      <div class="upload-subtext">Photos can be JPG, PNG or HEIC. Click or drag & drop. Your file never leaves your browser.</div>
+      <input type="file" id="pxInput" accept="video/*,image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" hidden>
     </section>
     <p class="px-message" id="pxMessage" role="alert" hidden></p>
 
@@ -29,6 +29,7 @@ permalink: /en/pixel-gif/
         <figure class="px-source">
           <div class="px-source-box" id="pxSourceBox">
             <video id="pxVideo" class="px-video" muted playsinline preload="auto"></video>
+            <img id="pxImage" class="px-video" alt="" hidden>
             <div class="px-crop" id="pxCrop" aria-hidden="true"></div>
           </div>
           <figcaption>Original · the bright square goes into the GIF</figcaption>
@@ -63,15 +64,15 @@ permalink: /en/pixel-gif/
           <label for="pxPos"><span id="pxPosLabel">Crop position</span> <output id="pxPosOut">Center</output></label>
           <input type="range" id="pxPos" min="0" max="100" step="1" value="50">
         </div>
-        <div class="custom-field px-field">
+        <div class="custom-field px-field px-motion">
           <label for="pxStart">Start <output id="pxStartOut">0.0s</output></label>
           <input type="range" id="pxStart" min="0" max="0" step="0.1" value="0">
         </div>
-        <div class="custom-field px-field">
+        <div class="custom-field px-field px-motion">
           <label for="pxLen">Length <output id="pxLenOut">3.0s</output></label>
           <input type="range" id="pxLen" min="0.5" max="10" step="0.5" value="3">
         </div>
-        <div class="px-field">
+        <div class="px-field px-motion">
           <span class="custom-label">Frames per second</span>
           <div class="trim-mode px-seg" role="group" aria-label="Frames per second">
             <button type="button" class="trim-mode-btn" data-fps="4" aria-pressed="false">4</button>
@@ -95,7 +96,7 @@ permalink: /en/pixel-gif/
     </section>
 
     <section class="output-section px-result" id="pxResult" hidden>
-      <h2 class="section-title"><span>✨</span><span>Your pixel GIF</span></h2>
+      <h2 class="section-title"><span>✨</span><span id="pxResultTitle">Your pixel GIF</span></h2>
       <img id="pxGif" class="px-result-img" alt="">
       <p class="px-info" id="pxInfo"></p>
       <div class="px-downloads">
@@ -112,8 +113,8 @@ permalink: /en/pixel-gif/
     <h2>How to use</h2>
     <ol class="how-to-steps">
       <li>
-        <strong>Add a video</strong>
-        <p>Drop a video on the box above or click to choose one. It's processed inside your browser and never uploaded.</p>
+        <strong>Add a video or photo</strong>
+        <p>Drop a video or photo (JPG, PNG, HEIC) on the box above or click to choose one. It's processed inside your browser and never uploaded.</p>
       </li>
       <li>
         <strong>Pick the size and the moment</strong>
@@ -129,6 +130,7 @@ permalink: /en/pixel-gif/
   <section class="zif-how-to">
     <h2>Good to know</h2>
     <ul>
+      <li>A photo becomes a single still piece of pixel art (PNG), with no motion. iPhone HEIC photos work as they are.</li>
       <li>Show all keeps the video's own shape with no empty bars. A vertical video at 64 comes out as something like 36×64, with the long side at 64. If you need an exact square for your screen, use Fill.</li>
       <li>16×16 is only 256 pixels, so faces and text are hard to read. Big, simple shapes with a clear color difference from the background work best. Move the square while watching the preview.</li>
       <li>Pixel animation is usually made at 12 frames per second, half of film's 24. 8 fps is the minimum that still reads as smooth, 4 fps is a deliberately choppy retro look, and 24 fps is overkill unless it's a fast effect like a splash. For a device, start with 12 fps and 2 to 4 seconds.</li>

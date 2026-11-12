@@ -3946,6 +3946,15 @@ img[src$="-pixel.png"] {
   pointer-events: none;
 }
 
+.px-video[hidden] {
+  display: none;
+}
+
+/* 사진일 때는 시간 설정(시작·길이·초당 장수)을 숨김 */
+.px-work.is-photo .px-motion {
+  display: none;
+}
+
 .px-crop {
   position: absolute;
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);

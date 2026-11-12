@@ -15,7 +15,17 @@ const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en
 const T = IS_EN
   ? {
       opening: "Opening the video...",
-      another: "Choose another video",
+      openingPhoto: "Opening the photo...",
+      openingHeic: "Opening the HEIC photo...",
+      photoFail: "Couldn't open this photo. Convert it to JPG or PNG and try again.",
+      another: "Choose another video or photo",
+      makePhoto: "👾 Make pixel art",
+      drawing: "Drawing...",
+      estimatePhoto: (w, h, c) => `${w}×${h} · ${c} colors`,
+      infoPhoto: (w, h, c, size) => `${w}×${h} · ${c} colors · ${size}`,
+      dlPng: (w, h) => `Save ${w}×${h} PNG`,
+      resultGif: "Your pixel GIF",
+      resultPhoto: "Your pixel art",
       unsupported: "This browser can't play this video. Convert it to MP4 (H.264) or try another browser.",
       noDuration: "Couldn't read the length of this video. Please try another file.",
       sec: "s",
@@ -40,7 +50,17 @@ const T = IS_EN
     }
   : {
       opening: "동영상을 여는 중...",
-      another: "다른 동영상 고르기",
+      openingPhoto: "사진을 여는 중...",
+      openingHeic: "HEIC 사진을 여는 중...",
+      photoFail: "이 사진을 열 수 없어요. JPG나 PNG로 바꿔서 올려 보세요.",
+      another: "다른 동영상·사진 고르기",
+      makePhoto: "👾 픽셀 아트 만들기",
+      drawing: "그리는 중...",
+      estimatePhoto: (w, h, c) => `${w}×${h} · ${c}색`,
+      infoPhoto: (w, h, c, size) => `${w}×${h} · ${c}색 · ${size}`,
+      dlPng: (w, h) => `${w}×${h} PNG 저장`,
+      resultGif: "완성된 픽셀 GIF",
+      resultPhoto: "완성된 픽셀 아트",
       unsupported: "이 브라우저에서 열 수 없는 동영상이에요. MP4(H.264)로 바꿔서 올리거나 다른 브라우저로 열어 보세요.",
       noDuration: "이 동영상의 길이를 알 수 없어요. 다른 파일로 해 보세요.",
       sec: "초",
@@ -428,6 +448,8 @@ ready(() => {
   const work = $("pxWork");
   const message = $("pxMessage");
   const video = $("pxVideo");
+  const photoEl = $("pxImage");
+  const resultTitle = $("pxResultTitle");
   const box = $("pxSourceBox");
   const crop = $("pxCrop");
   const live = $("pxLive");
@@ -461,6 +483,8 @@ ready(() => {
     /* 저장소를 못 써도 기본값으로 동작 */
   }
   let meta = null; // { w, h, duration }
+  let still = null; // 사진을 올렸으면 그 그림(ImageBitmap). 사진은 한 장짜리 픽셀 아트로 만든다
+  const makeLabel = () => (still ? T.makePhoto : T.make);
   let busy = false; // GIF 만드는 중
   let scanning = false; // 팔레트 고르는 중
   let videoUrl = null;
@@ -513,7 +537,7 @@ ready(() => {
     const { gw, gh } = dims();
     const tw = gw * F;
     const th = gh * F;
-    let cur = video;
+    let cur = still || video;
     let x = r.sx;
     let y = r.sy;
     let w = r.sw;
@@ -803,13 +827,17 @@ ready(() => {
     if (liveCap) liveCap.textContent = T.picking;
     const key = keyNow();
     const my = job;
-    video.pause();
     const list = [];
-    const eff = effLen();
-    for (let i = 0; i < SCAN_FRAMES; i++) {
-      await seek(Math.min(S.start + (eff * (i + 0.5)) / SCAN_FRAMES, meta.duration - 0.01));
-      if (my !== job) break;
+    if (still) {
       collectSamples(grabMid(), list);
+    } else {
+      video.pause();
+      const eff = effLen();
+      for (let i = 0; i < SCAN_FRAMES; i++) {
+        await seek(Math.min(S.start + (eff * (i + 0.5)) / SCAN_FRAMES, meta.duration - 0.01));
+        if (my !== job) break;
+        collectSamples(grabMid(), list);
+      }
     }
     if (my === job) {
       pal = buildPalette(list);
@@ -827,6 +855,10 @@ ready(() => {
     }
     if (my !== job) return;
     renderInfo();
+    if (still) {
+      renderLive();
+      return;
+    }
     lastBucket = -1;
     video.currentTime = S.start;
     video.play().catch(() => {});
@@ -834,8 +866,8 @@ ready(() => {
 
   // ---------- 미리보기 ----------
   function renderLive() {
-    if (!meta || !pal || busy || scanning || video.readyState < 2) return;
-    prevIdx = quantize(grabMid(), prevIdx);
+    if (!meta || !pal || busy || scanning || (!still && video.readyState < 2)) return;
+    prevIdx = quantize(grabMid(), still ? null : prevIdx);
     paint(prevIdx);
   }
 
@@ -845,7 +877,7 @@ ready(() => {
   let lastBucket = -1;
   function tick() {
     requestAnimationFrame(tick);
-    if (!meta || busy || scanning || video.seeking) return;
+    if (!meta || still || busy || scanning || video.seeking) return;
     const end = S.start + effLen();
     const t = video.currentTime;
     if (t >= end - 0.02 || t < S.start - 0.05) {
@@ -908,7 +940,11 @@ ready(() => {
     if (startOut) startOut.textContent = `${fmt(S.start)}${T.sec}`;
     if (lenOut) lenOut.textContent = `${fmt(effLen())}${T.sec}`;
     const { gw, gh } = dims();
-    if (estimate) estimate.textContent = T.estimate(frameCount(), fmt(frameCount() / S.fps), gw, gh, S.colors);
+    if (work) work.classList.toggle("is-photo", !!still);
+    if (estimate)
+      estimate.textContent = still
+        ? T.estimatePhoto(gw, gh, S.colors)
+        : T.estimate(frameCount(), fmt(frameCount() / S.fps), gw, gh, S.colors);
     if (liveCap && !scanning) liveCap.textContent = T.live(gw, gh);
     setPressed("size", S.size);
     setPressed("fit", S.fit);
@@ -1036,11 +1072,11 @@ ready(() => {
     e.preventDefault();
     upload.classList.remove("dragover");
     const file = e.dataTransfer?.files?.[0];
-    if (file && file.type.startsWith("video/")) openVideo(file);
+    if (file && (file.type.startsWith("video/") || isPhotoFile(file))) openFile(file);
   });
   input.addEventListener("change", () => {
     const file = input.files?.[0];
-    if (file) openVideo(file);
+    if (file) openFile(file);
     input.value = "";
   });
   document.addEventListener("dragover", (e) => e.preventDefault());
@@ -1072,15 +1108,108 @@ ready(() => {
     });
   }
 
-  async function openVideo(file) {
-    if (busy) return;
+  // ---------- 사진 열기: JPG·PNG·WebP는 브라우저가 직접, HEIC는 사파리면 직접·아니면 변환 라이브러리로 ----------
+  const isHeic = (f) => /image\/hei[cf]/i.test(f.type) || /\.hei[cf]$/i.test(f.name);
+  const isPhotoFile = (f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|hei[cf])$/i.test(f.name);
+
+  let heicLib = null;
+  function loadHeic() {
+    if (!heicLib) {
+      heicLib = new Promise((resolve, reject) => {
+        const tag = document.createElement("script");
+        tag.src = "/assets/vendor/heic2any/heic2any.min.js";
+        tag.onload = () => (window.heic2any ? resolve(window.heic2any) : reject(new Error("heic2any missing")));
+        tag.onerror = () => {
+          heicLib = null;
+          reject(new Error("heic2any load failed"));
+        };
+        document.head.appendChild(tag);
+      });
+    }
+    return heicLib;
+  }
+
+  async function decodePhoto(file) {
+    try {
+      return { bmp: await createImageBitmap(file, { imageOrientation: "from-image" }), blob: file };
+    } catch (e) {
+      if (!isHeic(file)) throw e;
+    }
+    const heic2any = await loadHeic();
+    let out = await heic2any({ blob: file, toType: "image/png" });
+    if (Array.isArray(out)) out = out[0];
+    return { bmp: await createImageBitmap(out), blob: out };
+  }
+
+  function resetForNewFile() {
     job += 1;
     meta = null;
     pal = null;
     prevIdx = null;
     edits = [];
     lastMade = null;
+    if (still && still.close) still.close();
+    still = null;
     showMessage("");
+  }
+
+  function openFile(file) {
+    if (busy) return;
+    if (!file.type.startsWith("video/") && isPhotoFile(file)) openPhoto(file);
+    else openVideo(file);
+  }
+
+  async function openPhoto(file) {
+    resetForNewFile();
+    const my = job;
+    if (uploadText) uploadText.textContent = isHeic(file) ? T.openingHeic : T.openingPhoto;
+    upload.classList.add("loading");
+    let decoded = null;
+    try {
+      decoded = await decodePhoto(file);
+    } catch (e) {
+      console.error(e);
+    }
+    if (my !== job) return;
+    upload.classList.remove("loading");
+    if (uploadText) uploadText.textContent = T.another;
+    if (!decoded || !decoded.bmp.width || !decoded.bmp.height) {
+      if (work) work.hidden = true;
+      showMessage(T.photoFail);
+      return;
+    }
+    still = decoded.bmp;
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.hidden = true;
+    if (videoUrl) URL.revokeObjectURL(videoUrl);
+    videoUrl = URL.createObjectURL(decoded.blob);
+    if (photoEl) {
+      photoEl.src = videoUrl;
+      photoEl.hidden = false;
+    }
+    meta = { w: still.width, h: still.height, duration: 0 };
+    S.pos = 0.5;
+    if (pos) pos.value = "50";
+    if (work) work.hidden = false;
+    if (result) result.hidden = true;
+    renderInfo();
+    renderSwatches();
+    setButton(makeLabel(), false);
+    setTimeout(() => work?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    await scanPalette();
+  }
+
+  async function openVideo(file) {
+    if (busy) return;
+    resetForNewFile();
+    if (photoEl) {
+      photoEl.hidden = true;
+      photoEl.removeAttribute("src");
+    }
+    video.hidden = false;
+    setButton(makeLabel(), false);
     if (uploadText) uploadText.textContent = T.opening;
     upload.classList.add("loading");
     if (videoUrl) URL.revokeObjectURL(videoUrl);
@@ -1131,7 +1260,55 @@ ready(() => {
   }
 
   // 칸 번호 → GIF 두 개(원래 크기·크게). 색은 굽는 순간의 팔레트(바꾼 색 포함)
+  function toPng(idx, w, h, palette) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const img = new ImageData(w, h);
+    for (let i = 0; i < w * h; i++) {
+      const col = palette[idx[i]];
+      img.data[i * 4] = col[0];
+      img.data[i * 4 + 1] = col[1];
+      img.data[i * 4 + 2] = col[2];
+      img.data[i * 4 + 3] = 255;
+    }
+    c.getContext("2d").putImageData(img, 0, 0);
+    return new Promise((resolve) => c.toBlob(resolve, "image/png"));
+  }
+
+  async function bakePhoto(made, my, first) {
+    const { frames, size, gw, gh } = made;
+    const palette = pal.colors.map((c) => c.slice());
+    const k = BIG[size];
+    const small = await toPng(frames[0], gw, gh, palette);
+    const large = await toPng(upscaleIdx(frames[0], gw, gh, k), gw * k, gh * k, palette);
+    if (my !== job) return;
+    if (gifUrl) URL.revokeObjectURL(gifUrl);
+    if (bigUrl) URL.revokeObjectURL(bigUrl);
+    gifUrl = URL.createObjectURL(small);
+    bigUrl = URL.createObjectURL(large);
+    if (resultTitle) resultTitle.textContent = T.resultPhoto;
+    gifImg.src = gifUrl;
+    gifImg.alt = T.alt(gw, gh);
+    const cellR = Math.max(1, Math.floor(256 / Math.max(gw, gh)));
+    gifImg.style.width = `${gw * cellR}px`;
+    gifImg.style.height = `${gh * cellR}px`;
+    info.textContent = T.infoPhoto(gw, gh, pal.k, sizeText(small.size));
+    dl.href = gifUrl;
+    dl.download = `pixel-${gw}x${gh}.png`;
+    dl.textContent = T.dlPng(gw, gh);
+    dlBig.href = bigUrl;
+    dlBig.download = `pixel-${gw}x${gh}-large.png`;
+    dlBig.removeAttribute("aria-disabled");
+    dlBig.textContent = T.dlBig(gw * k, gh * k);
+    if (first) {
+      result.hidden = false;
+      setTimeout(() => result.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    }
+  }
+
   async function bake(made, my, first) {
+    if (made.photo) return bakePhoto(made, my, first);
     const { frames, delays, size, gw, gh } = made;
     const palette = pal.colors.map((c) => c.slice());
     const total = delays.reduce((a, b) => a + b, 0);
@@ -1147,6 +1324,7 @@ ready(() => {
     if (gifUrl) URL.revokeObjectURL(gifUrl);
     gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
     gifImg.src = gifUrl;
+    if (resultTitle) resultTitle.textContent = T.resultGif;
     gifImg.alt = T.alt(gw, gh);
     // 결과 그림도 칸이 정수 픽셀이 되게 (긴 쪽 256px 안)
     const cellR = Math.max(1, Math.floor(256 / Math.max(gw, gh)));
@@ -1225,6 +1403,21 @@ ready(() => {
     busy = true;
     const my = job;
     const size = S.size;
+    if (still) {
+      // 사진: 한 장짜리 픽셀 아트(PNG)
+      try {
+        setButton(T.drawing, true);
+        lastMade = { frames: [quantize(grabMid(), null)], delays: [0], photo: true, size, ...dims(), key: palKey };
+        await bake(lastMade, my, true);
+      } catch (err) {
+        console.error(err);
+        showMessage(T.failed);
+      } finally {
+        busy = false;
+        setButton(makeLabel(), false);
+      }
+      return;
+    }
     const fps = S.fps;
     const n = frameCount();
     const step = effLen() / n;
@@ -1250,8 +1443,8 @@ ready(() => {
     } finally {
       rabbitStop();
       busy = false;
-      setButton(T.make, false);
-      if (meta) {
+      setButton(makeLabel(), false);
+      if (meta && !still) {
         lastBucket = -1;
         prevIdx = null;
         video.currentTime = S.start;
@@ -1264,5 +1457,5 @@ ready(() => {
     if (!dlBig.getAttribute("href")) e.preventDefault();
   });
 
-  setButton(T.make, false);
+  setButton(makeLabel(), false);
 });
