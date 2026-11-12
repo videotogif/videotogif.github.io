@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "픽셀 GIF 만들기 - 동영상을 16×16·32×32·64×64 픽셀 아트 GIF로"
-description: "동영상을 16×16, 32×32, 64×64 픽셀 GIF로 바꿔요. Divoom 디투·Pixoo 같은 픽셀 디스플레이에 넣을 GIF를 서버 업로드 없이 브라우저에서 바로 만들 수 있어요."
+description: "동영상을 16×16, 32×32, 64×64 픽셀 아트 GIF로 바꿔요. 색을 8~32개로 묶어 칸마다 또렷하게 칠해요. Divoom 디투·Pixoo 같은 픽셀 디스플레이에 넣을 GIF를 서버 업로드 없이 브라우저에서 바로 만들 수 있어요."
 permalink: /pixel-gif/
 ref: pixel-gif
 ---
@@ -9,7 +9,7 @@ ref: pixel-gif
 <div class="page-container">
   <header class="page-hero">
     <h1 class="page-title">픽셀 GIF 만들기</h1>
-    <p class="page-subtitle">동영상을 16×16·32×32·64×64 픽셀 GIF로 바꿔 보세요</p>
+    <p class="page-subtitle">동영상을 16×16·32×32·64×64 픽셀 아트 GIF로 바꿔 보세요</p>
   </header>
 
   <div class="content-section">
@@ -35,6 +35,7 @@ ref: pixel-gif
           <div class="px-led" id="pxLiveWrap">
             <canvas id="pxLive" class="px-canvas" width="16" height="16" aria-label="픽셀 미리보기"></canvas>
           </div>
+          <div class="px-palette" id="pxPalette" role="img" aria-label="팔레트"></div>
           <figcaption id="pxLiveCap">미리보기 16×16</figcaption>
         </figure>
       </div>
@@ -75,6 +76,14 @@ ref: pixel-gif
             <button type="button" class="trim-mode-btn" data-fps="20" aria-pressed="false">20</button>
           </div>
         </div>
+        <div class="px-field">
+          <span class="custom-label">색 수</span>
+          <div class="trim-mode px-seg" role="group" aria-label="색 수">
+            <button type="button" class="trim-mode-btn" data-colors="8" aria-pressed="false">8색</button>
+            <button type="button" class="trim-mode-btn active" data-colors="16" aria-pressed="true">16색</button>
+            <button type="button" class="trim-mode-btn" data-colors="32" aria-pressed="false">32색</button>
+          </div>
+        </div>
         <label class="px-check"><input type="checkbox" id="pxVivid" checked> <span>색 또렷하게<small>작은 화면에서 잘 보이게 채도와 대비를 조금 올려요</small></span></label>
         <p class="custom-estimate px-estimate" id="pxEstimate" aria-live="polite"></p>
         <button type="button" class="convert-btn px-make" id="pxMakeBtn">👾 픽셀 GIF 만들기</button>
@@ -104,7 +113,7 @@ ref: pixel-gif
       </li>
       <li>
         <strong>크기와 장면 고르기</strong>
-        <p>기기 화면에 맞춰 16×16, 32×32, 64×64 중에서 고르세요. 원본 위를 끌면 GIF에 들어갈 네모가 따라오고, 시작 지점과 길이를 정하면 오른쪽 미리보기에 실제 결과가 바로 반복 재생돼요.</p>
+        <p>기기 화면에 맞춰 16×16, 32×32, 64×64 중에서 고르세요. 원본 위를 끌면 GIF에 들어갈 네모가 따라오고, 시작 지점과 길이를 정하면 오른쪽 미리보기에 실제 결과가 바로 반복 재생돼요. 색 수를 줄일수록 더 단순하고 굵은 픽셀 아트가 돼요.</p>
       </li>
       <li>
         <strong>만들고 저장하기</strong>
@@ -118,7 +127,14 @@ ref: pixel-gif
     <ul>
       <li>16×16은 모두 256칸뿐이라 얼굴이나 글자는 거의 알아볼 수 없어요. 크고 단순한 모양, 배경과 색이 확실히 다른 장면이 잘 보여요. 미리보기를 보면서 네모 위치를 옮겨 보세요.</li>
       <li>픽셀 애니메이션은 보통 초당 8~12장으로 만들어요. 기기에 넣을 거라면 초당 10장, 2~4초 정도로 시작해 보세요.</li>
-      <li>한 칸의 색은 그 칸에 들어가는 원본 픽셀들의 평균으로 정해요. 그냥 줄일 때 생기는 지글거림이나 깨진 점이 덜 생겨요.</li>
+      <li>그냥 줄이기만 하면 흐린 모자이크가 돼요. 여기서는 픽셀 아트를 그릴 때의 규칙을 따라요.
+        <ul>
+          <li>고른 구간 전체에서 색을 8·16·32개로 묶어, 모든 장면이 같은 팔레트를 써요.</li>
+          <li>칸마다 평균색이 아니라 그 칸을 가장 많이 차지한 색 하나로 칠해서, 경계가 한 칸에서 딱 바뀌어요.</li>
+          <li>밝은 색은 따뜻한 쪽, 어두운 색은 차가운 쪽으로 살짝 옮기고, 가장 어두운 색은 검정 대신 짙은 남색을 써요.</li>
+          <li>혼자 튀는 칸은 주변 색으로 정리하고, 크게 바뀌지 않은 칸은 앞 장면 색을 그대로 둬서 깜빡임을 줄여요.</li>
+        </ul>
+      </li>
       <li>Divoom 같은 픽셀 디스플레이 기기는 전용 앱에서 GIF를 불러와 띄울 수 있어요. 기기 화면과 같은 크기로 만들어 두면 어떤 칸이 어떤 색이 될지 미리 보고 고를 수 있어요. 앱에 따라 넣을 수 있는 장수나 용량이 정해져 있을 수 있으니, 안 들어가면 길이를 줄이거나 초당 장수를 5로 낮춰 보세요.</li>
       <li>보통 크기의 GIF가 필요하면 <a href="{{ '/' | relative_url }}">동영상 GIF 변환기</a>를 쓰세요.</li>
     </ul>

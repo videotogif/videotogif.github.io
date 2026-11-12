@@ -3957,8 +3957,8 @@ img[src$="-pixel.png"] {
 /* 미리보기: 칸이 또렷하게, 16·32칸이면 LED처럼 칸 사이 선 */
 .px-led {
   position: relative;
-  width: 224px;
-  height: 224px;
+  width: 256px;
+  height: 256px;
   margin: 0 auto;
   border-radius: 8px;
   overflow: hidden;
@@ -3984,6 +3984,20 @@ img[src$="-pixel.png"] {
 .content-section h2.section-title {
   font-size: 1.5rem;
   margin-bottom: 20px;
+}
+
+/* 팔레트: 이 GIF에 쓰이는 색 전부 (어두운 색 → 밝은 색) */
+.px-palette {
+  display: flex;
+  width: 256px;
+  height: 12px;
+  margin: 10px auto 0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.px-palette span {
+  flex: 1 1 0;
 }
 
 .px-canvas {
@@ -4159,6 +4173,10 @@ img[src$="-pixel.png"] {
   .px-led {
     width: 192px;
     height: 192px;
+  }
+
+  .px-palette {
+    width: 192px;
   }
 
   .px-controls {

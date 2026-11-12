@@ -1,9 +1,14 @@
-// 픽셀 GIF 만들기
-// - 동영상을 정사각형으로 맞춰(가운데 자르기 또는 전체 보이기) 16·32·64칸 GIF로 만든다
-// - 한 칸의 색 = 그 칸에 들어가는 원본 픽셀들의 평균(빛의 세기 기준). 그냥 줄일 때 생기는 지글거림을 막는다
-// - 오른쪽 미리보기는 고른 구간을 고른 초당 장수로 반복 재생하며, 실제 GIF와 같은 방식으로 그린다
-// - 일반 GIF 변환(main.js)과는 따로 동작한다
-import encode from "/assets/wasm/gifski-wasm/dist/encode.js";
+// 픽셀 GIF 만들기 — 동영상을 "픽셀 아트처럼" 16·32·64칸 GIF로
+//
+// 그냥 줄이면(평균색) 흐린 모자이크가 된다. 픽셀 아트로 보이게 하는 규칙을 따른다
+// (unfake.js · Derek Yu 튜토리얼 · 픽셀 아트 작업 규칙에서 정리한 것):
+//  1. 격자 먼저: 칸 수가 곧 GIF 크기. 미리보기·크게 저장도 칸 수의 정수배
+//  2. 팔레트 잠그기: 클립 전체에서 색을 8·16·32개로 묶어 모든 장면이 같은 팔레트를 씀
+//  3. 칸마다 "가장 많이 차지한 색" 하나 (평균 아님) → 경계가 한 칸에서 딱 바뀜
+//  4. 색조 옮기기: 밝은 색은 따뜻한 쪽, 어두운 색은 차가운 쪽으로. 가장 어두운 색은 검정 대신 짙은 남색
+//  5. 외톨이 칸 정리: 사방이 다른 색인 한 칸은 주변 색으로
+//  6. 깜빡임 줄이기: 앞 장면 색이 아직 충분히 맞으면 그대로 둠 (영상이라 필요한 규칙)
+// GIF는 이 팔레트 그대로 직접 굽는다(디더링·색 변형 없음). 일반 GIF 변환(main.js)과는 따로 동작한다.
 import { rabbitStart, rabbitStop, rabbitDuck, rabbitResume } from "./rabbit.js";
 
 const IS_EN = (document.documentElement.lang || "").toLowerCase().startsWith("en");
@@ -18,16 +23,18 @@ const T = IS_EN
       posH: "Crop position (left ↔ right)",
       posV: "Crop position (top ↔ bottom)",
       live: (s) => `Preview ${s}×${s}`,
-      estimate: (n, sec, s) => `${n} frames · ${sec}s · ${s}×${s}`,
+      palette: (n) => `${n} colors`,
+      picking: "Picking colors...",
+      estimate: (n, sec, s, c) => `${n} frames · ${sec}s · ${s}×${s} · ${c} colors`,
       make: "👾 Make pixel GIF",
-      extracting: (i, n) => `Capturing frames (${i}/${n})`,
-      encoding: "Encoding GIF...",
+      extracting: (i, n) => `Drawing frames (${i}/${n})`,
+      encoding: "Saving GIF...",
       info: (s, n, sec, size) => `${s}×${s} · ${n} frames · ${sec}s · ${size}`,
       dl: (s) => `Save ${s}×${s} GIF`,
       dlBig: (b) => `Save large (${b}×${b})`,
       preparing: "Preparing large file...",
       failed: "Couldn't make the GIF. Try a shorter length and make it again.",
-      alt: (s) => `Pixel GIF made at ${s}×${s}`,
+      alt: (s) => `Pixel art GIF made at ${s}×${s}`,
     }
   : {
       opening: "동영상을 여는 중...",
@@ -39,41 +46,344 @@ const T = IS_EN
       posH: "자르는 위치 (좌우)",
       posV: "자르는 위치 (위아래)",
       live: (s) => `미리보기 ${s}×${s}`,
-      estimate: (n, sec, s) => `${n}장 · ${sec}초 · ${s}×${s}`,
+      palette: (n) => `${n}색`,
+      picking: "색 고르는 중...",
+      estimate: (n, sec, s, c) => `${n}장 · ${sec}초 · ${s}×${s} · ${c}색`,
       make: "👾 픽셀 GIF 만들기",
-      extracting: (i, n) => `장면 뽑는 중 (${i}/${n})`,
-      encoding: "GIF 굽는 중...",
+      extracting: (i, n) => `장면 그리는 중 (${i}/${n})`,
+      encoding: "GIF 저장하는 중...",
       info: (s, n, sec, size) => `${s}×${s} · ${n}장 · ${sec}초 · ${size}`,
       dl: (s) => `${s}×${s} GIF 저장`,
       dlBig: (b) => `크게 저장 (${b}×${b})`,
       preparing: "큰 파일 준비 중...",
       failed: "GIF를 만들지 못했어요. 길이를 줄여서 다시 만들어 보세요.",
-      alt: (s) => `${s}×${s}로 만든 픽셀 GIF`,
+      alt: (s) => `${s}×${s} 픽셀 아트 GIF`,
     };
 
-const F = 8; // 한 칸 = 원본을 칸 수의 8배로 줄인 그림에서 8×8 픽셀의 평균
-const BIG = { 16: 16, 32: 8, 64: 8 }; // 크게 저장할 때 배율 (256, 256, 512)
+const F = 8; // 한 칸 = 칸 수의 8배로 줄인 그림에서 8×8 픽셀이 투표
+const BIG = { 16: 16, 32: 8, 64: 8 }; // 크게 저장 배율 (256, 256, 512) — 칸이 정수 픽셀이 되게
+const SCAN_FRAMES = 12; // 팔레트를 고를 때 보는 장면 수 (미리보기와 GIF가 같은 팔레트를 씀)
+const KEEP_RATIO = 0.6; // 앞 장면 색이 1등 표의 60% 이상이면 그대로 (깜빡임 줄이기)
 const SIZE_KEY = "vtg-px-size";
 
-// sRGB ↔ 빛의 세기(선형). 평균은 빛의 세기로 내야 밝은 점이 어둡게 뭉개지지 않는다
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+// ---------- 색 계산 ----------
 const TO_LIN = new Float32Array(256);
 for (let i = 0; i < 256; i++) {
   const c = i / 255;
   TO_LIN[i] = c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
-const TO_SRGB = new Uint8Array(4096);
-for (let i = 0; i < 4096; i++) {
-  const l = i / 4095;
-  const c = l <= 0.0031308 ? l * 12.92 : 1.055 * Math.pow(l, 1 / 2.4) - 0.055;
-  TO_SRGB[i] = Math.round(c * 255);
+const toSrgb8 = (l) => {
+  const v = clamp(l, 0, 1);
+  return Math.round((v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055) * 255);
+};
+
+// 사람 눈 기준으로 색 거리를 재는 Oklab
+function toOklab(r, g, b) {
+  const lr = TO_LIN[r];
+  const lg = TO_LIN[g];
+  const lb = TO_LIN[b];
+  const l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb);
+  const m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb);
+  const s = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+}
+function fromOklab(L, a, b) {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [
+    toSrgb8(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    toSrgb8(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    toSrgb8(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+  ];
+}
+
+// 작은 화면에서 잘 보이게 채도·대비를 올림 (실사를 그대로 묶으면 회색 모자이크가 된다)
+function boost(r, g, b) {
+  const l = 0.299 * r + 0.587 * g + 0.114 * b;
+  return [
+    clamp(Math.round((l + (r - l) * 1.35 - 128) * 1.12 + 128), 0, 255),
+    clamp(Math.round((l + (g - l) * 1.35 - 128) * 1.12 + 128), 0, 255),
+    clamp(Math.round((l + (b - l) * 1.35 - 128) * 1.12 + 128), 0, 255),
+  ];
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h;
+  if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return [h * 60, s, l];
+}
+function hslToRgb(h, s, l) {
+  h = (((h % 360) + 360) % 360) / 360;
+  if (s === 0) {
+    const v = Math.round(l * 255);
+    return [v, v, v];
+  }
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const f = (t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  return [Math.round(f(h + 1 / 3) * 255), Math.round(f(h) * 255), Math.round(f(h - 1 / 3) * 255)];
+}
+// 색조를 목표 쪽으로 deg만큼 (가까운 방향으로) 돌림
+function hueToward(h, target, deg) {
+  const diff = ((target - h + 540) % 360) - 180;
+  return h + Math.sign(diff) * Math.min(Math.abs(diff), deg);
+}
+
+// 같은 시드면 같은 결과 (미리보기와 GIF가 같은 팔레트)
+function rng(seed) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// k-means (Oklab). samples: Float32Array [L,a,b, L,a,b, ...]
+function kmeans(samples, k) {
+  const n = samples.length / 3;
+  k = Math.min(k, n);
+  const rand = rng(7);
+  const C = new Float32Array(k * 3);
+  const d2 = new Float32Array(n).fill(Infinity);
+  // k-means++ 시작점
+  let pick = Math.floor(rand() * n);
+  for (let c = 0; c < k; c++) {
+    C[c * 3] = samples[pick * 3];
+    C[c * 3 + 1] = samples[pick * 3 + 1];
+    C[c * 3 + 2] = samples[pick * 3 + 2];
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+      const dl = samples[i * 3] - C[c * 3];
+      const da = samples[i * 3 + 1] - C[c * 3 + 1];
+      const db = samples[i * 3 + 2] - C[c * 3 + 2];
+      const d = dl * dl + da * da + db * db;
+      if (d < d2[i]) d2[i] = d;
+      sum += d2[i];
+    }
+    let r = rand() * sum;
+    pick = n - 1;
+    for (let i = 0; i < n; i++) {
+      r -= d2[i];
+      if (r <= 0) {
+        pick = i;
+        break;
+      }
+    }
+  }
+  const assign = new Int32Array(n);
+  const acc = new Float64Array(k * 4);
+  for (let it = 0; it < 12; it++) {
+    acc.fill(0);
+    for (let i = 0; i < n; i++) {
+      let best = 0;
+      let bd = Infinity;
+      for (let c = 0; c < k; c++) {
+        const dl = samples[i * 3] - C[c * 3];
+        const da = samples[i * 3 + 1] - C[c * 3 + 1];
+        const db = samples[i * 3 + 2] - C[c * 3 + 2];
+        const d = dl * dl + da * da + db * db;
+        if (d < bd) {
+          bd = d;
+          best = c;
+        }
+      }
+      assign[i] = best;
+      d2[i] = bd;
+      acc[best * 4] += samples[i * 3];
+      acc[best * 4 + 1] += samples[i * 3 + 1];
+      acc[best * 4 + 2] += samples[i * 3 + 2];
+      acc[best * 4 + 3] += 1;
+    }
+    for (let c = 0; c < k; c++) {
+      if (acc[c * 4 + 3] > 0) {
+        C[c * 3] = acc[c * 4] / acc[c * 4 + 3];
+        C[c * 3 + 1] = acc[c * 4 + 1] / acc[c * 4 + 3];
+        C[c * 3 + 2] = acc[c * 4 + 2] / acc[c * 4 + 3];
+      } else {
+        // 빈 색은 가장 멀리 떨어진 샘플로 다시
+        let far = 0;
+        for (let i = 1; i < n; i++) if (d2[i] > d2[far]) far = i;
+        C[c * 3] = samples[far * 3];
+        C[c * 3 + 1] = samples[far * 3 + 1];
+        C[c * 3 + 2] = samples[far * 3 + 2];
+        d2[far] = 0;
+      }
+    }
+  }
+  return C;
+}
+
+// 묶은 색 → 픽셀 아트 팔레트: 밝은 색은 따뜻하게, 어두운 색은 차갑게, 가장 어두운 색은 검정 대신 짙은 남색
+function artPalette(centers) {
+  const k = centers.length / 3;
+  const Ls = [];
+  for (let c = 0; c < k; c++) Ls.push(centers[c * 3]);
+  const sorted = Ls.slice().sort((a, b) => a - b);
+  const lo = sorted[0];
+  const hi = sorted[k - 1];
+  const mid = sorted[Math.floor(k / 2)];
+  const darkest = Ls.indexOf(lo);
+  const out = [];
+  for (let c = 0; c < k; c++) {
+    const L = centers[c * 3];
+    const [r, g, b] = fromOklab(L, centers[c * 3 + 1], centers[c * 3 + 2]);
+    let [h, s, l] = rgbToHsl(r, g, b);
+    const gray = s < 0.08;
+    if (L >= mid && hi > mid) {
+      const t = (L - mid) / (hi - mid);
+      h = gray ? 50 : hueToward(h, 50, 18 * t);
+      s = gray ? Math.max(s, 0.05 * t) : s * (1 - 0.12 * t);
+      l = Math.min(1, l * (1 + 0.02 * t));
+    } else if (mid > lo) {
+      const t = (mid - L) / (mid - lo);
+      h = gray ? 250 : hueToward(h, 250, 16 * t);
+      s = gray ? Math.max(s, 0.05 * t) : Math.min(1, s * (1 + 0.1 * t));
+      l = l * (1 - 0.03 * t);
+    }
+    if (c === darkest && l < 0.16) {
+      // 순수 검정 대신 짙은 남색 (외곽선·그늘이 살아 보이게)
+      h = hueToward(gray ? 250 : h, 245, 40);
+      s = Math.max(s, 0.3);
+      l = Math.max(l, 0.08);
+    }
+    out.push(hslToRgb(h, s, l));
+  }
+  return out;
+}
+
+// ---------- GIF 굽기: 팔레트 그대로, 디더링 없이 ----------
+function encodeGif(frames, size, palette, delayCs) {
+  let bits = 1;
+  while (1 << bits < palette.length) bits++;
+  const tableSize = 1 << bits;
+  const minCode = Math.max(2, bits);
+  const bytes = [];
+  const push = (...b) => {
+    for (const x of b) bytes.push(x);
+  };
+  const word = (v) => push(v & 255, (v >> 8) & 255);
+  for (const ch of "GIF89a") push(ch.charCodeAt(0));
+  word(size);
+  word(size);
+  push(0x80 | ((bits - 1) << 4) | (bits - 1), 0, 0);
+  for (let i = 0; i < tableSize; i++) {
+    const c = palette[i] || [0, 0, 0];
+    push(c[0], c[1], c[2]);
+  }
+  // 무한 반복
+  push(0x21, 0xff, 0x0b);
+  for (const ch of "NETSCAPE2.0") push(ch.charCodeAt(0));
+  push(0x03, 0x01, 0x00, 0x00, 0x00);
+
+  const table = new Int16Array(1 << 20);
+  const stamp = new Uint32Array(1 << 20);
+  let gen = 0;
+  for (const idx of frames) {
+    push(0x21, 0xf9, 0x04, 0x04);
+    word(delayCs);
+    push(0, 0);
+    push(0x2c);
+    word(0);
+    word(0);
+    word(size);
+    word(size);
+    push(0);
+    // LZW (omggif와 같은 방식)
+    push(minCode);
+    const data = [];
+    const clear = 1 << minCode;
+    const eoi = clear + 1;
+    let next = eoi + 1;
+    let codeSize = minCode + 1;
+    let cur = 0;
+    let shift = 0;
+    const emit = (code) => {
+      cur |= code << shift;
+      shift += codeSize;
+      while (shift >= 8) {
+        data.push(cur & 255);
+        cur >>>= 8;
+        shift -= 8;
+      }
+    };
+    gen++;
+    emit(clear);
+    let prefix = idx[0];
+    for (let i = 1; i < idx.length; i++) {
+      const k = idx[i];
+      const key = (prefix << 8) | k;
+      if (stamp[key] === gen) {
+        prefix = table[key];
+        continue;
+      }
+      emit(prefix);
+      if (next === 4096) {
+        emit(clear);
+        next = eoi + 1;
+        codeSize = minCode + 1;
+        gen++;
+      } else {
+        if (next >= 1 << codeSize) codeSize++;
+        table[key] = next++;
+        stamp[key] = gen;
+      }
+      prefix = k;
+    }
+    emit(prefix);
+    emit(eoi);
+    if (shift > 0) data.push(cur & 255);
+    for (let i = 0; i < data.length; i += 255) {
+      const n = Math.min(255, data.length - i);
+      bytes.push(n);
+      for (let j = 0; j < n; j++) bytes.push(data[i + j]);
+    }
+    push(0);
+  }
+  push(0x3b);
+  return new Uint8Array(bytes);
+}
+
+function upscaleIdx(idx, s, k) {
+  const n = s * k;
+  const out = new Uint8Array(n * n);
+  for (let y = 0; y < n; y++) {
+    const row = ((y / k) | 0) * s;
+    for (let x = 0; x < n; x++) out[y * n + x] = idx[row + ((x / k) | 0)];
+  }
+  return out;
 }
 
 function ready(fn) {
   if (document.readyState !== "loading") fn();
   else document.addEventListener("DOMContentLoaded", fn, { once: true });
 }
-
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 ready(() => {
   const $ = (id) => document.getElementById(id);
@@ -88,6 +398,7 @@ ready(() => {
   const live = $("pxLive");
   const liveWrap = $("pxLiveWrap");
   const liveCap = $("pxLiveCap");
+  const swatches = $("pxPalette");
   const posField = $("pxPosField");
   const posLabel = $("pxPosLabel");
   const pos = $("pxPos");
@@ -106,7 +417,7 @@ ready(() => {
   const dlBig = $("pxDownloadBig");
   if (!input || !upload || !video || !live || !makeBtn) return;
 
-  const S = { size: 16, fit: "crop", pos: 0.5, start: 0, len: 3, fps: 10, vivid: true };
+  const S = { size: 16, fit: "crop", pos: 0.5, start: 0, len: 3, fps: 10, colors: 16, vivid: true };
   try {
     const saved = Number(localStorage.getItem(SIZE_KEY));
     if (BIG[saved]) S.size = saved;
@@ -114,11 +425,17 @@ ready(() => {
     /* 저장소를 못 써도 기본값으로 동작 */
   }
   let meta = null; // { w, h, duration }
-  let busy = false;
+  let busy = false; // GIF 만드는 중
+  let scanning = false; // 팔레트 고르는 중
   let videoUrl = null;
   let gifUrl = null;
   let bigUrl = null;
-  let job = 0; // 새 영상·새 GIF가 시작되면 이전 작업 결과는 버림
+  let job = 0;
+
+  // 지금 팔레트: centers(Oklab, 칸 고르기용) · colors(색조를 옮긴 실제 색) · lut(RGB 32단계 → 팔레트 번호)
+  let pal = null;
+  let palKey = "";
+  let prevIdx = null; // 앞 장면 칸 색 (깜빡임 줄이기)
 
   // ---------- 그리기 ----------
   const bufA = document.createElement("canvas");
@@ -127,7 +444,6 @@ ready(() => {
   const midCtx = mid.getContext("2d", { willReadFrequently: true });
   const liveCtx = live.getContext("2d");
 
-  // 원본에서 쓸 영역(sx..)과, 정사각형 안에 놓일 자리(dx.., 0~1 비율)
   function sourceRect() {
     const { w, h } = meta;
     if (S.fit === "crop") {
@@ -146,11 +462,13 @@ ready(() => {
     return c.getContext("2d");
   }
 
-  // 원본 → (절반씩 줄이며) → 칸 수 × 8 크기의 정사각형
-  function drawToMid(src, r, M) {
+  // 원본 → (절반씩 줄이며) → 칸 수 × 8 정사각형 → 픽셀 데이터
+  function grabMid() {
+    const r = sourceRect();
+    const M = S.size * F;
     const tw = Math.max(1, Math.round(r.dw * M));
     const th = Math.max(1, Math.round(r.dh * M));
-    let cur = src;
+    let cur = video;
     let x = r.sx;
     let y = r.sy;
     let w = r.sw;
@@ -176,75 +494,227 @@ ready(() => {
     c.imageSmoothingEnabled = true;
     c.imageSmoothingQuality = "high";
     c.drawImage(cur, x, y, w, h, Math.round(r.dx * M), Math.round(r.dy * M), tw, th);
+    return midCtx.getImageData(0, 0, M, M).data;
   }
 
-  // 8×8 픽셀 평균으로 한 칸씩 → size×size ImageData
-  function boxDown(size) {
-    const M = size * F;
-    const src = midCtx.getImageData(0, 0, M, M).data;
-    const out = new ImageData(size, size);
-    const d = out.data;
-    const n = F * F;
-    for (let by = 0; by < size; by++) {
-      for (let bx = 0; bx < size; bx++) {
+  // 팔레트용 샘플: 칸 평균 + 군데군데 낱 픽셀(작은 강한 색도 놓치지 않게)
+  function collectSamples(px, list) {
+    const s = S.size;
+    const M = s * F;
+    const take = (r, g, b) => {
+      const c = S.vivid ? boost(r, g, b) : [r, g, b];
+      list.push(...toOklab(c[0], c[1], c[2]));
+    };
+    for (let by = 0; by < s; by++) {
+      for (let bx = 0; bx < s; bx++) {
         let r = 0;
         let g = 0;
         let b = 0;
         for (let y = by * F; y < by * F + F; y++) {
           let i = (y * M + bx * F) * 4;
           for (let x = 0; x < F; x++, i += 4) {
-            r += TO_LIN[src[i]];
-            g += TO_LIN[src[i + 1]];
-            b += TO_LIN[src[i + 2]];
+            r += px[i];
+            g += px[i + 1];
+            b += px[i + 2];
           }
         }
-        const o = (by * size + bx) * 4;
-        d[o] = TO_SRGB[Math.round((r / n) * 4095)];
-        d[o + 1] = TO_SRGB[Math.round((g / n) * 4095)];
-        d[o + 2] = TO_SRGB[Math.round((b / n) * 4095)];
-        d[o + 3] = 255;
+        const n = F * F;
+        take(Math.round(r / n), Math.round(g / n), Math.round(b / n));
+        const j = ((by * F + 3) * M + bx * F + 3) * 4;
+        take(px[j], px[j + 1], px[j + 2]);
       }
     }
-    if (S.vivid) boost(d);
-    return out;
   }
 
-  // 작은 화면에서 잘 보이게 채도와 대비를 조금 올림
-  function boost(d) {
-    for (let i = 0; i < d.length; i += 4) {
-      const r = d[i];
-      const g = d[i + 1];
-      const b = d[i + 2];
-      const l = 0.299 * r + 0.587 * g + 0.114 * b;
-      d[i] = (l + (r - l) * 1.35 - 128) * 1.12 + 128;
-      d[i + 1] = (l + (g - l) * 1.35 - 128) * 1.12 + 128;
-      d[i + 2] = (l + (b - l) * 1.35 - 128) * 1.12 + 128;
+  function buildPalette(list) {
+    const centers = kmeans(Float32Array.from(list), S.colors);
+    const k = centers.length / 3;
+    const colors = artPalette(centers);
+    // RGB 32단계마다 가장 가까운 팔레트 번호를 미리 계산
+    const lut = new Uint8Array(32768);
+    for (let i = 0; i < 32768; i++) {
+      let r = ((i >> 10) & 31) * 8 + 4;
+      let g = ((i >> 5) & 31) * 8 + 4;
+      let b = (i & 31) * 8 + 4;
+      if (S.vivid) [r, g, b] = boost(r, g, b);
+      const [L, A, B] = toOklab(r, g, b);
+      let best = 0;
+      let bd = Infinity;
+      for (let c = 0; c < k; c++) {
+        const dl = L - centers[c * 3];
+        const da = A - centers[c * 3 + 1];
+        const db = B - centers[c * 3 + 2];
+        const d = dl * dl + da * da + db * db;
+        if (d < bd) {
+          bd = d;
+          best = c;
+        }
+      }
+      lut[i] = best;
     }
+    // 색 사이 거리 (외톨이 칸 정리에서 가까운 색 고를 때)
+    const dist = new Float32Array(k * k);
+    for (let a = 0; a < k; a++)
+      for (let b = 0; b < k; b++) {
+        const dl = centers[a * 3] - centers[b * 3];
+        const da = centers[a * 3 + 1] - centers[b * 3 + 1];
+        const db = centers[a * 3 + 2] - centers[b * 3 + 2];
+        dist[a * k + b] = dl * dl + da * da + db * db;
+      }
+    return { k, colors, lut, dist };
   }
 
-  function sample(src) {
-    drawToMid(src, sourceRect(), S.size * F);
-    return boxDown(S.size);
-  }
-
-  function upscale(img, k) {
-    const s = img.width;
-    const n = s * k;
-    const out = new ImageData(n, n);
-    const from = new Uint32Array(img.data.buffer);
-    const to = new Uint32Array(out.data.buffer);
-    for (let y = 0; y < n; y++) {
-      const row = ((y / k) | 0) * s;
-      for (let x = 0; x < n; x++) to[y * n + x] = from[row + ((x / k) | 0)];
+  // 한 장면 → 칸 색 번호 (가장 많이 차지한 색, 깜빡임 줄이기, 외톨이 정리)
+  function quantize(px, prev) {
+    const s = S.size;
+    const M = s * F;
+    const { k, lut, dist } = pal;
+    const out = new Uint8Array(s * s);
+    const votes = new Uint16Array(k);
+    for (let by = 0; by < s; by++) {
+      for (let bx = 0; bx < s; bx++) {
+        votes.fill(0);
+        for (let y = by * F; y < by * F + F; y++) {
+          let i = (y * M + bx * F) * 4;
+          for (let x = 0; x < F; x++, i += 4) {
+            votes[lut[((px[i] >> 3) << 10) | ((px[i + 1] >> 3) << 5) | (px[i + 2] >> 3)]]++;
+          }
+        }
+        let best = 0;
+        for (let c = 1; c < k; c++) if (votes[c] > votes[best]) best = c;
+        const cell = by * s + bx;
+        if (prev && prev[cell] !== best && votes[prev[cell]] >= votes[best] * KEEP_RATIO) best = prev[cell];
+        out[cell] = best;
+      }
     }
-    return out;
+    // 외톨이 칸: 위아래좌우가 모두 다른 색이면 이웃에서 가장 많은 색(같으면 가까운 색)으로
+    const fixed = out.slice();
+    const nb = [0, 0, 0, 0];
+    for (let y = 0; y < s; y++) {
+      for (let x = 0; x < s; x++) {
+        const c = out[y * s + x];
+        let n = 0;
+        if (y > 0) nb[n++] = out[(y - 1) * s + x];
+        if (y < s - 1) nb[n++] = out[(y + 1) * s + x];
+        if (x > 0) nb[n++] = out[y * s + x - 1];
+        if (x < s - 1) nb[n++] = out[y * s + x + 1];
+        let alone = true;
+        for (let i = 0; i < n; i++) if (nb[i] === c) alone = false;
+        if (!alone) continue;
+        let pick = nb[0];
+        let pickCount = 0;
+        for (let i = 0; i < n; i++) {
+          let cnt = 0;
+          for (let j = 0; j < n; j++) if (nb[j] === nb[i]) cnt++;
+          if (cnt > pickCount || (cnt === pickCount && dist[c * k + nb[i]] < dist[c * k + pick])) {
+            pick = nb[i];
+            pickCount = cnt;
+          }
+        }
+        fixed[y * s + x] = pick;
+      }
+    }
+    return fixed;
+  }
+
+  function paint(idx) {
+    const s = S.size;
+    const img = new ImageData(s, s);
+    for (let i = 0; i < s * s; i++) {
+      const c = pal.colors[idx[i]];
+      img.data[i * 4] = c[0];
+      img.data[i * 4 + 1] = c[1];
+      img.data[i * 4 + 2] = c[2];
+      img.data[i * 4 + 3] = 255;
+    }
+    sized(live, s, s);
+    liveCtx.putImageData(img, 0, 0);
+  }
+
+  function renderSwatches() {
+    if (!swatches) return;
+    swatches.innerHTML = "";
+    if (!pal) return;
+    const order = pal.colors
+      .map((c, i) => ({ c, l: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2], i }))
+      .sort((a, b) => a.l - b.l);
+    for (const { c } of order) {
+      const sw = document.createElement("span");
+      sw.style.background = `rgb(${c[0]},${c[1]},${c[2]})`;
+      swatches.appendChild(sw);
+    }
+    swatches.setAttribute("aria-label", T.palette(pal.k));
+  }
+
+  // ---------- 팔레트 고르기: 구간에서 장면 12개를 보고 색을 묶는다 ----------
+  const keyNow = () => [S.size, S.fit, S.pos.toFixed(3), S.start, S.len, S.colors, S.vivid].join("|");
+
+  function seek(t) {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        video.removeEventListener("seeked", finish);
+        resolve();
+      };
+      const timer = setTimeout(finish, 3000);
+      video.addEventListener("seeked", finish);
+      video.currentTime = t;
+    });
+  }
+
+  let scanTimer = null;
+  let scanAgain = false;
+  function scheduleScan(delay = 250) {
+    clearTimeout(scanTimer);
+    scanTimer = setTimeout(() => scanPalette(), delay);
+  }
+
+  async function scanPalette() {
+    if (!meta || busy) return;
+    if (scanning) {
+      scanAgain = true;
+      return;
+    }
+    scanning = true;
+    if (liveCap) liveCap.textContent = T.picking;
+    const key = keyNow();
+    const my = job;
+    video.pause();
+    const list = [];
+    const eff = effLen();
+    for (let i = 0; i < SCAN_FRAMES; i++) {
+      await seek(Math.min(S.start + (eff * (i + 0.5)) / SCAN_FRAMES, meta.duration - 0.01));
+      if (my !== job) break;
+      collectSamples(grabMid(), list);
+    }
+    if (my === job) {
+      pal = buildPalette(list);
+      palKey = key;
+      prevIdx = null;
+      renderSwatches();
+    }
+    scanning = false;
+    // 고르는 동안 설정이 바뀌었거나 새 영상이 들어왔으면 다시
+    if (scanAgain || (my === job && keyNow() !== palKey)) {
+      scanAgain = false;
+      scanPalette();
+      return;
+    }
+    if (my !== job) return;
+    renderInfo();
+    lastBucket = -1;
+    video.currentTime = S.start;
+    video.play().catch(() => {});
   }
 
   // ---------- 미리보기 ----------
   function renderLive() {
-    if (!meta || busy || video.readyState < 2) return;
-    sized(live, S.size, S.size);
-    liveCtx.putImageData(sample(video), 0, 0);
+    if (!meta || !pal || busy || scanning || video.readyState < 2) return;
+    prevIdx = quantize(grabMid(), prevIdx);
+    paint(prevIdx);
   }
 
   const effLen = () => (meta ? Math.max(0.1, Math.min(S.len, meta.duration - S.start)) : 0);
@@ -253,7 +723,7 @@ ready(() => {
   let lastBucket = -1;
   function tick() {
     requestAnimationFrame(tick);
-    if (!meta || busy || video.seeking) return;
+    if (!meta || busy || scanning || video.seeking) return;
     const end = S.start + effLen();
     const t = video.currentTime;
     if (t >= end - 0.02 || t < S.start - 0.05) {
@@ -263,16 +733,17 @@ ready(() => {
     }
     const bucket = Math.floor((t - S.start) * S.fps);
     if (bucket !== lastBucket) {
+      if (bucket === 0) prevIdx = null; // GIF처럼 처음 장면부터 다시
       lastBucket = bucket;
       renderLive();
     }
   }
   requestAnimationFrame(tick);
   video.addEventListener("seeked", () => {
-    if (!busy) renderLive();
+    if (!busy && !scanning) renderLive();
   });
   video.addEventListener("ended", () => {
-    if (busy || !meta) return;
+    if (busy || scanning || !meta) return;
     video.currentTime = S.start;
     video.play().catch(() => {});
   });
@@ -314,8 +785,8 @@ ready(() => {
     if (!meta) return;
     if (startOut) startOut.textContent = `${fmt(S.start)}${T.sec}`;
     if (lenOut) lenOut.textContent = `${fmt(effLen())}${T.sec}`;
-    if (estimate) estimate.textContent = T.estimate(frameCount(), fmt(frameCount() / S.fps), S.size);
-    if (liveCap) liveCap.textContent = T.live(S.size);
+    if (estimate) estimate.textContent = T.estimate(frameCount(), fmt(frameCount() / S.fps), S.size, S.colors);
+    if (liveCap && !scanning) liveCap.textContent = T.live(S.size);
     if (liveWrap) {
       liveWrap.style.setProperty("--n", String(S.size));
       liveWrap.dataset.n = String(S.size);
@@ -323,55 +794,68 @@ ready(() => {
     setPressed("size", S.size);
     setPressed("fit", S.fit);
     setPressed("fps", S.fps);
+    setPressed("colors", S.colors);
     placeCrop();
   }
 
-  function refresh() {
+  // 그림이 바뀌는 설정은 팔레트를 다시 고른다 (초당 장수는 팔레트와 무관)
+  function changed(rescan) {
     renderInfo();
-    lastBucket = -1;
-    renderLive();
+    if (rescan) scheduleScan();
   }
 
   // ---------- 설정 ----------
   document.querySelectorAll("[data-size]").forEach((b) =>
     b.addEventListener("click", () => {
+      if (busy) return;
       S.size = Number(b.dataset.size);
       try {
         localStorage.setItem(SIZE_KEY, String(S.size));
       } catch (e) {
         /* 저장 못 해도 그만 */
       }
-      refresh();
+      prevIdx = null;
+      changed(true);
     })
   );
   document.querySelectorAll("[data-fit]").forEach((b) =>
     b.addEventListener("click", () => {
+      if (busy) return;
       S.fit = b.dataset.fit;
-      refresh();
+      changed(true);
     })
   );
   document.querySelectorAll("[data-fps]").forEach((b) =>
     b.addEventListener("click", () => {
+      if (busy) return;
       S.fps = Number(b.dataset.fps);
-      refresh();
+      changed(false);
+    })
+  );
+  document.querySelectorAll("[data-colors]").forEach((b) =>
+    b.addEventListener("click", () => {
+      if (busy) return;
+      S.colors = Number(b.dataset.colors);
+      changed(true);
     })
   );
   pos?.addEventListener("input", () => {
     S.pos = Number(pos.value) / 100;
-    refresh();
+    changed(true);
   });
   start?.addEventListener("input", () => {
     S.start = Number(start.value);
     renderInfo();
-    video.currentTime = S.start;
+    if (!scanning) video.currentTime = S.start;
+    scheduleScan(400);
   });
   len?.addEventListener("input", () => {
     S.len = Number(len.value);
-    renderInfo();
+    changed(true);
   });
   vivid?.addEventListener("change", () => {
     S.vivid = vivid.checked;
-    refresh();
+    changed(true);
   });
 
   // 원본 위를 끌면 자르는 칸이 따라옴
@@ -386,7 +870,12 @@ ready(() => {
       S.pos = clamp((e.clientY - r.top - ch / 2) / (r.height - ch), 0, 1);
     }
     if (pos) pos.value = String(Math.round(S.pos * 100));
-    refresh();
+    renderInfo();
+    if (pal && !scanning) {
+      // 끄는 동안엔 지금 팔레트로 바로 그려 보이고, 놓으면 팔레트를 다시 고른다
+      prevIdx = null;
+      renderLive();
+    }
   }
   box?.addEventListener("pointerdown", (e) => {
     if (!meta || S.fit !== "crop" || meta.w === meta.h || busy) return;
@@ -404,6 +893,7 @@ ready(() => {
       box.removeEventListener("pointermove", move);
       box.removeEventListener("pointerup", up);
       box.removeEventListener("pointercancel", up);
+      scheduleScan(0);
     };
     box.addEventListener("pointermove", move);
     box.addEventListener("pointerup", up);
@@ -466,6 +956,8 @@ ready(() => {
     if (busy) return;
     job += 1;
     meta = null;
+    pal = null;
+    prevIdx = null;
     showMessage("");
     if (uploadText) uploadText.textContent = T.opening;
     upload.classList.add("loading");
@@ -501,29 +993,13 @@ ready(() => {
     if (len) len.value = String(S.len);
     if (work) work.hidden = false;
     if (result) result.hidden = true;
-    refresh();
-    video.currentTime = 0;
-    video.play().catch(() => {});
+    renderInfo();
+    renderSwatches();
     setTimeout(() => work?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    await scanPalette();
   }
 
   // ---------- GIF 만들기 ----------
-  function seek(t) {
-    return new Promise((resolve) => {
-      let done = false;
-      const finish = () => {
-        if (done) return;
-        done = true;
-        clearTimeout(timer);
-        video.removeEventListener("seeked", finish);
-        resolve();
-      };
-      const timer = setTimeout(finish, 3000);
-      video.addEventListener("seeked", finish);
-      video.currentTime = t;
-    });
-  }
-
   const sizeText = (bytes) =>
     bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)}MB` : `${Math.max(1, Math.round(bytes / 1024))}KB`;
 
@@ -534,28 +1010,36 @@ ready(() => {
 
   async function make() {
     if (!meta || busy) return;
+    clearTimeout(scanTimer);
+    while (scanning) await new Promise((r) => setTimeout(r, 50));
+    // 미리보기와 같은 팔레트로 굽는다 (설정이 바뀌었으면 먼저 다시 고름)
+    if (!pal || palKey !== keyNow()) await scanPalette();
+    if (!pal) return;
     busy = true;
-    const my = ++job;
+    const my = job;
     const size = S.size;
     const fps = S.fps;
     const n = frameCount();
     const step = effLen() / n;
+    const palette = pal.colors.slice();
     video.pause();
     rabbitStart();
     const frames = [];
     try {
+      let prev = null;
       for (let i = 0; i < n; i++) {
         setButton(T.extracting(i + 1, n), true);
         await seek(Math.min(S.start + i * step, meta.duration - 0.01));
         if (my !== job) return;
-        frames.push(sample(video));
+        prev = quantize(grabMid(), prev);
+        frames.push(prev);
       }
       setButton(T.encoding, true);
-      // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가, 다 구우면 다시 나옴
+      const delay = Math.round(100 / fps);
       await rabbitDuck();
       let buf;
       try {
-        buf = await encode({ frames, width: size, height: size, quality: 100, fps });
+        buf = encodeGif(frames, size, palette, delay);
       } finally {
         rabbitResume();
       }
@@ -564,7 +1048,6 @@ ready(() => {
       gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
       gifImg.src = gifUrl;
       gifImg.alt = T.alt(size);
-      gifImg.dataset.size = String(size);
       info.textContent = T.info(size, n, fmt(n / fps), sizeText(buf.length));
       dl.href = gifUrl;
       dl.download = `pixel-${size}x${size}.gif`;
@@ -583,7 +1066,12 @@ ready(() => {
       await rabbitDuck();
       let big;
       try {
-        big = await encode({ frames: frames.map((f) => upscale(f, k)), width: size * k, height: size * k, quality: 100, fps });
+        big = encodeGif(
+          frames.map((f) => upscaleIdx(f, size, k)),
+          size * k,
+          palette,
+          delay
+        );
       } finally {
         rabbitResume();
       }
@@ -602,6 +1090,7 @@ ready(() => {
       setButton(T.make, false);
       if (meta) {
         lastBucket = -1;
+        prevIdx = null;
         video.currentTime = S.start;
         video.play().catch(() => {});
       }
