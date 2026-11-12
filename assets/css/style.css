@@ -4079,7 +4079,6 @@ img[src$="-pixel.png"] {
 
 .px-wide,
 .px-check,
-.px-estimate,
 .px-make {
   grid-column: 1 / -1;
 }
@@ -4139,12 +4138,6 @@ img[src$="-pixel.png"] {
   font-size: 0.86rem;
   font-weight: 500;
   color: var(--text-secondary);
-}
-
-.content-section .px-estimate {
-  margin: 0;
-  font-size: 0.92rem;
-  text-align: center;
 }
 
 .px-make {

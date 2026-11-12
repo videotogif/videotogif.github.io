@@ -19,9 +19,7 @@ const T = IS_EN
       openingHeic: "Opening the HEIC photo...",
       photoFail: "Couldn't open this photo. Convert it to JPG or PNG and try again.",
       another: "Choose another video or photo",
-      makePhoto: "👾 Make pixel art",
       drawing: "Drawing...",
-      estimatePhoto: (w, h, c) => `${w}×${h} · ${c} colors`,
       infoPhoto: (w, h, c, size) => `${w}×${h} · ${c} colors · ${size}`,
       dlPng: (w, h) => `Save ${w}×${h} PNG`,
       resultGif: "Your pixel GIF",
@@ -37,8 +35,7 @@ const T = IS_EN
       paletteHint: "Click a color to change it",
       paletteReset: "Reset colors",
       picking: "Picking colors...",
-      estimate: (n, sec, w, h, c) => `${n} frames · ${sec}s · ${w}×${h} · ${c} colors`,
-      make: "👾 Make pixel GIF",
+      make: "Make",
       extracting: (i, n) => `Drawing frames (${i}/${n})`,
       encoding: "Saving GIF...",
       info: (w, h, n, sec, size) => `${w}×${h} · ${n} frames · ${sec}s · ${size}`,
@@ -54,9 +51,7 @@ const T = IS_EN
       openingHeic: "HEIC 사진을 여는 중...",
       photoFail: "이 사진을 열 수 없어요. JPG나 PNG로 바꿔서 올려 보세요.",
       another: "다른 동영상·사진 고르기",
-      makePhoto: "👾 픽셀 아트 만들기",
       drawing: "그리는 중...",
-      estimatePhoto: (w, h, c) => `${w}×${h} · ${c}색`,
       infoPhoto: (w, h, c, size) => `${w}×${h} · ${c}색 · ${size}`,
       dlPng: (w, h) => `${w}×${h} PNG 저장`,
       resultGif: "완성된 픽셀 GIF",
@@ -72,8 +67,7 @@ const T = IS_EN
       paletteHint: "색을 누르면 바꿀 수 있어요",
       paletteReset: "원래 색으로",
       picking: "색 고르는 중...",
-      estimate: (n, sec, w, h, c) => `${n}장 · ${sec}초 · ${w}×${h} · ${c}색`,
-      make: "👾 픽셀 GIF 만들기",
+      make: "만들기",
       extracting: (i, n) => `장면 그리는 중 (${i}/${n})`,
       encoding: "GIF 저장하는 중...",
       info: (w, h, n, sec, size) => `${w}×${h} · ${n}장 · ${sec}초 · ${size}`,
@@ -466,7 +460,6 @@ ready(() => {
   const len = $("pxLen");
   const lenOut = $("pxLenOut");
   const vivid = $("pxVivid");
-  const estimate = $("pxEstimate");
   const makeBtn = $("pxMakeBtn");
   const result = $("pxResult");
   const gifImg = $("pxGif");
@@ -484,7 +477,6 @@ ready(() => {
   }
   let meta = null; // { w, h, duration }
   let still = null; // 사진을 올렸으면 그 그림(ImageBitmap). 사진은 한 장짜리 픽셀 아트로 만든다
-  const makeLabel = () => (still ? T.makePhoto : T.make);
   let busy = false; // GIF 만드는 중
   let scanning = false; // 팔레트 고르는 중
   let videoUrl = null;
@@ -941,10 +933,6 @@ ready(() => {
     if (lenOut) lenOut.textContent = `${fmt(effLen())}${T.sec}`;
     const { gw, gh } = dims();
     if (work) work.classList.toggle("is-photo", !!still);
-    if (estimate)
-      estimate.textContent = still
-        ? T.estimatePhoto(gw, gh, S.colors)
-        : T.estimate(frameCount(), fmt(frameCount() / S.fps), gw, gh, S.colors);
     if (liveCap && !scanning) liveCap.textContent = T.live(gw, gh);
     setPressed("size", S.size);
     setPressed("fit", S.fit);
@@ -1196,7 +1184,7 @@ ready(() => {
     if (result) result.hidden = true;
     renderInfo();
     renderSwatches();
-    setButton(makeLabel(), false);
+    setButton(T.make, false);
     setTimeout(() => work?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
     await scanPalette();
   }
@@ -1209,7 +1197,7 @@ ready(() => {
       photoEl.removeAttribute("src");
     }
     video.hidden = false;
-    setButton(makeLabel(), false);
+    setButton(T.make, false);
     if (uploadText) uploadText.textContent = T.opening;
     upload.classList.add("loading");
     if (videoUrl) URL.revokeObjectURL(videoUrl);
@@ -1414,7 +1402,7 @@ ready(() => {
         showMessage(T.failed);
       } finally {
         busy = false;
-        setButton(makeLabel(), false);
+        setButton(T.make, false);
       }
       return;
     }
@@ -1443,7 +1431,7 @@ ready(() => {
     } finally {
       rabbitStop();
       busy = false;
-      setButton(makeLabel(), false);
+      setButton(T.make, false);
       if (meta && !still) {
         lastBucket = -1;
         prevIdx = null;
@@ -1457,5 +1445,5 @@ ready(() => {
     if (!dlBig.getAttribute("href")) e.preventDefault();
   });
 
-  setButton(makeLabel(), false);
+  setButton(T.make, false);
 });
