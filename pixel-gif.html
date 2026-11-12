@@ -72,9 +72,10 @@ ref: pixel-gif
         <div class="px-field">
           <span class="custom-label">초당 장수</span>
           <div class="trim-mode px-seg" role="group" aria-label="초당 장수">
-            <button type="button" class="trim-mode-btn" data-fps="5" aria-pressed="false">5</button>
-            <button type="button" class="trim-mode-btn active" data-fps="10" aria-pressed="true">10</button>
-            <button type="button" class="trim-mode-btn" data-fps="20" aria-pressed="false">20</button>
+            <button type="button" class="trim-mode-btn" data-fps="4" aria-pressed="false">4</button>
+            <button type="button" class="trim-mode-btn" data-fps="8" aria-pressed="false">8</button>
+            <button type="button" class="trim-mode-btn active" data-fps="12" aria-pressed="true">12</button>
+            <button type="button" class="trim-mode-btn" data-fps="24" aria-pressed="false">24</button>
           </div>
         </div>
         <div class="px-field">
@@ -127,7 +128,8 @@ ref: pixel-gif
     <h2>알아 두면 좋은 점</h2>
     <ul>
       <li>16×16은 모두 256칸뿐이라 얼굴이나 글자는 거의 알아볼 수 없어요. 크고 단순한 모양, 배경과 색이 확실히 다른 장면이 잘 보여요. 미리보기를 보면서 네모 위치를 옮겨 보세요.</li>
-      <li>픽셀 애니메이션은 보통 초당 8~12장으로 만들어요. 기기에 넣을 거라면 초당 10장, 2~4초 정도로 시작해 보세요.</li>
+      <li>픽셀 애니메이션은 보통 초당 12장으로 만들어요(영화 24장의 절반). 8장은 매끄럽게 보이는 최소, 4장은 일부러 뚝뚝 끊기는 레트로 느낌이고, 24장은 물보라처럼 빠른 효과가 아니면 굳이 필요 없어요. 기기에 넣을 거라면 12장, 2~4초로 시작해 보세요.</li>
+      <li>바로 앞 장면과 칸 하나 다르지 않은 장면은 한 장으로 합쳐 그만큼 오래 보여 줘요. 움직임이 멈춘 순간이 길게 붙잡히고, 장수와 용량도 줄어요.</li>
       <li>그냥 줄이기만 하면 흐린 모자이크가 돼요. 여기서는 픽셀 아트를 그릴 때의 규칙을 따라요.
         <ul>
           <li>고른 구간 전체에서 색을 8·16·32개로 묶어, 모든 장면이 같은 팔레트를 써요.</li>
@@ -136,7 +138,7 @@ ref: pixel-gif
           <li>혼자 튀는 칸은 주변 색으로 정리하고, 크게 바뀌지 않은 칸은 앞 장면 색을 그대로 둬서 깜빡임을 줄여요.</li>
         </ul>
       </li>
-      <li>Divoom 같은 픽셀 디스플레이 기기는 전용 앱에서 GIF를 불러와 띄울 수 있어요. 기기 화면과 같은 크기로 만들어 두면 어떤 칸이 어떤 색이 될지 미리 보고 고를 수 있어요. 앱에 따라 넣을 수 있는 장수나 용량이 정해져 있을 수 있으니, 안 들어가면 길이를 줄이거나 초당 장수를 5로 낮춰 보세요.</li>
+      <li>Divoom 같은 픽셀 디스플레이 기기는 전용 앱에서 GIF를 불러와 띄울 수 있어요. 기기 화면과 같은 크기로 만들어 두면 어떤 칸이 어떤 색이 될지 미리 보고 고를 수 있어요. 앱에 따라 넣을 수 있는 장수나 용량이 정해져 있을 수 있으니, 안 들어가면 길이를 줄이거나 초당 장수를 8로 낮춰 보세요.</li>
       <li>보통 크기의 GIF가 필요하면 <a href="{{ '/' | relative_url }}">동영상 GIF 변환기</a>를 쓰세요.</li>
     </ul>
   </section>

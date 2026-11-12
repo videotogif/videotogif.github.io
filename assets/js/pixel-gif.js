@@ -283,7 +283,7 @@ function artPalette(centers) {
 }
 
 // ---------- GIF 굽기: 팔레트 그대로, 디더링 없이 ----------
-function encodeGif(frames, size, palette, delayCs) {
+function encodeGif(frames, size, palette, delays) {
   let bits = 1;
   while (1 << bits < palette.length) bits++;
   const tableSize = 1 << bits;
@@ -309,9 +309,10 @@ function encodeGif(frames, size, palette, delayCs) {
   const table = new Int16Array(1 << 20);
   const stamp = new Uint32Array(1 << 20);
   let gen = 0;
-  for (const idx of frames) {
+  for (let f = 0; f < frames.length; f++) {
+    const idx = frames[f];
     push(0x21, 0xf9, 0x04, 0x04);
-    word(delayCs);
+    word(delays[f]);
     push(0, 0);
     push(0x2c);
     word(0);
@@ -374,6 +375,35 @@ function encodeGif(frames, size, palette, delayCs) {
   return new Uint8Array(bytes);
 }
 
+// i번째 장면이 끝나는 시각을 반올림해서 장면 시간을 정한다 → 12장이면 8·8·9…(합이 정확히 1초에 12장)
+// 바로 앞과 칸 하나 다르지 않은 장면은 합쳐서 그만큼 오래 보여 준다 (키 포즈 붙잡기)
+function holdFrames(frames, fps) {
+  const kept = [];
+  const delays = [];
+  let prevEnd = 0;
+  for (let i = 0; i < frames.length; i++) {
+    const end = Math.round(((i + 1) * 100) / fps);
+    const d = end - prevEnd;
+    prevEnd = end;
+    const last = kept[kept.length - 1];
+    let same = !!last;
+    if (same) {
+      for (let j = 0; j < last.length; j++) {
+        if (last[j] !== frames[i][j]) {
+          same = false;
+          break;
+        }
+      }
+    }
+    if (same) delays[delays.length - 1] += d;
+    else {
+      kept.push(frames[i]);
+      delays.push(d);
+    }
+  }
+  return { kept, delays };
+}
+
 function upscaleIdx(idx, s, k) {
   const n = s * k;
   const out = new Uint8Array(n * n);
@@ -422,7 +452,7 @@ ready(() => {
   const dlBig = $("pxDownloadBig");
   if (!input || !upload || !video || !live || !makeBtn) return;
 
-  const S = { size: 16, fit: "crop", pos: 0.5, start: 0, len: 3, fps: 10, colors: 16, vivid: true };
+  const S = { size: 16, fit: "crop", pos: 0.5, start: 0, len: 3, fps: 12, colors: 16, vivid: true };
   try {
     const saved = Number(localStorage.getItem(SIZE_KEY));
     if (BIG[saved]) S.size = saved;
@@ -1085,14 +1115,14 @@ ready(() => {
 
   // 칸 번호 → GIF 두 개(원래 크기·크게). 색은 굽는 순간의 팔레트(바꾼 색 포함)
   async function bake(made, my, first) {
-    const { frames, size, fps, n } = made;
+    const { frames, delays, size } = made;
     const palette = pal.colors.map((c) => c.slice());
-    const delay = Math.round(100 / fps);
+    const total = delays.reduce((a, b) => a + b, 0);
     const k = BIG[size];
     if (first) await rabbitDuck(); // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가 다시 나옴
     let buf;
     try {
-      buf = encodeGif(frames, size, palette, delay);
+      buf = encodeGif(frames, size, palette, delays);
     } finally {
       if (first) rabbitResume();
     }
@@ -1101,7 +1131,7 @@ ready(() => {
     gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
     gifImg.src = gifUrl;
     gifImg.alt = T.alt(size);
-    info.textContent = T.info(size, n, fmt(n / fps), sizeText(buf.length));
+    info.textContent = T.info(size, frames.length, fmt(total / 100), sizeText(buf.length));
     dl.href = gifUrl;
     dl.download = `pixel-${size}x${size}.gif`;
     dl.textContent = T.dl(size);
@@ -1124,7 +1154,7 @@ ready(() => {
         frames.map((f) => upscaleIdx(f, size, k)),
         size * k,
         palette,
-        delay
+        delays
       );
     } finally {
       if (first) rabbitResume();
@@ -1188,7 +1218,8 @@ ready(() => {
         prev = quantize(grabMid(), prev);
         frames.push(prev);
       }
-      lastMade = { frames, size, fps, n, key: palKey };
+      const held = holdFrames(frames, fps);
+      lastMade = { frames: held.kept, delays: held.delays, size, key: palKey };
       setButton(T.encoding, true);
       await bake(lastMade, my, true);
     } catch (err) {
