@@ -23,7 +23,9 @@ const T = IS_EN
       posH: "Crop position (left ↔ right)",
       posV: "Crop position (top ↔ bottom)",
       live: (s) => `Preview ${s}×${s}`,
-      palette: (n) => `${n} colors`,
+      swatch: (i) => `Change color ${i}`,
+      paletteHint: "Click a color to change it",
+      paletteReset: "Reset colors",
       picking: "Picking colors...",
       estimate: (n, sec, s, c) => `${n} frames · ${sec}s · ${s}×${s} · ${c} colors`,
       make: "👾 Make pixel GIF",
@@ -46,7 +48,9 @@ const T = IS_EN
       posH: "자르는 위치 (좌우)",
       posV: "자르는 위치 (위아래)",
       live: (s) => `미리보기 ${s}×${s}`,
-      palette: (n) => `${n}색`,
+      swatch: (i) => `${i}번 색 바꾸기`,
+      paletteHint: "색을 누르면 바꿀 수 있어요",
+      paletteReset: "원래 색으로",
       picking: "색 고르는 중...",
       estimate: (n, sec, s, c) => `${n}장 · ${sec}초 · ${s}×${s} · ${c}색`,
       make: "👾 픽셀 GIF 만들기",
@@ -399,6 +403,7 @@ ready(() => {
   const liveWrap = $("pxLiveWrap");
   const liveCap = $("pxLiveCap");
   const swatches = $("pxPalette");
+  const paletteReset = $("pxPaletteReset");
   const posField = $("pxPosField");
   const posLabel = $("pxPosLabel");
   const pos = $("pxPos");
@@ -436,6 +441,9 @@ ready(() => {
   let pal = null;
   let palKey = "";
   let prevIdx = null; // 앞 장면 칸 색 (깜빡임 줄이기)
+  // 사용자가 바꾼 색: { from: 원래 팔레트 색, to: 바꾼 색 }. 팔레트를 다시 골라도 가장 가까운 색에 이어 붙인다
+  let edits = [];
+  let lastMade = null; // 마지막으로 만든 GIF의 칸 번호들 — 색만 바꾸면 장면을 다시 뽑지 않고 바로 다시 굽는다
 
   // ---------- 그리기 ----------
   const bufA = document.createElement("canvas");
@@ -561,7 +569,54 @@ ready(() => {
         const db = centers[a * 3 + 2] - centers[b * 3 + 2];
         dist[a * k + b] = dl * dl + da * da + db * db;
       }
-    return { k, colors, lut, dist };
+    return { k, base: colors.map((c) => c.slice()), colors, lut, dist, edited: new Array(k).fill(false) };
+  }
+
+  const okDist = (c1, c2) => {
+    const a = toOklab(c1[0], c1[1], c1[2]);
+    const b = toOklab(c2[0], c2[1], c2[2]);
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  };
+
+  // 바꾼 색을 지금 팔레트에 다시 입힌다 (원래 색과 거의 같은 칸에만, 한 칸에 하나)
+  function applyEdits() {
+    if (!pal) return;
+    pal.colors = pal.base.map((c) => c.slice());
+    pal.edited.fill(false);
+    const taken = new Map();
+    for (const e of edits) {
+      let best = -1;
+      let bd = 0.004; // Oklab 거리 0.063 안쪽만 같은 색으로 본다
+      for (let i = 0; i < pal.k; i++) {
+        const d = okDist(pal.base[i], e.from);
+        if (d < bd) {
+          bd = d;
+          best = i;
+        }
+      }
+      if (best < 0 || (taken.has(best) && taken.get(best) <= bd)) continue;
+      taken.set(best, bd);
+      pal.colors[best] = e.to.slice();
+      pal.edited[best] = true;
+    }
+  }
+
+  const toHex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+  const fromHex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+
+  function setColor(i, rgb) {
+    const from = pal.base[i];
+    edits = edits.filter((e) => okDist(e.from, from) >= 1e-6);
+    if (okDist(rgb, from) > 1e-6) edits.push({ from: from.slice(), to: rgb });
+    applyEdits();
+    if (paletteReset) paletteReset.hidden = edits.length === 0;
+    if (prevIdx) paint(prevIdx);
+    swatches?.querySelectorAll(".px-swatch").forEach((el) => {
+      const j = Number(el.dataset.i);
+      el.style.setProperty("--c", toHex(pal.colors[j]));
+      el.classList.toggle("edited", pal.edited[j]);
+    });
+    scheduleRecolor();
   }
 
   // 한 장면 → 칸 색 번호 (가장 많이 차지한 색, 깜빡임 줄이기, 외톨이 정리)
@@ -631,20 +686,37 @@ ready(() => {
     liveCtx.putImageData(img, 0, 0);
   }
 
+  // 팔레트: 어두운 색 → 밝은 색 (원래 색 기준으로 줄 세워, 바꿔도 자리가 그대로). 누르면 색 고르기
   function renderSwatches() {
+    if (paletteReset) paletteReset.hidden = edits.length === 0;
     if (!swatches) return;
     swatches.innerHTML = "";
     if (!pal) return;
-    const order = pal.colors
-      .map((c, i) => ({ c, l: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2], i }))
+    const order = pal.base
+      .map((c, i) => ({ i, l: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2] }))
       .sort((a, b) => a.l - b.l);
-    for (const { c } of order) {
-      const sw = document.createElement("span");
-      sw.style.background = `rgb(${c[0]},${c[1]},${c[2]})`;
+    order.forEach(({ i }, n) => {
+      const sw = document.createElement("label");
+      sw.className = "px-swatch" + (pal.edited[i] ? " edited" : "");
+      sw.dataset.i = String(i);
+      sw.style.setProperty("--c", toHex(pal.colors[i]));
+      const picker = document.createElement("input");
+      picker.type = "color";
+      picker.value = toHex(pal.colors[i]);
+      picker.setAttribute("aria-label", T.swatch(n + 1));
+      picker.addEventListener("input", () => setColor(i, fromHex(picker.value)));
+      sw.appendChild(picker);
       swatches.appendChild(sw);
-    }
-    swatches.setAttribute("aria-label", T.palette(pal.k));
+    });
   }
+
+  paletteReset?.addEventListener("click", () => {
+    edits = [];
+    applyEdits();
+    renderSwatches();
+    if (prevIdx) paint(prevIdx);
+    scheduleRecolor();
+  });
 
   // ---------- 팔레트 고르기: 구간에서 장면 12개를 보고 색을 묶는다 ----------
   const keyNow = () => [S.size, S.fit, S.pos.toFixed(3), S.start, S.len, S.colors, S.vivid].join("|");
@@ -692,6 +764,7 @@ ready(() => {
     }
     if (my === job) {
       pal = buildPalette(list);
+      applyEdits();
       palKey = key;
       prevIdx = null;
       renderSwatches();
@@ -958,6 +1031,8 @@ ready(() => {
     meta = null;
     pal = null;
     prevIdx = null;
+    edits = [];
+    lastMade = null;
     showMessage("");
     if (uploadText) uploadText.textContent = T.opening;
     upload.classList.add("loading");
@@ -1008,6 +1083,86 @@ ready(() => {
     makeBtn.disabled = disabled;
   }
 
+  // 칸 번호 → GIF 두 개(원래 크기·크게). 색은 굽는 순간의 팔레트(바꾼 색 포함)
+  async function bake(made, my, first) {
+    const { frames, size, fps, n } = made;
+    const palette = pal.colors.map((c) => c.slice());
+    const delay = Math.round(100 / fps);
+    const k = BIG[size];
+    if (first) await rabbitDuck(); // 굽는 동안 화면이 잠깐 멈추므로 토끼는 굴에 숨었다가 다시 나옴
+    let buf;
+    try {
+      buf = encodeGif(frames, size, palette, delay);
+    } finally {
+      if (first) rabbitResume();
+    }
+    if (my !== job) return;
+    if (gifUrl) URL.revokeObjectURL(gifUrl);
+    gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
+    gifImg.src = gifUrl;
+    gifImg.alt = T.alt(size);
+    info.textContent = T.info(size, n, fmt(n / fps), sizeText(buf.length));
+    dl.href = gifUrl;
+    dl.download = `pixel-${size}x${size}.gif`;
+    dl.textContent = T.dl(size);
+    if (bigUrl) URL.revokeObjectURL(bigUrl);
+    bigUrl = null;
+    dlBig.removeAttribute("href");
+    dlBig.setAttribute("aria-disabled", "true");
+    dlBig.textContent = T.preparing;
+    if (first) {
+      result.hidden = false;
+      setTimeout(() => result.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    }
+
+    // 메신저·SNS용: 칸을 그대로 키운 큰 GIF
+    await new Promise((r) => setTimeout(r, 30));
+    if (first) await rabbitDuck();
+    let big;
+    try {
+      big = encodeGif(
+        frames.map((f) => upscaleIdx(f, size, k)),
+        size * k,
+        palette,
+        delay
+      );
+    } finally {
+      if (first) rabbitResume();
+    }
+    if (my !== job) return;
+    bigUrl = URL.createObjectURL(new Blob([big], { type: "image/gif" }));
+    dlBig.href = bigUrl;
+    dlBig.download = `pixel-${size}x${size}-large.gif`;
+    dlBig.removeAttribute("aria-disabled");
+    dlBig.textContent = T.dlBig(size * k);
+  }
+
+  // 만든 GIF가 지금 팔레트로 만든 것이면, 색을 바꿀 때 장면을 다시 뽑지 않고 바로 다시 굽는다
+  let recolorTimer = null;
+  let recoloring = false;
+  let recolorAgain = false;
+  function scheduleRecolor() {
+    if (!lastMade || lastMade.key !== palKey) return;
+    clearTimeout(recolorTimer);
+    recolorTimer = setTimeout(async () => {
+      if (busy || !lastMade || lastMade.key !== palKey) return;
+      if (recoloring) {
+        recolorAgain = true;
+        return;
+      }
+      recoloring = true;
+      try {
+        await bake(lastMade, job, false);
+      } finally {
+        recoloring = false;
+      }
+      if (recolorAgain) {
+        recolorAgain = false;
+        scheduleRecolor();
+      }
+    }, 350);
+  }
+
   async function make() {
     if (!meta || busy) return;
     clearTimeout(scanTimer);
@@ -1021,7 +1176,6 @@ ready(() => {
     const fps = S.fps;
     const n = frameCount();
     const step = effLen() / n;
-    const palette = pal.colors.slice();
     video.pause();
     rabbitStart();
     const frames = [];
@@ -1034,53 +1188,9 @@ ready(() => {
         prev = quantize(grabMid(), prev);
         frames.push(prev);
       }
+      lastMade = { frames, size, fps, n, key: palKey };
       setButton(T.encoding, true);
-      const delay = Math.round(100 / fps);
-      await rabbitDuck();
-      let buf;
-      try {
-        buf = encodeGif(frames, size, palette, delay);
-      } finally {
-        rabbitResume();
-      }
-      if (my !== job) return;
-      if (gifUrl) URL.revokeObjectURL(gifUrl);
-      gifUrl = URL.createObjectURL(new Blob([buf], { type: "image/gif" }));
-      gifImg.src = gifUrl;
-      gifImg.alt = T.alt(size);
-      info.textContent = T.info(size, n, fmt(n / fps), sizeText(buf.length));
-      dl.href = gifUrl;
-      dl.download = `pixel-${size}x${size}.gif`;
-      dl.textContent = T.dl(size);
-      const k = BIG[size];
-      if (bigUrl) URL.revokeObjectURL(bigUrl);
-      bigUrl = null;
-      dlBig.removeAttribute("href");
-      dlBig.setAttribute("aria-disabled", "true");
-      dlBig.textContent = T.preparing;
-      result.hidden = false;
-      setTimeout(() => result.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
-
-      // 메신저·SNS용: 칸을 그대로 키운 큰 GIF
-      await new Promise((r) => setTimeout(r, 30));
-      await rabbitDuck();
-      let big;
-      try {
-        big = encodeGif(
-          frames.map((f) => upscaleIdx(f, size, k)),
-          size * k,
-          palette,
-          delay
-        );
-      } finally {
-        rabbitResume();
-      }
-      if (my !== job) return;
-      bigUrl = URL.createObjectURL(new Blob([big], { type: "image/gif" }));
-      dlBig.href = bigUrl;
-      dlBig.download = `pixel-${size}x${size}-large.gif`;
-      dlBig.removeAttribute("aria-disabled");
-      dlBig.textContent = T.dlBig(size * k);
+      await bake(lastMade, my, true);
     } catch (err) {
       console.error(err);
       showMessage(T.failed);
