@@ -14,7 +14,7 @@ let currentLanguage = (document.documentElement.lang || "")
 
 const translations = {
   ko: {
-    uploadText: "비디오 파일을 선택하세요",
+    uploadText: "동영상 파일을 선택하세요",
     uploadSubtext: "클릭하거나 드래그 & 드롭으로 업로드하면 GIF가 생성됩니다.",
     outputTitle: "생성된 GIF",
     downloadText: "GIF 다운로드",

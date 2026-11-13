@@ -4239,3 +4239,10 @@ img[src$="-pixel.png"] {
     gap: 18px;
   }
 }
+
+/* 홈 첫 줄 아래 한 줄 설명 (작은 머리용) */
+.page-hero--compact .page-subtitle {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
