@@ -63,9 +63,18 @@ body {
   color: var(--text-primary);
 }
 
+/* 헤더 아래 첫 제목까지의 여백: 모든 페이지가 --page-top 하나로 맞춘다.
+   안쪽 상자(page-container, blog-container, post-page-wrapper)와 제목은 윗여백 0 */
 main {
-  padding: 40px 20px;
+  --page-top: 72px;
+  padding: var(--page-top) 20px 40px;
   min-height: calc(100vh - 160px);
+}
+
+@media (max-width: 768px) {
+  main {
+    --page-top: 48px;
+  }
 }
 
 .zif-hero {
@@ -969,7 +978,7 @@ video {
 .page-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 0 20px 30px;
 }
 
 /* Hero Section */
@@ -985,6 +994,7 @@ video {
   font-size: 3rem;
   font-weight: 700;
   color: var(--page-text);
+  margin-top: 0;
   margin-bottom: 15px;
   transition: color 0.3s ease;
 }
@@ -1208,7 +1218,7 @@ video {
   }
 
   .page-container {
-    padding: 40px 15px;
+    padding: 0 15px 40px;
   }
 
   .page-title {
@@ -1241,7 +1251,7 @@ video {
 .blog-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 0 20px 40px;
 }
 
 .blog-header {
@@ -1256,6 +1266,7 @@ video {
   font-size: 3rem;
   font-weight: 700;
   color: var(--text-primary);
+  margin-top: 0;
   margin-bottom: 15px;
   transition: color 0.3s ease;
 }
@@ -1407,7 +1418,7 @@ video {
 /* Responsive */
 @media (max-width: 768px) {
   .blog-container {
-    padding: 30px 15px;
+    padding: 0 15px 30px;
   }
 
   .blog-header h1 {
@@ -3554,15 +3565,6 @@ img[src$="-pixel.png"] {
 /* 블로그 글: 댓글창 아래로 여백이 겹겹이 쌓이지 않게 */
 .site-content:has(.post-page-wrapper) {
   padding-bottom: 0;
-}
-
-/* 위 여백은 바깥 상자(main, page-container)의 윗여백이 대부분이라 이 페이지만 줄임 */
-.site-content:has(.page-hero--compact) {
-  padding-top: 16px;
-}
-
-.page-container:has(> .page-hero--compact) {
-  padding-top: 0;
 }
 
 .page-hero--compact .page-title {
