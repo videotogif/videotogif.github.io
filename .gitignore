@@ -1,0 +1,12 @@
+# Jekyll 빌드 결과와 캐시
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# 로컬 Ruby 패키지 (GitHub Pages는 자체 환경에서 빌드)
+.bundle/
+vendor/
+
+# macOS
+.DS_Store
