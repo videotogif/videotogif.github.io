@@ -27,6 +27,49 @@ ref: home
   "screenshot": "https://videotogif.github.io/assets/img/og-default.jpg"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this video to GIF converter really free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. There are no limits, no sign-up and no watermark. The site is supported by ads." }
+    },
+    {
+      "@type": "Question",
+      "name": "Are my videos uploaded to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Your video is decoded and encoded entirely inside your browser using WebAssembly. Your video and the resulting GIF are never sent over the network." }
+    },
+    {
+      "@type": "Question",
+      "name": "Which video formats are supported?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Any format your browser can play: MP4 (H.264), MOV, WebM, MKV and more. If a file does not open, try converting it to MP4 first or use the latest Chrome or Edge." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a file size limit?",
+      "acceptedAnswer": { "@type": "Answer", "text": "There is no fixed limit because nothing is uploaded, but processing uses your device's memory. Videos under about 100MB work smoothly on most computers; on phones, short clips (under 10 seconds) work best." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I make my GIF smaller?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Move the quality slider toward Low-spec. If it's still too big, cutting the length is the most reliable fix: open the GIF in Trim GIF and keep only the part you need." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the quality slider change?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Toward Low-spec, the width and frames per second go down, so the file is lighter and faster to make. Toward High-spec, the GIF gets bigger and smoother but heavier. Every level plays at the original speed, and long videos are scaled down automatically so your device doesn't struggle." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on iPhone and Android?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes, it works in modern mobile browsers. Phones have less memory than computers, so the converter starts one level lower there. Short clips (under 10 seconds) work best." }
+    }
+  ]
+}
+</script>
 
 <div class="page-container">
   <header class="page-hero page-hero--compact">
@@ -237,6 +280,30 @@ ref: home
         </ol>
       </section>
 
+      <section class="zif-how-to">
+        <h2>Which videos you can use</h2>
+        <p>If the browser you're using can play a video, it can turn it into a GIF. Here's how the common file types do.</p>
+        <div class="table-scroll">
+          <table class="level-table">
+            <thead>
+              <tr><th>Format</th><th>Usually comes from</th><th>Does it open?</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>MP4</td><td>Android phone cameras, Windows Snipping Tool, most downloaded videos</td><td>Yes, in almost every browser</td></tr>
+              <tr><td>MOV</td><td>iPhone camera, Mac screen recordings</td><td>Usually, in Safari, Chrome and Edge (see the HEVC note below)</td></tr>
+              <tr><td>WebM</td><td>Videos saved from the web, some recording apps</td><td>Yes in Chrome, Edge and Firefox. In Safari it depends on the version</td></tr>
+              <tr><td>MKV</td><td>Some recording and editing apps</td><td>Depends on the browser</td></tr>
+              <tr><td>AVI, WMV, FLV</td><td>Older cameras and software</td><td>No, browsers can't play them</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          With the default camera setting (High Efficiency), iPhones save video as HEVC (H.265). Depending on the computer and browser, these files may not open on a PC.
+          If that happens, convert the video in the browser on the phone that recorded it, or change it to MP4 (H.264) first.
+          For any file that won't open, converting it to MP4 with a free tool like HandBrake fixes it in most cases.
+        </p>
+      </section>
+
       <section class="zif-faq-preview">
         <h2>Frequently asked questions</h2>
         <div class="faq-list">
@@ -266,7 +333,7 @@ ref: home
           </details>
           <details class="faq-item">
             <summary>Does it work on iPhone and Android?</summary>
-            <p>Yes, it works in modern mobile browsers. Phones have less memory than computers, so the converter starts one level lower there. Short clips (under 10 seconds) work best.</p>
+            <p>Yes, it works in modern mobile browsers. Phones have less memory than computers, so the converter starts one level lower there. Short clips (under 10 seconds) work best. Where the GIF is saved and more tips are in <a href="{% post_url 2026-11-16-en-phone-video-to-gif %}">GIFs on iPhone and Android</a>.</p>
           </details>
         </div>
       </section>
@@ -330,6 +397,48 @@ ref: home
           Use high-contrast colors such as white text on a dark background, set the background opacity to around 0.5–0.7 so
           the video stays visible, and keep the text short – 30–50px usually reads well.
         </p>
+      </section>
+
+      <section class="zif-use-cases">
+        <h2>More tools and guides</h2>
+        <div class="use-cases-grid">
+          <a class="use-case-card related-card" href="{{ '/en/pixel-gif/' | relative_url }}">
+            <h3>👾 Pixel GIF Maker</h3>
+            <p>Turn a photo or video into 16×16 to 64×64 pixel art or a pixel GIF.</p>
+          </a>
+          <a class="use-case-card related-card" href="{{ '/en/gif-trim/' | relative_url }}">
+            <h3>✂️ Trim GIF</h3>
+            <p>Keep only the part of a GIF you need, or cut out a section in the middle.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-16-en-phone-video-to-gif %}">
+            <h3>📱 GIFs on iPhone and Android</h3>
+            <p>Turn a phone video into a GIF and save it, with no app to install.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-reduce-gif-size %}">
+            <h3>📉 How to reduce GIF size</h3>
+            <p>I made the same GIF 14 times and ranked the changes by how much they shrink the file.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-screen-recording-to-gif %}">
+            <h3>🖥️ Screen recording to GIF</h3>
+            <p>Record with the tools built into Mac and Windows, then make a GIF with sharp text.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-discord-gif-size-limit %}">
+            <h3>💬 Discord GIF size limits</h3>
+            <p>How to make a GIF that fits the 20MB limit on a free account.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-github-gif %}">
+            <h3>🐙 GIFs on GitHub</h3>
+            <p>Add GIFs to issues and READMEs, and keep them under the 10MB limit.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2025-11-26-en-gif-vs-video %}">
+            <h3>🎞️ GIF or video?</h3>
+            <p>How I pick between them, based on file size, compatibility and autoplay.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2025-12-08-en-how-browser-conversion-works %}">
+            <h3>🔒 How the no-upload conversion works</h3>
+            <p>Plus how to check for yourself that your video never leaves the browser.</p>
+          </a>
+        </div>
       </section>
 
       <section class="zif-how-to why-made">

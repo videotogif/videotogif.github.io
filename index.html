@@ -53,6 +53,49 @@ ref: home
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "정말 무료인가요? 워터마크가 붙나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "네, 모든 기능이 무료이고 회원가입도 필요 없어요. 만든 GIF에 사이트 이름 같은 워터마크를 넣지 않아요." }
+    },
+    {
+      "@type": "Question",
+      "name": "아이폰·갤럭시에서도 GIF로 바꿀 수 있나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "네, 아이폰 사파리와 갤럭시의 크롬·삼성 인터넷에서 앱 설치 없이 바로 돼요. 휴대폰은 메모리가 적어서 화질 눈금이 한 단계 가벼운 쪽에서 시작해요. 긴 영상은 PC가 더 편해요." }
+    },
+    {
+      "@type": "Question",
+      "name": "어떤 동영상 포맷을 지원하나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "브라우저에서 재생되는 형식이면 됩니다. MP4(H.264)는 거의 모든 브라우저에서 되고, MOV, WebM, MKV는 브라우저에 따라 다를 수 있어요. 안 열리면 MP4로 바꿔서 다시 해 보세요." }
+    },
+    {
+      "@type": "Question",
+      "name": "파일 크기 제한이 있나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "정해진 제한은 없어요. 다만 변환을 기기 메모리로 하기 때문에 길고 큰 영상은 브라우저가 버벅일 수 있습니다. GIF로 쓸 부분만 먼저 잘라서 올리는 게 제일 좋아요." }
+    },
+    {
+      "@type": "Question",
+      "name": "내 파일이 서버에 저장되나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "아니요. 영상은 브라우저 안에서만 읽고 변환하고, 어디로도 보내지 않습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "화질 눈금은 뭐가 달라지나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "왼쪽(저사양)으로 갈수록 가로 크기와 초당 장수가 줄어서 파일이 가볍고 빨리 만들어지고, 오른쪽(고사양)으로 갈수록 크고 부드러운 대신 무거워져요. 어느 단계든 원본과 같은 속도로 재생되고, 긴 영상은 기기에 무리가 가지 않게 알아서 줄여서 만들어요." }
+    },
+    {
+      "@type": "Question",
+      "name": "GIF 용량이 너무 커요.",
+      "acceptedAnswer": { "@type": "Answer", "text": "화질 눈금을 저사양 쪽으로 옮겨 보세요. 그래도 크면 길이를 줄이는 게 가장 확실해요. 만든 GIF를 GIF 자르기에 올려 필요한 구간만 남기면 됩니다." }
+    }
+  ]
+}
+</script>
 
 <script>
   (function () {
@@ -278,6 +321,30 @@ ref: home
         </ol>
       </section>
 
+      <section class="zif-how-to">
+        <h2>올릴 수 있는 동영상</h2>
+        <p>지금 쓰는 브라우저가 재생할 수 있는 영상이면 GIF로 바꿀 수 있어요. 자주 쓰는 파일은 이렇게 돼요.</p>
+        <div class="table-scroll">
+          <table class="level-table">
+            <thead>
+              <tr><th>형식</th><th>주로 나오는 곳</th><th>열리는지</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>MP4</td><td>갤럭시 카메라, 윈도우 캡처 도구, 내려받은 영상 대부분</td><td>거의 모든 브라우저에서 돼요</td></tr>
+              <tr><td>MOV</td><td>아이폰 카메라, 맥 화면 기록</td><td>사파리·크롬·엣지에서 대부분 돼요 (아래 HEVC 참고)</td></tr>
+              <tr><td>WebM</td><td>웹에서 받은 영상, 일부 녹화 프로그램</td><td>크롬·엣지·파이어폭스에서 돼요. 사파리는 버전에 따라 달라요</td></tr>
+              <tr><td>MKV</td><td>일부 녹화·편집 프로그램</td><td>브라우저에 따라 달라요</td></tr>
+              <tr><td>AVI, WMV, FLV</td><td>오래된 카메라와 프로그램</td><td>브라우저가 재생하지 못해서 안 돼요</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          아이폰은 기본 설정(높은 효율성)으로 찍으면 HEVC(H.265) 방식으로 저장돼요. 이런 영상은 기기와 브라우저에 따라 PC에서 안 열릴 수 있어요.
+          그럴 땐 영상을 찍은 휴대폰의 브라우저에서 바로 변환하거나, MP4(H.264)로 바꾼 뒤 올려 주세요.
+          안 열리는 파일은 HandBrake 같은 무료 프로그램으로 MP4로 바꾸면 대부분 해결돼요.
+        </p>
+      </section>
+
       <!-- FAQ 간단 버전 -->
       <section class="zif-faq-preview">
         <h2>자주 묻는 질문</h2>
@@ -288,7 +355,7 @@ ref: home
           </details>
           <details class="faq-item">
             <summary>아이폰·갤럭시에서도 GIF로 바꿀 수 있나요?</summary>
-            <p>네, 아이폰 사파리와 갤럭시의 크롬·삼성 인터넷에서 앱 설치 없이 바로 돼요. 휴대폰은 메모리가 적어서 화질 눈금이 한 단계 가벼운 쪽에서 시작해요. 긴 영상은 PC가 더 편해요.</p>
+            <p>네, 아이폰 사파리와 갤럭시의 크롬·삼성 인터넷에서 앱 설치 없이 바로 돼요. 휴대폰은 메모리가 적어서 화질 눈금이 한 단계 가벼운 쪽에서 시작해요. 긴 영상은 PC가 더 편해요. 저장 위치와 요령은 <a href="{% post_url 2026-11-16-phone-video-to-gif %}">휴대폰으로 움짤 만들기</a>에 정리했어요.</p>
           </details>
           <details class="faq-item">
             <summary>어떤 동영상 포맷을 지원하나요?</summary>
@@ -375,6 +442,48 @@ ref: home
           용량은 장면 수와 크기가 거의 다 정해요. 같은 4.5초 영상으로 실험해 보니 장면 수가 절반이 되면 용량도 거의 절반이 됐어요.
         </p>
         <p><a href="{% post_url 2025-10-30-gif-settings-guide %}">같은 영상으로 만든 GIF 8개 비교 보기 →</a></p>
+      </section>
+
+      <section class="zif-use-cases">
+        <h2>같이 쓰면 좋은 도구와 글</h2>
+        <div class="use-cases-grid">
+          <a class="use-case-card related-card" href="{{ '/pixel-gif/' | relative_url }}">
+            <h3>👾 픽셀아트·도트 변환</h3>
+            <p>사진이나 동영상을 16×16~64×64 도트 그림과 픽셀 GIF로 바꿔요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{{ '/gif-trim/' | relative_url }}">
+            <h3>✂️ GIF 자르기</h3>
+            <p>만든 GIF에서 필요한 구간만 남기거나 중간을 잘라 내요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-16-phone-video-to-gif %}">
+            <h3>📱 휴대폰으로 움짤 만들기</h3>
+            <p>아이폰·갤럭시에서 앱 없이 동영상을 GIF로 바꾸고 저장하는 법이에요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-reduce-gif-size %}">
+            <h3>📉 GIF 용량 줄이는 법</h3>
+            <p>같은 영상으로 14번 만들어 보고, 용량이 많이 줄어드는 순서대로 정리했어요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-screen-recording-to-gif %}">
+            <h3>🖥️ 화면 녹화를 GIF로</h3>
+            <p>맥·윈도우 기본 기능으로 녹화하고, 글자가 선명한 GIF로 만드는 법이에요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-discord-gif-size-limit %}">
+            <h3>💬 디스코드 GIF 용량 제한</h3>
+            <p>무료 계정 20MB 제한에 맞춰 GIF를 만드는 법이에요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-github-gif %}">
+            <h3>🐙 깃허브에 GIF 넣기</h3>
+            <p>이슈와 README에 GIF를 붙이고 10MB 제한에 맞추는 요령이에요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2025-11-26-gif-vs-video %}">
+            <h3>🎞️ GIF로 할까, 동영상으로 둘까</h3>
+            <p>용량, 자동 재생, 어디서 열리는지를 기준으로 고르는 법이에요.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2025-12-08-webassembly-gif-conversion %}">
+            <h3>🔒 업로드 없이 변환되는 원리</h3>
+            <p>영상이 브라우저 밖으로 나가지 않는 걸 직접 확인하는 방법도 적었어요.</p>
+          </a>
+        </div>
       </section>
 
       <section class="zif-how-to why-made">
