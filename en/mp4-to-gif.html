@@ -1,0 +1,174 @@
+---
+layout: default
+lang: en-US
+locale: en_US
+ref: mp4-to-gif
+title: "MP4 to GIF Converter - High Quality, Free, No Upload"
+description: "Convert MP4 to a high-quality GIF for free, right in your browser. See what size and frame rate a 1080p MP4 becomes, how long a clip keeps full quality, and what to do when an MP4 won't open (HEVC). No upload, no sign-up."
+permalink: /en/mp4-to-gif/
+---
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there a file size or length limit for MP4?",
+      "acceptedAnswer": { "@type": "Answer", "text": "There's no fixed limit. The conversion runs in your device's memory, so for long videos the frame rate and width are lowered automatically. For the best quality, trim the MP4 to just the part you want before adding it." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the MP4's sound go into the GIF?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. GIF can't hold sound, so even if your MP4 has audio, the GIF only has the picture." }
+    },
+    {
+      "@type": "Question",
+      "name": "The GIF is much bigger than the original MP4. Is that normal?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. MP4 is an efficient format that mostly stores what changes between frames, while GIF is an old format that stores nearly a whole picture for every frame. The GIF is often several times bigger. Cut length first, then the quality slider, then quality." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will a 4K MP4 give me a sharper GIF?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. GIFs are at most 900 pixels on the long side, so 4K, 1080p and 720p MP4s all become the same size of GIF. Clip length affects quality much more than source resolution." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I convert an MP4 that's on my phone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. It works in Safari on iPhone and in Chrome or Samsung Internet on Galaxy phones without installing an app. Phones have less memory, so the quality slider starts one step lighter." }
+    }
+  ]
+}
+</script>
+
+<div class="page-container">
+  <header class="page-hero page-hero--compact">
+    <h1 class="page-title">MP4 to GIF · High Quality</h1>
+    <p class="page-subtitle">Add an MP4 and it turns into a GIF right away. Move the quality slider to High-spec for up to 900 pixels wide and 25 frames per second. Your file never leaves your browser.</p>
+  </header>
+
+  <div class="content-section">
+      {% include converter-en.html %}
+
+      {% include ad-unit.html slot="home" %}
+
+      <section class="zif-how-to">
+        <h2>How to make a high-quality GIF from MP4</h2>
+        <ol class="how-to-steps">
+          <li>
+            <strong>Pick an MP4 with only the part you need</strong>
+            <p>Length is what matters most for quality. The longer the video, the more the frame rate and width are lowered to fit your device's memory. Trimming it first, in your phone's photo editor or with Trim in QuickTime Player on a Mac, gives the sharpest result.</p>
+          </li>
+          <li>
+            <strong>Add it to the box above</strong>
+            <p>A GIF is made right away at the Balanced level. On a computer that's 540 pixels on the long side at 10 frames per second.</p>
+          </li>
+          <li>
+            <strong>Move the quality slider to High-spec</strong>
+            <p>High-spec is 900 pixels on the long side, 25 frames per second, and quality 100. The GIF is remade as soon as you let go. If you have exact values in mind, set size, frames per second and quality in Custom settings.</p>
+          </li>
+          <li>
+            <strong>Check the file size and save</strong>
+            <p>Higher quality means a bigger file. If it's going to Discord (20MB free) or X (15MB), check the size and step down a level if needed.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="zif-how-to">
+        <h2>What a 1080p MP4 turns into</h2>
+        <p>I ran this site's auto-settings code on a 1920×1080 MP4 at different lengths. These are for a computer. Phones have less memory and start one step lighter.</p>
+        <div class="table-scroll">
+          <table class="level-table">
+            <thead>
+              <tr><th>MP4 length</th><th>Balanced (starting level)</th><th>High-spec</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>5s</td><td>540×304 · 10 fps</td><td>900×506 · 25 fps</td></tr>
+              <tr><td>10s</td><td>540×304 · 10 fps</td><td>900×506 · 20 fps</td></tr>
+              <tr><td>20s</td><td>540×304 · 10 fps</td><td>900×506 · 10 fps</td></tr>
+              <tr><td>40s</td><td>394×222 · 10 fps</td><td>658×370 · 10 fps</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>High-spec keeps the full 900 pixels at 25 frames per second only for clips <strong>under about 5 seconds</strong>. At 10 seconds it drops to 20 frames per second, and at 20 seconds to 10. At 40 seconds the width shrinks too. So trimming the MP4 first makes the biggest difference to quality.</p>
+        <p>Source resolution matters less than you'd think. I also ran 10-second 4K (3840×2160) and 720p (1280×720) MP4s, and they came out exactly the same as 1080p. GIFs are at most 900 pixels on the long side, so anything larger gets scaled to the same size. A vertical 1080×1920 MP4 becomes 506×900 at 25 frames per second on High-spec at 5 seconds.</p>
+        <p>High quality is heavy. Five seconds on High-spec is 125 frames. Estimating from the clip I used in my <a href="{% post_url 2026-11-11-en-reduce-gif-size %}">file size tests</a>, that comes close to 40MB. If you know where the GIF is going, pick the level that fits that site's limit.</p>
+      </section>
+
+      <section class="zif-how-to">
+        <h2>When an MP4 won't open</h2>
+        <p>
+          MP4 is the name of the container. The compression inside it, the codec, is separate. Most MP4s use H.264 and open in almost any browser.
+          But an MP4 saved with HEVC (H.265) may not open, depending on the device and browser. Videos shot on a Galaxy with the camera's high efficiency video option turned on are one example. The menu name varies a little by model.
+        </p>
+        <p><strong>Convert on the phone that shot it.</strong> The phone that recorded the video can play it, so opening this page in the phone's browser and adding the video there usually works.</p>
+        <p><strong>On a Mac, try Safari.</strong> Videos that won't open in Chrome often open in Safari.</p>
+        <p><strong>Convert it to H.264 MP4.</strong> A free program like HandBrake can turn it into an H.264 MP4, which opens in almost every browser.</p>
+        <p>iPhone MOV files work the same way. Tips for converting on a phone are in <a href="{% post_url 2026-11-16-en-phone-video-to-gif %}">How to make a GIF on iPhone or Android</a>.</p>
+      </section>
+
+      <section class="zif-faq-preview">
+        <h2>MP4 to GIF FAQ</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Is there a file size or length limit for MP4?</summary>
+            <p>There's no fixed limit. The conversion runs in your device's memory, so for long videos the frame rate and width are lowered automatically. For the best quality, trim the MP4 to just the part you want before adding it.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Does the MP4's sound go into the GIF?</summary>
+            <p>No. GIF can't hold sound, so even if your MP4 has audio, the GIF only has the picture.</p>
+          </details>
+          <details class="faq-item">
+            <summary>The GIF is much bigger than the original MP4. Is that normal?</summary>
+            <p>Yes. MP4 is an efficient format that mostly stores what changes between frames, while GIF is an old format that stores nearly a whole picture for every frame. The GIF is often several times bigger. Cut length first, then the quality slider, then quality. The full test is in <a href="{% post_url 2026-11-11-en-reduce-gif-size %}">How to reduce GIF size</a>.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Will a 4K MP4 give me a sharper GIF?</summary>
+            <p>No. GIFs are at most 900 pixels on the long side, so 4K, 1080p and 720p MP4s all become the same size of GIF. Clip length affects quality much more than source resolution. Why 900 pixels is explained <a href="{% post_url 2025-10-28-en-why-900px %}">here</a>.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I convert an MP4 that's on my phone?</summary>
+            <p>Yes. It works in Safari on iPhone and in Chrome or Samsung Internet on Galaxy phones without installing an app. Phones have less memory, so the quality slider starts one step lighter.</p>
+          </details>
+        </div>
+        <div class="faq-cta">
+          <a href="{{ '/en/faq/' | relative_url }}" class="faq-link">More questions →</a>
+        </div>
+      </section>
+
+      <section class="zif-use-cases">
+        <h2>Related tools and guides</h2>
+        <div class="use-cases-grid">
+          <a class="use-case-card related-card" href="{{ '/en/' | relative_url }}">
+            <h3>🎬 Video to GIF</h3>
+            <p>Turn MOV, WebM and other videos into GIFs too.</p>
+          </a>
+          <a class="use-case-card related-card" href="{{ '/en/gif-trim/' | relative_url }}">
+            <h3>✂️ Trim GIF</h3>
+            <p>Keep only the part of a GIF you need, or cut out the middle.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-reduce-gif-size %}">
+            <h3>📉 Reduce GIF size</h3>
+            <p>I made the same GIF 14 times and ranked what shrinks it most.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-26-en-twitter-gif-size-limit %}">
+            <h3>🐦 X (Twitter) GIF limits</h3>
+            <p>How to fit a GIF within 15MB and 350 frames.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-discord-gif-size-limit %}">
+            <h3>💬 Discord GIF size limits</h3>
+            <p>How to fit a GIF within the 20MB free limit.</p>
+          </a>
+          <a class="use-case-card related-card" href="{% post_url 2026-11-11-en-screen-recording-to-gif %}">
+            <h3>🖥️ Screen recording to GIF</h3>
+            <p>Record with built-in Mac and Windows tools and get a GIF with sharp text.</p>
+          </a>
+        </div>
+      </section>
+  </div>
+</div>
+
+<!-- Processing elements -->
+<video id="video" crossorigin="anonymous"></video>
+<canvas id="canvas"></canvas>

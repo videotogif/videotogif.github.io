@@ -1,0 +1,177 @@
+<section class="upload-section" id="uploadSection">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text" id="uploadText">Select Video File</div>
+        <div class="upload-subtext" id="uploadSubtext">Click or drag &amp; drop to upload and automatically generate GIF.</div>
+        <input type="file" id="videoInput" accept="video/*">
+      </section>
+
+      <!-- Result -->
+      <section class="output-section" id="outputSection" style="display:none;">
+        <h2 class="sr-only">Download your GIF</h2>
+        <div class="section-title">
+          <span>✨</span>
+          <span id="outputTitle">Generated GIF</span>
+        </div>
+        <div id="output" style="position: relative;"></div>
+
+        <a id="downloadLink" style="display:none;" download="output.gif">
+          <span id="downloadText">Download GIF</span>
+        </a>
+
+        <!-- Trim slider (shown only when inline trimming is enabled) -->
+        <div id="trimSliderContainer" class="trim-slider-container" style="display:none;">
+          <div class="trim-timeline">
+            <div class="trim-timeline-track" id="trimTrack">
+              <div class="trim-timeline-frames" id="trimTimelineFrames"></div>
+              <div class="trim-timeline-selected" id="trimSelected"></div>
+              <div class="trim-handle trim-handle-start" id="trimHandleStart">
+                <div class="trim-handle-line"></div>
+              </div>
+              <div class="trim-handle trim-handle-end" id="trimHandleEnd">
+                <div class="trim-handle-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trim-info-row">
+            <div class="trim-info-item">
+              <label>Original:</label>
+              <span id="originalDuration" class="duration-value">0.0s</span>
+            </div>
+            <div class="trim-info-item trim-separator">→</div>
+            <div class="trim-info-item">
+              <label>Trimmed:</label>
+              <span id="trimmedDuration" class="duration-value highlight">0.0s</span>
+            </div>
+          </div>
+
+          <button id="generateGifBtn" class="convert-btn">
+            <span>🎬 Create GIF from selection</span>
+          </button>
+        </div>
+
+        <!-- 설정 탭: 화질 / 텍스트 / 자르기 (GIF가 만들어지면 보임) -->
+        <div class="settings-wrap" id="settingsWrap">
+        <div class="settings-tabs" id="settingsTabs" role="tablist" aria-label="GIF settings">
+          <button type="button" class="settings-tab active" role="tab" id="tabQuality" aria-controls="advancedSettings" aria-selected="true">⚙️ Quality</button>
+          <button type="button" class="settings-tab" role="tab" id="tabText" aria-controls="textSettings" aria-selected="false" tabindex="-1">✏️ Text</button>
+          <button type="button" class="settings-tab" role="tab" id="tabTrim" aria-controls="trimSettings" aria-selected="false" tabindex="-1">✂️ Trim</button>
+        </div>
+        <!-- Quality (shown after the GIF is made): picked automatically for the video, slider from low-spec to high-spec -->
+        <div class="advanced-settings" id="advancedSettings" role="tabpanel" aria-labelledby="tabQuality">
+          <h2 class="sr-only">GIF quality</h2>
+          <div class="advanced-settings-header" id="advancedToggle">
+            <div class="advanced-settings-title">
+              <span>⚙️</span>
+              <span id="advancedSettingsTitle">Quality</span>
+            </div>
+            <div class="toggle-icon" id="toggleIcon">▼</div>
+          </div>
+          <div class="advanced-content expanded" id="advancedContent">
+            <div id="autoPanel">
+            <p class="auto-intro">Settings were picked automatically for this video's length and resolution. Move the slider to adjust it.</p>
+            <div class="spec-slider" data-level="3">
+              <label for="qualityLevel" class="sr-only">Quality level (1 low-spec to 5 high-spec)</label>
+              <input type="range" id="qualityLevel" min="1" max="5" step="1" value="3" aria-describedby="autoSummary">
+              <div class="spec-ticks">
+                <button type="button" class="spec-tick" data-level="1" style="--i:0">Low-spec</button>
+                <button type="button" class="spec-tick" data-level="2" style="--i:1" aria-label="Lighter"></button>
+                <button type="button" class="spec-tick" data-level="3" style="--i:2">Balanced</button>
+                <button type="button" class="spec-tick" data-level="4" style="--i:3" aria-label="Sharper"></button>
+                <button type="button" class="spec-tick" data-level="5" style="--i:4">High-spec</button>
+              </div>
+              <div class="spec-ends" aria-hidden="true">
+                <span>Light &amp; fast</span>
+                <span>Sharp &amp; smooth</span>
+              </div>
+            </div>
+            </div>
+            <p class="auto-summary" id="autoSummary" aria-live="polite"></p>
+            <button type="button" class="custom-toggle" id="customToggle" aria-expanded="false" aria-controls="customPanel"><span class="custom-toggle-text">Custom settings</span><span class="chev" aria-hidden="true">⌄</span></button>
+            <div id="customPanel" class="custom-panel" hidden>
+              <div class="custom-field">
+                <label for="customWidth">Size <output id="customWidthOut"></output></label>
+                <input type="range" id="customWidth" min="100" max="900" step="2" value="540">
+              </div>
+              <div class="custom-field">
+                <label for="customQuality">Quality <output id="customQualityOut">90</output></label>
+                <input type="range" id="customQuality" min="1" max="100" step="1" value="90">
+              </div>
+              <div class="custom-field">
+                <label for="customFps">Frames per second <output id="customFpsOut">10</output></label>
+                <input type="range" id="customFps" min="0" max="3" step="1" value="1">
+              </div>
+              <div class="custom-field">
+                <label for="customSpeed">Playback speed <output id="customSpeedOut">1X</output></label>
+                <input type="range" id="customSpeed" min="0" max="4" step="1" value="1">
+              </div>
+              <p class="custom-estimate" id="customEstimate" aria-live="polite"></p>
+              <button type="button" class="start-button custom-apply" id="customApplyBtn">Remake with these settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text overlay -->
+        <div class="advanced-settings" id="textSettings" role="tabpanel" aria-labelledby="tabText" hidden>
+          <h2 class="sr-only">GIF text settings</h2>
+          <div class="advanced-settings-header" id="textToggle">
+            <div class="advanced-settings-title">
+              <span>✏️</span>
+              <span id="textSettingsTitle">Text Settings</span>
+            </div>
+            <div class="toggle-icon" id="textToggleIcon">▼</div>
+          </div>
+          <div class="advanced-content expanded" id="textContent">
+            <div class="settings-grid">
+              <div class="setting-group">
+                <label for="overlayText" id="overlayTextLabel">Caption text</label>
+                <div class="text-input-row">
+                  <input type="text" id="overlayText" placeholder="Text to show on the GIF" enterkeyhint="done">
+                  <button type="button" class="text-done-btn" id="textDoneBtn">Done</button>
+                </div>
+              </div>
+              <div class="setting-group">
+                <span class="pad-label" id="textPositionLabel">Text position</span>
+                <div class="text-pad" id="textPad" role="group" aria-labelledby="textPositionLabel">
+                  <button type="button" class="pad-btn pad-up" data-dir="up" aria-label="Up">▲</button>
+                  <button type="button" class="pad-btn pad-left" data-dir="left" aria-label="Left">◀</button>
+                  <button type="button" class="pad-btn pad-center" data-dir="center" aria-label="Center horizontally">●</button>
+                  <button type="button" class="pad-btn pad-right" data-dir="right" aria-label="Right">▶</button>
+                  <button type="button" class="pad-btn pad-down" data-dir="down" aria-label="Down">▼</button>
+                </div>
+                <p class="pad-hint">Hold a button to keep moving. You can also drag the text on the GIF.</p>
+              </div>
+              <div class="setting-group">
+                <label for="textSize" id="textSizeLabel">Text size (px)</label>
+                <input type="number" id="textSize" value="30" min="10" max="200" step="1">
+              </div>
+              <div class="setting-group">
+                <label for="textColor" id="textColorLabel">Text color</label>
+                <input type="color" id="textColor" value="#ffffff">
+              </div>
+              <div class="setting-group">
+                <label for="textBgColor" id="textBgColorLabel">Background color</label>
+                <input type="color" id="textBgColor" value="#000000">
+              </div>
+              <div class="setting-group">
+                <label for="textBgOpacity" id="textBgOpacityLabel">Background opacity (0-1)</label>
+                <input type="number" id="textBgOpacity" value="0.6" min="0" max="1" step="0.1">
+              </div>
+            </div>
+
+            <button id="textReconvertBtn" class="convert-btn">
+              <span id="textReconvertText">🔄 Regenerate GIF with Text</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- GIF trim (opens in a new tab) -->
+        <div class="advanced-settings" id="trimSettings" role="tabpanel" aria-labelledby="tabTrim" hidden>
+          <h2 class="sr-only" id="trimSettingsTitle">Trim GIF</h2>
+          <div class="advanced-content expanded">
+            <p class="trim-tab-intro">Keep only the part you need, or cut out a section in the middle. The button saves this GIF and opens the trim tool in a new tab; just upload the saved GIF there.</p>
+            <a href="{{ '/en/gif-trim/' | relative_url }}" class="start-button trim-page-link" id="trimPageLink" target="_blank" rel="noopener">✂️ Open Trim GIF</a>
+          </div>
+        </div>
+        </div>
+      </section>
